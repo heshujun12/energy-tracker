@@ -122,8 +122,33 @@ body.editing .edit-bar { display:flex; }
   display: flex; align-items: center; justify-content: center;
   font-size: 16px; flex-shrink: 0;
 }
-.ai-card .ai-text { font-size: 13px; line-height: 1.6; color: #5a4a3a; }
+.ai-card .ai-text { font-size: 13px; line-height: 1.6; color: #5a4a3a; flex:1; }
 .ai-card .ai-title { font-weight: 600; margin-bottom: 2px; }
+.ai-card .ai-arrow { font-size: 22px; color: #d4a574; align-self: center; flex-shrink:0; transition:transform .2s; }
+.ai-card.expanded .ai-arrow { transform:rotate(90deg); }
+.ai-card { cursor: pointer; }
+
+/* AI展开建议 */
+.ai-expand { display:none; padding:0 16px 16px; }
+.ai-expand.show { display:block; }
+.ai-suggestion {
+  background:var(--card); border-radius:14px; padding:12px 14px; margin-bottom:8px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.ai-suggestion .s-icon {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:12px;
+}
+.ai-suggestion .s-content { flex:1; }
+.ai-suggestion .s-title { font-size:13px; font-weight:600; margin-bottom:2px; }
+.ai-suggestion .s-desc { font-size:12px; color:var(--text2); line-height:1.5; }
+.s-icon.cal { background:#fff0e6; color:var(--primary); }
+.s-icon.protein { background:#f0fdf4; color:var(--green); }
+.s-icon.carb { background:#eff6ff; color:var(--blue); }
+.s-icon.fat { background:#fefce8; color:#ca8a04; }
+.s-icon.food { background:#faf5ff; color:var(--purple); }
+.s-icon.weight { background:#f0f9ff; color:#0ea5e9; }
+.s-icon.body { background:#fef2f2; color:var(--red); }
 
 /* 热量环卡片 */
 .ring-card {
@@ -280,10 +305,12 @@ canvas { width:100% !important; display:block; }
   </div>
 
   <div class="module" data-mid="m-ai" data-view="today">
-    <div class="ai-card" id="aiTip">
+    <div class="ai-card" id="aiTip" onclick="toggleAIExpand()">
       <div class="ai-icon">AI</div>
       <div class="ai-text" id="aiTipText">先记录今天第一餐吧～</div>
+      <div class="ai-arrow" id="aiArrow">›</div>
     </div>
+    <div class="ai-expand" id="aiExpand"></div>
   </div>
 
   <div class="module" data-mid="m-meals" data-view="today">
@@ -461,6 +488,130 @@ function renderAITip(t) {
   else if(pct > 1) tip = "今天已经超过目标了，明天稍微注意下就好。";
   else tip = "记录得不错，继续保持～";
   document.getElementById("aiTipText").innerHTML = `<div class="ai-title">今日建议</div>${tip}`;
+}
+
+// ===== AI建议展开 =====
+function toggleAIExpand() {
+  const expand = document.getElementById("aiExpand");
+  const card = document.getElementById("aiTip");
+  if(expand.classList.contains("show")) {
+    expand.classList.remove("show");
+    card.classList.remove("expanded");
+    return;
+  }
+  const t = dayTotal(todayKey());
+  const suggestions = generateAISuggestions(t);
+  let html = "";
+  suggestions.forEach(s => {
+    html += `<div class="ai-suggestion">
+      <div class="s-icon ${s.type}">${s.icon}</div>
+      <div class="s-content">
+        <div class="s-title">${s.title}</div>
+        <div class="s-desc">${s.desc}</div>
+      </div>
+    </div>`;
+  });
+  expand.innerHTML = html;
+  expand.classList.add("show");
+  card.classList.add("expanded");
+}
+
+function generateAISuggestions(t) {
+  const list = [];
+  const targets = DATA.targets;
+  const remain = targets.cal - t.cal;
+
+  // 1. 热量总结
+  if(t.records.length === 0) {
+    list.push({type:"cal", icon:"🔥", title:"开始记录", desc:"还没有记录今天的饮食，在豆包对话里说你吃了什么，我帮你算热量。"});
+  } else {
+    const pct = Math.round(t.cal / targets.cal * 100);
+    if(remain > 0) {
+      list.push({type:"cal", icon:"🔥", title:"今日热量", desc:`已摄入 ${t.cal} kcal（目标的${pct}%），还可以吃 ${remain} kcal。建议晚餐控制在 ${Math.min(remain, 500)} kcal 以内。`});
+    } else {
+      list.push({type:"cal", icon:"🔥", title:"今日热量", desc:`已摄入 ${t.cal} kcal，超过目标 ${Math.abs(remain)} kcal。偶尔超标没关系，明天注意就好。`});
+    }
+  }
+
+  // 2. 蛋白质
+  const pRemain = targets.p - t.p;
+  if(t.records.length > 0) {
+    if(pRemain > 20) {
+      list.push({type:"protein", icon:"💪", title:"蛋白质不足", desc:`今天蛋白质 ${Math.round(t.p)}g，还差 ${Math.round(pRemain)}g。推荐：鸡胸肉(100g=23g)、鸡蛋(1个=6g)、希腊酸奶(100g=10g)、牛奶(250ml=8g)。`});
+    } else if(pRemain > 0) {
+      list.push({type:"protein", icon:"💪", title:"蛋白质接近达标", desc:`今天蛋白质 ${Math.round(t.p)}g，还差 ${Math.round(pRemain)}g，一杯牛奶或一个鸡蛋就够了。`});
+    } else {
+      list.push({type:"protein", icon:"💪", title:"蛋白质达标", desc:`今天蛋白质 ${Math.round(t.p)}g，已达标，增肌减脂都需要足够蛋白质，继续保持。`});
+    }
+  }
+
+  // 3. 碳水
+  const cRemain = targets.c - t.c;
+  if(t.records.length > 0) {
+    if(cRemain < -20) {
+      list.push({type:"carb", icon:"🍚", title:"碳水超标", desc:`今天碳水 ${Math.round(t.c)}g，超过目标 ${Math.round(Math.abs(cRemain))}g。主食吃多了，明天可以减少米饭/面条份量，多吃蔬菜。`});
+    } else if(cRemain > 30) {
+      list.push({type:"carb", icon:"🍚", title:"碳水偏低", desc:`今天碳水 ${Math.round(t.c)}g，还有 ${Math.round(cRemain)}g 空间。运动日可以适当补充，比如一根香蕉或一片全麦面包。`});
+    } else {
+      list.push({type:"carb", icon:"🍚", title:"碳水适中", desc:`今天碳水 ${Math.round(t.c)}g，在合理范围内。优先选择粗粮（糙米、燕麦）而不是精制糖。`});
+    }
+  }
+
+  // 4. 脂肪
+  const fRemain = targets.f - t.f;
+  if(t.records.length > 0) {
+    if(fRemain < -5) {
+      list.push({type:"fat", icon:"🥑", title:"脂肪偏高", desc:`今天脂肪 ${Math.round(t.f)}g，超过目标 ${Math.round(Math.abs(fRemain))}g。注意减少油炸食品和肥肉，烹饪用蒸/煮/烤代替煎/炸。`});
+    } else {
+      list.push({type:"fat", icon:"🥑", title:"脂肪合理", desc:`今天脂肪 ${Math.round(t.f)}g，在目标范围内。优先选择不饱和脂肪（坚果、牛油果、橄榄油）。`});
+    }
+  }
+
+  // 5. 推荐食物（基于剩余热量和营养素缺口）
+  if(t.records.length > 0 && remain > 100) {
+    let foodTip = "";
+    if(pRemain > 15 && remain > 150) {
+      foodTip = `还剩 ${remain} kcal，推荐：水煮鸡胸肉100g(130kcal, P23g) + 凉拌黄瓜，补蛋白不超热量。`;
+    } else if(cRemain > 20 && remain > 100) {
+      foodTip = `还剩 ${remain} kcal，推荐：一根香蕉(89kcal, C23g) 或 一片全麦面包(80kcal, C14g)，补充碳水。`;
+    } else if(remain > 200) {
+      foodTip = `还剩 ${remain} kcal，可以吃一份水果沙拉或一小把坚果(15g=90kcal)。`;
+    } else {
+      foodTip = `还剩 ${remain} kcal，建议喝杯水或吃个小番茄，睡前3小时不再进食。`;
+    }
+    list.push({type:"food", icon:"🍎", title:"可以吃什么", desc:foodTip});
+  }
+
+  // 6. 体重趋势
+  const wh = DATA.weightHistory;
+  if(wh.length >= 2) {
+    const diff = wh[wh.length-1].weight - wh[0].weight;
+    const days = wh.length;
+    if(diff < 0) {
+      list.push({type:"weight", icon:"⚖️", title:"体重趋势", desc:`${days}天内体重下降 ${Math.abs(diff).toFixed(1)} kg，按这个速度一年能减 ${Math.abs(diff/days*365).toFixed(1)} kg。目标 ${DATA.goalWeight} kg，继续保持热量缺口。`});
+    } else if(diff > 0) {
+      list.push({type:"weight", icon:"⚖️", title:"体重趋势", desc:`${days}天内体重上升 ${diff.toFixed(1)} kg，检查一下是否热量摄入超标，或增加一些有氧运动。`});
+    } else {
+      list.push({type:"weight", icon:"⚖️", title:"体重趋势", desc:`体重稳定在 ${wh[wh.length-1].weight} kg，进入平台期。可以尝试调整饮食结构或增加运动。`});
+    }
+  } else if(wh.length === 1) {
+    list.push({type:"weight", icon:"⚖️", title:"体重记录", desc:`当前体重 ${wh[0].weight} kg，目标 ${DATA.goalWeight} kg。建议每周固定时间称重1-2次，观察趋势而不是单日波动。`});
+  }
+
+  // 7. 身体数据建议
+  if(wh.length > 0) {
+    const latest = wh[wh.length-1];
+    const bodyTips = [];
+    if(latest.bodyFat > 20) bodyTips.push(`体脂率 ${latest.bodyFat}% 偏高，男性正常15-20%`);
+    if(latest.muscle < 45) bodyTips.push(`肌肉率 ${latest.muscle}% 偏低，正常40-50%，建议力量训练`);
+    if(latest.visceral >= 9) bodyTips.push(`内脏脂肪 ${latest.visceral} 临界，正常≤9，减少腹部脂肪`);
+    if(latest.protein < 15) bodyTips.push(`蛋白质率 ${latest.protein}% 偏低，正常15-20%，多吃优质蛋白`);
+    if(bodyTips.length > 0) {
+      list.push({type:"body", icon:"📊", title:"身体数据提醒", desc:bodyTips.join("；") + "。"});
+    }
+  }
+
+  return list;
 }
 
 // ===== 趋势 =====
@@ -669,5 +820,6 @@ function init() {
 }
 init();
 </script>
+
 </body>
 </html>
