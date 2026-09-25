@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>能量记录</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>
+:root {
+  --bg: #faf8f5;
+  --card: #ffffff;
+  --primary: #f97316;
+  --primary-light: #ffedd5;
+  --green: #10b981;
+  --green-light: #d1fae5;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --red: #ef4444;
+  --text: #1c1917;
+  --text2: #78716c;
+  --text3: #a8a29e;
+  --border: #f0ede8;
+  --radius: 20px;
+  --shadow: 0 4px 20px rgba(249,115,22,0.06);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+/* 隐藏平台水印/生成按钮 */
+body > div[style*="fixed"],
+body > div[class*="watermark"],
+body > div[class*="badge"],
+body > div[class*="float"],
+body > button[style*="fixed"] {
+  display: none !important;
+}
+
+.topbar { padding: 20px 20px 12px; display:flex; justify-content:space-between; align-items:center; }
+.topbar .tb-left { text-align:center; flex:1; }
+.topbar h1 { font-size: 18px; font-weight: 600; }
+.topbar .date { font-size: 13px; color: var(--text2); margin-top: 3px; }
+.edit-btn {
+  border:1px solid var(--border); background:var(--card); border-radius:8px;
+  padding:5px 12px; font-size:12px; color:var(--text2); cursor:pointer;
+}
+.edit-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+
+.tabbar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
+  background: var(--card); border-top: 1px solid var(--border);
+  display: flex; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100;
+}
+.tabbar .tab { flex:1; text-align:center; cursor:pointer; padding:6px 0; color:var(--text3); transition:color .2s; }
+.tabbar .tab.active { color: var(--primary); }
+.tabbar .tab svg { width:22px; height:22px; margin:0 auto 2px; display:block; }
+.tabbar .tab span { font-size:11px; }
+
+.view { display:none; padding:0 16px; }
+.view.active { display:block; }
+
+/* 模块容器 */
+.module { position:relative; margin-bottom:12px; transition: opacity .2s; }
+body.editing .module { cursor: grab; }
+body.editing .module:active { cursor: grabbing; }
+body.editing .module { outline:2px dashed transparent; outline-offset:2px; border-radius:var(--radius); }
+body.editing .module.drag-over { outline-color: var(--primary); }
+body.editing .module.dragging { opacity:0.4; }
+body.editing .module.hidden-mod { display:none; }
+
+/* 编辑模式手柄和删除 */
+.mod-handle {
+  display:none; position:absolute; top:8px; right:8px; z-index:10;
+  background:var(--primary); color:white; border-radius:50%;
+  width:24px; height:24px; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; line-height:1;
+}
+.mod-remove {
+  display:none; position:absolute; top:8px; right:40px; z-index:10;
+  background:var(--red); color:white; border-radius:50%;
+  width:24px; height:24px; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; line-height:1;
+}
+body.editing .mod-handle, body.editing .mod-remove { display:flex; }
+body.editing .module > *:not(.mod-handle):not(.mod-remove) { pointer-events:none; }
+
+/* 编辑底部栏 */
+.edit-bar {
+  display:none; position:fixed; bottom:60px; left:50%; transform:translateX(-50%);
+  width:calc(100% - 32px); max-width:448px;
+  background:var(--card); border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  padding:10px 16px; z-index:200;
+  align-items:center; justify-content:space-between;
+}
+body.editing .edit-bar { display:flex; }
+.edit-bar .eb-hint { font-size:12px; color:var(--text2); }
+.edit-bar .eb-btns { display:flex; gap:8px; }
+.edit-bar button {
+  border:none; border-radius:8px; padding:7px 14px; font-size:13px; cursor:pointer;
+}
+.eb-done { background:var(--primary); color:white; }
+.eb-reset { background:#f0eee9; color:var(--text2); }
+
+/* AI建议卡片 */
+.ai-card {
+  background: linear-gradient(135deg, #fff8f2, #fef0e6);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.ai-card .ai-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.ai-card .ai-text { font-size: 13px; line-height: 1.6; color: #5a4a3a; }
+.ai-card .ai-title { font-weight: 600; margin-bottom: 2px; }
+
+/* 热量环卡片 */
+.ring-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px 20px; box-shadow: var(--shadow);
+  text-align: center;
+}
+.ring-wrap { position: relative; width: 150px; height: 150px; margin: 0 auto 14px; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-center { position: absolute; top:50%; left:50%; transform: translate(-50%,-50%); text-align:center; }
+.ring-center .num { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing:-0.5px; }
+.ring-center .num .cal-target { font-size: 14px; font-weight: 400; color: var(--text3); margin-left:2px; }
+.ring-center .label { font-size: 12px; color: var(--text2); margin-top: 5px; }
+.macro-row { display:flex; justify-content:space-around; padding-top:14px; border-top:1px solid #f5f4f0; }
+.macro-item { text-align:center; }
+.macro-item .m-val { font-size:18px; font-weight:700; }
+.macro-item .m-val .mv-target { font-size:11px; font-weight:400; color:var(--text3); margin-left:1px; }
+.macro-item .m-name { font-size:11px; color:var(--text2); margin-top:2px; }
+.macro-bar { width:44px; height:4px; background:#f0eee9; border-radius:2px; margin:5px auto 0; overflow:hidden; }
+.macro-fill { height:100%; border-radius:2px; transition: width .4s; }
+
+/* 记录列表 */
+.meal-group { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:10px; overflow:hidden; }
+.meal-header { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+.meal-header .meal-name { font-size:13px; font-weight:600; }
+.meal-header .meal-cal { font-size:12px; color:var(--text2); }
+.food-item { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f5f4f0; }
+.food-item:last-child { border-bottom:none; }
+.food-info .fname { font-size:14px; }
+.food-info .fmeta { font-size:11px; color:var(--text2); margin-top:4px; display:flex; gap:10px; }
+.food-cal { font-size:14px; font-weight:600; color:var(--primary); }
+.empty-tip { text-align:center; padding:24px 0; color:var(--text3); font-size:13px; }
+
+/* 聊天页 */
+.chat-hint { background:var(--green-light); border-radius:12px; padding:10px 14px; font-size:13px; color:var(--green); margin-bottom:12px; text-align:center; }
+.chat-list { padding-bottom:10px; }
+.chat-msg { margin-bottom:14px; display:flex; gap:10px; }
+.chat-msg.user { flex-direction:row-reverse; }
+.chat-avatar { width:34px; height:34px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.chat-msg.ai .chat-avatar { background:var(--green-light); }
+.chat-msg.user .chat-avatar { background:var(--primary-light); }
+.chat-bubble { max-width:75%; padding:10px 13px; border-radius:14px; font-size:14px; line-height:1.5; }
+.chat-msg.ai .chat-bubble { background:var(--card); border-top-left-radius:4px; box-shadow:var(--shadow); }
+.chat-msg.user .chat-bubble { background:var(--primary); color:white; border-top-right-radius:4px; }
+.chat-bubble .bubble-cal { margin-top:5px; padding-top:5px; border-top:1px solid rgba(0,0,0,0.06); font-size:12px; color:var(--text2); }
+.chat-msg.user .bubble-cal { color:rgba(255,255,255,0.8); border-top-color:rgba(255,255,255,0.2); }
+.chat-time { font-size:11px; color:var(--text3); margin-top:3px; text-align:center; }
+
+/* 趋势页 */
+.stat-card { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
+.stat-card h3 { font-size:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+.stat-card h3 .sub { font-size:12px; color:var(--text3); font-weight:400; }
+.stat-summary { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; text-align:center; margin-bottom:12px; }
+.stat-summary .ss-val { font-size:18px; font-weight:700; }
+.stat-summary .ss-label { font-size:11px; color:var(--text2); margin-top:2px; }
+canvas { width:100% !important; display:block; }
+
+/* 减重进度 */
+.progress-nums { display:flex; justify-content:space-between; align-items:center; text-align:center; margin-bottom:10px; }
+.progress-nums .pn-val { font-size:20px; font-weight:700; display:block; }
+.progress-nums .pn-label { font-size:11px; color:var(--text2); }
+.progress-nums .pn-arrow { color:var(--text3); font-size:16px; }
+.progress-bar-wrap { height:10px; background:#f0eee9; border-radius:5px; overflow:hidden; margin:8px 0; }
+.progress-bar-fill { height:100%; background:linear-gradient(90deg, var(--green), #8bc49a); border-radius:5px; transition:width .6s; }
+.progress-meta { font-size:12px; color:var(--text2); text-align:center; margin-top:6px; }
+
+/* 指标切换tab */
+.metric-tabs { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+.mtab {
+  padding:5px 12px; border-radius:14px; font-size:12px; cursor:pointer;
+  background:#f0eee9; color:var(--text2); transition:all .2s;
+}
+.mtab.active { background:var(--primary); color:white; }
+
+.chart-legend { font-size:11px; color:var(--text2); margin-bottom:8px; display:flex; align-items:center; }
+.legend-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; }
+
+.warn-bar {
+  background:#fdf0ed; border-left:3px solid var(--red);
+  padding:8px 12px; border-radius:8px; font-size:12px; color:var(--red); margin-bottom:10px;
+}
+
+/* 日历页 */
+.cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.cal-header h3 { font-size:16px; }
+.cal-nav { display:flex; gap:8px; }
+.cal-nav button { border:1px solid var(--border); background:var(--card); width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:14px; }
+.cal-grid { background:var(--card); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow); }
+.cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; color:var(--text3); margin-bottom:8px; }
+.cal-days { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal-day {
+  aspect-ratio: 1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:8px; font-size:12px; position:relative;
+}
+.cal-day .d-num { font-weight:600; font-size:13px; }
+.cal-day .d-cal { font-size:10px; margin-top:2px; color:var(--text2); }
+.cal-day.other { opacity:0.3; }
+.cal-day.today { background:var(--primary-light); }
+.cal-day.under { background:var(--green-light); }
+.cal-day.over { background:#f8d6d0; }
+.report-card { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
+.report-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-size:13px; border-bottom:1px solid #f5f4f0; }
+.report-row:last-child { border-bottom:none; }
+.report-row .val { font-weight:700; font-size:14px; }
+.report-row .val .sub { font-weight:400; font-size:12px; color:var(--text3); }
+
+/* 身体数据网格 */
+.body-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.body-cell { background:#f8f7f4; border-radius:10px; padding:10px 12px; text-align:center; }
+.body-cell .bc-val { font-size:18px; font-weight:700; }
+.body-cell .bc-name { font-size:11px; color:var(--text2); margin-top:2px; }
+.body-cell .bc-ref { font-size:10px; color:var(--text3); margin-top:2px; }
+.body-cell .bc-status { color:var(--red); font-weight:600; }
+.body-cell.warn { background:#fdf0ed; }
+.body-cell.warn .bc-val { color:var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ===== 今日 ===== -->
+<div class="view active" id="view-today">
+  <div class="module" data-mid="m-ring" data-view="today">
+    <div class="ring-card">
+      <div class="ring-wrap">
+        <svg width="150" height="150">
+          <circle cx="75" cy="75" r="65" fill="none" stroke="#f0eee9" stroke-width="11"/>
+          <circle id="ringFg" cx="75" cy="75" r="65" fill="none" stroke="var(--primary)" stroke-width="11"
+            stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408"
+            style="transition: stroke-dashoffset .6s ease;"/>
+        </svg>
+        <div class="ring-center">
+          <div class="num" id="todayCal"><span id="calNow">0</span><span class="cal-target" id="calTarget">/1700</span></div>
+          <div class="label" id="ringLabel">kcal</div>
+        </div>
+      </div>
+      <div class="macro-row">
+        <div class="macro-item">
+          <div class="m-val"><span class="mv-now" id="pNow">0</span><span class="mv-target" id="pTarget">/150g</span></div>
+          <div class="m-name">蛋白质</div>
+          <div class="macro-bar"><div class="macro-fill" id="pBar" style="width:0%;background:var(--primary);"></div></div>
+        </div>
+        <div class="macro-item">
+          <div class="m-val"><span class="mv-now" id="cNow">0</span><span class="mv-target" id="cTarget">/150g</span></div>
+          <div class="m-name">碳水</div>
+          <div class="macro-bar"><div class="macro-fill" id="cBar" style="width:0%;background:var(--blue);"></div></div>
+        </div>
+        <div class="macro-item">
+          <div class="m-val"><span class="mv-now" id="fNow">0</span><span class="mv-target" id="fTarget">/55g</span></div>
+          <div class="m-name">脂肪</div>
+          <div class="macro-bar"><div class="macro-fill" id="fBar" style="width:0%;background:#eab308;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-ai" data-view="today">
+    <div class="ai-card" id="aiTip">
+      <div class="ai-icon">AI</div>
+      <div class="ai-text" id="aiTipText">先记录今天第一餐吧～</div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-meals" data-view="today">
+    <div id="mealList"></div>
+  </div>
+</div>
+
+<!-- ===== 趋势 ===== -->
+<div class="view" id="view-trend">
+  <div class="module" data-mid="m-weighttrend" data-view="trend">
+    <div class="stat-card">
+      <h3>体重趋势</h3>
+      <canvas id="weightTrendChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-bodydata" data-view="trend">
+    <div class="stat-card">
+      <h3>身体数据 <span class="sub" id="bodyDataDate"></span></h3>
+      <div class="body-grid" id="bodyDataGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 日历 ===== -->
+<div class="view" id="view-cal">
+  <div class="module" data-mid="m-cal-grid" data-view="cal">
+    <div class="cal-header">
+      <h3 id="calTitle">2026年9月</h3>
+      <div class="cal-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+      <div class="cal-days" id="calDays"></div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-week-report" data-view="cal">
+    <div class="report-card">
+      <h3 style="font-size:14px;margin-bottom:10px;">本周概览</h3>
+      <div id="weekReportContent"></div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- 底部导航 -->
+<div class="tabbar">
+  <div class="tab active" data-view="today" onclick="switchTab('today')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>今日</span>
+  </div>
+  <div class="tab" data-view="trend" onclick="switchTab('trend')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+    <span>趋势</span>
+  </div>
+  <div class="tab" data-view="cal" onclick="switchTab('cal')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+    <span>日历</span>
+  </div>
+</div>
+
+<script>
+// ===== 数据 =====
+const DATA = {
+  targets: {cal:1700, p:150, c:150, f:55},
+  goalWeight: 68.92,
+  today: "2026-09-25",
+  days: {
+    "2026-09-25": {
+      records: [
+        {time:"09:30", meal:"早餐", foodName:"桃胶银耳羹", weight:250, cal:113, p:1.3, c:20, f:3.0},
+        {time:"09:30", meal:"早餐", foodName:"牛奶(半盒)", weight:125, cal:76, p:4.0, c:6.3, f:4.3},
+        {time:"09:30", meal:"早餐", foodName:"脆骨乐", weight:20, cal:46, p:2.0, c:1.0, f:3.6},
+        {time:"12:30", meal:"午餐", foodName:"家宴混合菜(1/7桌)", weight:400, cal:550, p:35.0, c:15.0, f:30.0},
+        {time:"12:30", meal:"午餐", foodName:"米饭", weight:280, cal:325, p:7.3, c:71.7, f:0.8},
+        {time:"19:00", meal:"晚餐", foodName:"米饭(半碗)", weight:140, cal:174, p:3.5, c:37.0, f:0.3},
+        {time:"19:00", meal:"晚餐", foodName:"黄油法棍(一块)", weight:50, cal:212, p:5.0, c:35.0, f:5.0},
+        {time:"19:00", meal:"晚餐", foodName:"西红柿鸡蛋汤", weight:150, cal:60, p:3.0, c:4.0, f:3.5},
+        {time:"19:00", meal:"晚餐", foodName:"咖喱土豆鸡(1/5碗)", weight:80, cal:96, p:5.0, c:8.0, f:5.0},
+      ],
+      water: 0, exercise: 0, weight: 81.52
+    }
+  },
+  weightHistory: [
+    {date:"2026-09-25", weight:81.52, bmi:26, bodyFat:20.4, muscle:41.2, water:56,
+     bone:3.04, subFat:20, bmr:1712, visceral:9, protein:13.6,
+     bodyAge:30, bodyScore:82, fatMass:16.63, leanMass:64.89}
+  ],
+  chatHistory: [
+    {type:"time", text:"9月25日 上午"},
+    {type:"user", text:"我早上吃了一碗这个和半盒牛奶和20克脆骨乐", time:"09:30"},
+    {type:"ai", text:"记好啦～一碗桃胶银耳羹约113kcal，半盒牛奶约76kcal，脆骨乐20g约46kcal。这顿早餐共约235kcal，蛋白质7.3g。", cal:235, time:"09:30"},
+    {type:"time", text:"9月25日 中午"},
+    {type:"user", text:"吃了七分之一菜，一碗米饭", time:"12:30"},
+    {type:"ai", text:"记好啦～家宴混合菜约550kcal，米饭一碗280g约325kcal。这顿午餐共约875kcal，蛋白质42g。今天累计约1110kcal，还剩约590kcal额度。", cal:875, time:"12:30"},
+  ]
+};
+
+let calYear = 2026, calMonth = 8;
+
+
+// ===== 工具 =====
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function getDay(key) {
+  if(!DATA.days[key]) DATA.days[key] = {records:[], water:0, exercise:0, weight:null};
+  return DATA.days[key];
+}
+function dayTotal(key) {
+  const d = getDay(key);
+  let cal=0,p=0,c=0,f=0;
+  d.records.forEach(r => { cal+=r.cal; p+=r.p; c+=r.c; f+=r.f; });
+  return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), records:d.records, water:d.water, exercise:d.exercise, weight:d.weight};
+}
+
+// ===== 今日 =====
+function renderToday() {
+  const tk = todayKey();
+  const t = dayTotal(tk);
+  const pct = Math.min(1, t.cal / DATA.targets.cal);
+  const circumference = 2 * Math.PI * 65;
+  document.getElementById("ringFg").style.strokeDashoffset = circumference * (1 - pct);
+  document.getElementById("calNow").textContent = t.cal;
+  document.getElementById("calTarget").textContent = "/"+DATA.targets.cal;
+  const remain = DATA.targets.cal - t.cal;
+  document.getElementById("ringLabel").textContent = remain >= 0 ? `还可吃 ${Math.round(remain)} kcal` : `已超 ${Math.round(-remain)} kcal`;
+  const ringFg = document.getElementById("ringFg");
+  if(t.cal > DATA.targets.cal * 1.1) ringFg.style.stroke = "var(--red)";
+  else if(t.cal > DATA.targets.cal) ringFg.style.stroke = "var(--red)";
+  else ringFg.style.stroke = "var(--primary)";
+  document.getElementById("pNow").textContent = Math.round(t.p);
+  document.getElementById("pTarget").textContent = "/"+DATA.targets.p+"g";
+  document.getElementById("cNow").textContent = Math.round(t.c);
+  document.getElementById("cTarget").textContent = "/"+DATA.targets.c+"g";
+  document.getElementById("fNow").textContent = Math.round(t.f);
+  document.getElementById("fTarget").textContent = "/"+DATA.targets.f+"g";
+  document.getElementById("pBar").style.width = Math.min(100, t.p/DATA.targets.p*100)+"%";
+  document.getElementById("cBar").style.width = Math.min(100, t.c/DATA.targets.c*100)+"%";
+  document.getElementById("fBar").style.width = Math.min(100, t.f/DATA.targets.f*100)+"%";
+  renderAITip(t);
+
+  const mealOrder = ["早餐","午餐","晚餐","加餐"];
+  let html = "", hasAny = false;
+  mealOrder.forEach(m => {
+    const items = t.records.filter(r => r.meal === m);
+    if(items.length === 0) return;
+    hasAny = true;
+    const mealCal = items.reduce((s,i)=>s+i.cal,0);
+    html += `<div class="meal-group"><div class="meal-header"><span class="meal-name">${m}</span><span class="meal-cal">${Math.round(mealCal)} kcal</span></div>`;
+    items.forEach(item => {
+      html += `<div class="food-item">
+        <div class="food-info"><div class="fname">${item.foodName} <span style="color:var(--text3);font-size:11px;">${item.weight}g</span></div>
+        <div class="fmeta"><span>蛋白质 ${item.p}</span><span>碳水 ${item.c}</span><span>脂肪 ${item.f}</span></div></div>
+        <span class="food-cal">${item.cal}</span></div>`;
+    });
+    html += `</div>`;
+  });
+  if(!hasAny) html = `<div class="meal-group"><div class="empty-tip">还没有记录，在豆包对话里说你吃了什么吧</div></div>`;
+  document.getElementById("mealList").innerHTML = html;
+}
+
+function renderAITip(t) {
+  let tip = "";
+  const pct = t.cal / DATA.targets.cal;
+  if(t.records.length === 0) tip = "先记录今天第一餐吧～直接在豆包对话里说你吃了什么。";
+  else if(t.p < DATA.targets.p * 0.3 && t.cal > 200) tip = "今天蛋白质还不够，午餐可以多补个鸡蛋或牛奶。";
+  else if(pct > 0.9) tip = "今天热量快到目标了，晚餐注意控制一下份量。";
+  else if(pct > 1) tip = "今天已经超过目标了，明天稍微注意下就好。";
+  else tip = "记录得不错，继续保持～";
+  document.getElementById("aiTipText").innerHTML = `<div class="ai-title">今日建议</div>${tip}`;
+}
+
+// ===== 趋势 =====
+function renderTrend() {
+  renderBodyData();
+  renderWeightTrend();
+}
+
+function renderBodyData() {
+  const wh = DATA.weightHistory;
+  if(wh.length === 0) return;
+  const latest = wh[wh.length-1];
+  document.getElementById("bodyDataDate").textContent = latest.date.slice(5).replace("-","/");
+
+  const items = [
+    {name:"体重", val:latest.weight.toFixed(1)+" kg", status:"", ref:"", warn:false},
+    {name:"基础代谢", val:latest.bmr+" kcal", status:"", ref:"", warn:false},
+    {name:"体脂率", val:latest.bodyFat+"%", status:"偏高", ref:"15-20%", warn:latest.bodyFat>20},
+    {name:"肌肉率", val:latest.muscle+"%", status:"偏低", ref:"40-50%", warn:latest.muscle<43},
+    {name:"内脏脂肪", val:latest.visceral, status:"临界", ref:"≤9", warn:latest.visceral>=9},
+    {name:"蛋白质率", val:latest.protein+"%", status:"偏低", ref:"15-20%", warn:latest.protein<15},
+  ];
+  document.getElementById("bodyDataGrid").innerHTML = items.map(it =>
+    `<div class="body-cell${it.warn?' warn':''}"><div class="bc-val">${it.val}</div><div class="bc-name">${it.name}</div>${it.status?`<div class="bc-ref"><span class="bc-status">${it.status}</span> · 参考${it.ref}</div>`:""}</div>`
+  ).join("");
+}
+
+function renderWeightTrend() {
+  const c = document.getElementById("weightTrendChart");
+  const ctx = c.getContext("2d");
+  const dpr = window.devicePixelRatio||1;
+  const w = c.parentElement.clientWidth - 32, h = 200;
+  c.width = w*dpr; c.height = h*dpr; c.style.width = w+"px"; c.style.height = h+"px";
+  ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
+
+  const wh = DATA.weightHistory;
+  if(wh.length === 0) {
+    ctx.fillStyle = "#bbb"; ctx.font = "13px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("暂无数据", w/2, h/2); return;
+  }
+
+  const padL=38, padR=15, padT=20, padB=25;
+  const cw = w-padL-padR, ch = h-padT-padB;
+
+  // 期望曲线：一年（365天）从起点线性降到目标
+  const startDate = new Date(wh[0].date);
+  const startW = wh[0].weight;
+  const targetW = DATA.goalWeight;
+  const totalDays = 365;
+  const planEnd = new Date(startDate.getTime() + totalDays*86400000);
+  // x轴窗口：最近30天
+  const now = new Date();
+  const chartEnd = now;
+  const chartStart = new Date(now.getTime() - 30*86400000);
+  const chartRange = chartEnd - chartStart;
+
+  const minW = targetW - 1, maxW = startW + 1;
+
+  // 网格
+  ctx.strokeStyle = "#f0eee9"; ctx.lineWidth = 1;
+  for(let i=0;i<=3;i++) {
+    const y = padT + ch*i/3;
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "right";
+    ctx.fillText((maxW-(maxW-minW)*i/3).toFixed(1), padL-5, y+3);
+  }
+
+  // 目标体重线
+  const ty = padT + ch - ((targetW-minW)/(maxW-minW))*ch;
+  ctx.strokeStyle = "#ccc"; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(padL,ty); ctx.lineTo(w-padR,ty); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "left";
+  ctx.fillText("目标 "+targetW, padL+2, ty-3);
+
+  // 蓝线：期望曲线（在30天窗口内的部分）
+  function expectedW(dt) {
+    const days = (dt - startDate) / 86400000;
+    return startW - (startW - targetW) * days / 365;
+  }
+  ctx.strokeStyle = "#6b9ec4"; ctx.lineWidth = 2; ctx.beginPath();
+  const ex = padL;
+  const ey = padT + ch - ((expectedW(chartStart)-minW)/(maxW-minW))*ch;
+  const ex2 = padL + cw;
+  const ey2 = padT + ch - ((expectedW(chartEnd)-minW)/(maxW-minW))*ch;
+  ctx.moveTo(ex, ey); ctx.lineTo(ex2, ey2); ctx.stroke();
+
+  // 红线：实际数据
+  ctx.strokeStyle = "#d4604e"; ctx.lineWidth = 2.5; ctx.beginPath();
+  let hasPoint = false;
+  wh.forEach((d,i) => {
+    const dt = new Date(d.date);
+    if(dt < chartStart) return;
+    const x = padL + cw * (dt - chartStart) / chartRange;
+    const y = padT + ch - ((d.weight-minW)/(maxW-minW))*ch;
+    if(!hasPoint) { ctx.moveTo(x,y); hasPoint = true; } else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // 实际数据点
+  ctx.fillStyle = "#d4604e";
+  wh.forEach((d,i) => {
+    const dt = new Date(d.date);
+    if(dt < chartStart) return;
+    const x = padL + cw * (dt - chartStart) / chartRange;
+    const y = padT + ch - ((d.weight-minW)/(maxW-minW))*ch;
+    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
+  });
+
+  // x轴标签：每5天
+  ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "center";
+  for(let day=0; day<=30; day+=5) {
+    const dt = new Date(chartStart.getTime() + day*86400000);
+    const x = padL + cw * day / 30;
+    ctx.fillText((dt.getMonth()+1)+"/"+dt.getDate(), x, h-8);
+  }
+
+  // 图例（左上角，避免和数据点重叠）
+  ctx.font = "11px sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#6b9ec4";
+  ctx.fillText("—— 目标", padL, padT-4);
+  ctx.fillStyle = "#d4604e";
+  ctx.fillText("—— 实际", padL+55, padT-4);
+}
+
+// ===== 日历 =====
+function renderCal() {
+  document.getElementById("calTitle").textContent = `${calYear}年${calMonth+1}月`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  let html = "";
+  for(let i=0; i<firstDay; i++) html += `<div class="cal-day other"></div>`;
+  for(let d=1; d<=daysInMonth; d++) {
+    const key = calYear+"-"+String(calMonth+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    const t = dayTotal(key);
+    const tk = todayKey();
+    let cls = "cal-day";
+    if(key === tk) cls += " today";
+    else if(t.cal > 0) {
+      if(t.cal > DATA.targets.cal*1.1) cls += " over";
+      else if(t.cal < DATA.targets.cal*0.8) cls += " under";
+    }
+    html += `<div class="${cls}"><span class="d-num">${d}</span>${t.cal>0?`<span class="d-cal">${t.cal}</span>`:""}</div>`;
+  }
+  document.getElementById("calDays").innerHTML = html;
+  renderWeekReport();
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if(calMonth < 0) { calMonth=11; calYear--; }
+  if(calMonth > 11) { calMonth=0; calYear++; }
+  renderCal();
+}
+
+function renderWeekReport() {
+  const now = new Date();
+  const day = now.getDay() || 7;
+  const monday = new Date(now); monday.setDate(now.getDate() - day + 1);
+  let totalCal=0, daysLogged=0, totalP=0, totalC=0, totalF=0;
+  let wStart = null, wEnd = null;
+  for(let i=0; i<7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate()+i);
+    const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const t = dayTotal(key);
+    if(t.cal > 0) { daysLogged++; totalCal += t.cal; totalP += t.p; totalC += t.c; totalF += t.f; }
+    const wh = DATA.weightHistory.find(w => w.date === key);
+    if(wh) { if(wStart===null) wStart = wh.weight; wEnd = wh.weight; }
+  }
+  const avg = daysLogged ? Math.round(totalCal/daysLogged) : 0;
+  const avgP = daysLogged ? Math.round(totalP/daysLogged) : 0;
+  const avgC = daysLogged ? Math.round(totalC/daysLogged) : 0;
+  const avgF = daysLogged ? Math.round(totalF/daysLogged) : 0;
+  let wRow = "";
+  if(wStart !== null && wEnd !== null) {
+    const diff = wEnd - wStart;
+    wRow = `<div class="report-row"><span>本周体重变化</span><span class="val">${diff>=0?"+":""}${diff.toFixed(2)} kg</span></div>`;
+  }
+  document.getElementById("weekReportContent").innerHTML = `
+    <div class="report-row"><span>日均摄入</span><span class="val">${daysLogged?avg+'<span class="sub">/'+DATA.targets.cal+' kcal</span>':'-'}</span></div>
+    <div class="report-row"><span>日均蛋白质</span><span class="val">${daysLogged?avgP+'<span class="sub">/'+DATA.targets.p+' g</span>':'-'}</span></div>
+    <div class="report-row"><span>日均碳水</span><span class="val">${daysLogged?avgC+'<span class="sub">/'+DATA.targets.c+' g</span>':'-'}</span></div>
+    <div class="report-row"><span>日均脂肪</span><span class="val">${daysLogged?avgF+'<span class="sub">/'+DATA.targets.f+' g</span>':'-'}</span></div>
+    ${wRow}`;
+}
+
+// ===== Tab切换 =====
+function switchTab(view) {
+  document.querySelectorAll(".tabbar .tab").forEach(t=>t.classList.remove("active"));
+  document.querySelector(`.tabbar .tab[data-view="${view}"]`).classList.add("active");
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+view).classList.add("active");
+  const titles = {today:"今日", trend:"趋势", cal:"日历"};
+  if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view];
+  if(view==="trend") renderTrend();
+  if(view==="cal") renderCal();
+  window.scrollTo(0,0);
+}
+
+// ===== 初始化 =====
+function init() {
+  const d = new Date();
+  calYear = d.getFullYear(); calMonth = d.getMonth();
+  renderToday();
+}
+init();
+</script>
+</body>
+</html>
