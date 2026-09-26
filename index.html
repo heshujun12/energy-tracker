@@ -132,6 +132,33 @@ body.editing .edit-bar { display:flex; }
 }
 .ai-card .ai-content { min-height: 40px; }
 
+/* 零食推荐卡片 */
+.snack-rec-card {
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.snack-rec-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 700; color: var(--green);
+  margin-bottom: 10px;
+}
+.snack-rec-item {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.snack-rec-item:last-child { margin-bottom: 0; }
+.sr-name { font-size: 13px; font-weight: 600; }
+.sr-amount { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.sr-right { text-align: right; flex-shrink: 0; }
+.sr-cal { font-size: 14px; font-weight: 700; color: var(--primary); }
+.sr-p { font-size: 11px; color: var(--green); margin-top: 1px; }
+.sr-empty { font-size: 13px; color: var(--text2); text-align: center; padding: 8px 0; }
+
 /* 热量环卡片 */
 .ring-card {
   background: var(--card); border-radius: var(--radius);
@@ -401,6 +428,17 @@ canvas { width:100% !important; display:block; }
     </div>
   </div>
 
+  <!-- 零食推荐 -->
+  <div class="module" data-mid="m-snack-rec" data-view="today">
+    <div class="snack-rec-card">
+      <div class="snack-rec-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>还能吃啥</span>
+      </div>
+      <div id="snackRecList"></div>
+    </div>
+  </div>
+
   <div class="module" data-mid="m-meals" data-view="today">
     <div id="mealList"></div>
   </div>
@@ -599,6 +637,7 @@ function renderToday() {
   document.getElementById("cBar").style.width = Math.min(100, t.c/DATA.targets.c*100)+"%";
   document.getElementById("fBar").style.width = Math.min(100, t.f/DATA.targets.f*100)+"%";
   renderAITip(t);
+  renderSnackRec(t);
 
   const mealOrder = ["早餐","午餐","晚餐","加餐"];
   let html = "", hasAny = false;
@@ -618,6 +657,75 @@ function renderToday() {
   });
   if(!hasAny) html = `<div class="meal-group"><div class="empty-tip">还没有记录，在豆包对话里说你吃了什么吧</div></div>`;
   document.getElementById("mealList").innerHTML = html;
+}
+
+// 已购零食库（每100g营养）
+const SNACKS = [
+  {name:"水煮牛腱肉", cal:150, p:30, c:2, f:3, unit:"g", portion:50},
+  {name:"风干鸡胸肉干", cal:320, p:56, c:15, f:4, unit:"g", portion:20},
+  {name:"鸡胸肉弹弹丸", cal:110, p:15, c:2, f:4, unit:"袋", portion:1},
+  {name:"鸡蛋干", cal:140, p:16, c:4, f:6, unit:"g", portion:50},
+  {name:"鸡胸肉肠", cal:110, p:12, c:3, f:5, unit:"根", portion:1},
+  {name:"鹌鹑蛋", cal:160, p:13, c:3, f:11, unit:"个", portion:4},
+  {name:"手撕素肉", cal:180, p:15, c:10, f:9, unit:"g", portion:30},
+  {name:"0蔗糖酸奶", cal:60, p:4, c:5, f:2.5, unit:"g", portion:150},
+  {name:"全麦脆", cal:370, p:12, c:65, f:5, unit:"g", portion:30},
+];
+
+function renderSnackRec(t) {
+  const remainCal = DATA.targets.cal - t.cal;
+  const remainP = DATA.targets.p - t.p;
+  const remainF = DATA.targets.f - t.f;
+  const remainC = DATA.targets.c - t.c;
+  const el = document.getElementById("snackRecList");
+
+  if(remainCal < 50) {
+    el.innerHTML = `<div class="sr-empty">今天热量够了，别再吃了</div>`;
+    return;
+  }
+
+  // 筛选：热量不超剩余，优先高蛋白低碳水低脂肪
+  const candidates = SNACKS.map(s => {
+    // 计算推荐分量（按热量上限）
+    const maxByCal = Math.floor(remainCal / (s.cal/100));
+    const portionG = s.unit === "g" ? maxByCal : (s.portion * (s.unit === "袋" ? 40 : 33));
+    const actualG = Math.min(portionG, 200);
+    const factor = actualG / 100;
+    return {
+      ...s,
+      recG: actualG,
+      recCal: Math.round(s.cal * factor),
+      recP: (s.p * factor).toFixed(1),
+      score: s.p / (s.f + 1) * (remainP > 0 ? 2 : 0.3)
+    };
+  }).filter(s => s.recCal > 0 && s.recCal <= remainCal);
+
+  // 按蛋白质补缺口优先级排序
+  candidates.sort((a,b) => {
+    // 蛋白质缺口大时，高蛋白优先
+    if(remainP > 20) return b.p - a.p;
+    // 否则按热量效率（补蛋白/热量比）
+    return (b.p/b.cal) - (a.p/a.cal);
+  });
+
+  const top = candidates.slice(0, 3);
+  if(top.length === 0) {
+    el.innerHTML = `<div class="sr-empty">剩余热量太少，只能喝水了</div>`;
+    return;
+  }
+
+  el.innerHTML = top.map(s => `
+    <div class="snack-rec-item">
+      <div>
+        <div class="sr-name">${s.name}</div>
+        <div class="sr-amount">约${s.recG}${s.unit}（${s.recCal}kcal）</div>
+      </div>
+      <div class="sr-right">
+        <div class="sr-cal">+${s.recCal} kcal</div>
+        <div class="sr-p">+${s.recP}g 蛋白</div>
+      </div>
+    </div>
+  `).join("");
 }
 
 let aiTips = [];
