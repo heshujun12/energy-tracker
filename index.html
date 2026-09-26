@@ -251,37 +251,56 @@ canvas { width:100% !important; display:block; }
 .cal-day.today { background:var(--primary-light); }
 .cal-day.under { background:var(--green-light); }
 .cal-day.over { background:#f8d6d0; }
-.cal-day.selected { outline:2px solid var(--primary); outline-offset:-2px; }
+.cal-day.selected { background:#ffe8d6; }
+.cal-day.selected .d-num { color:var(--primary); }
 
 /* 日历日详情 */
 .cal-detail {
-  background:var(--card); border-radius:var(--radius); padding:14px;
+  background:var(--card); border-radius:var(--radius); padding:16px;
   margin-top:10px; box-shadow:var(--shadow); display:none;
 }
 .cal-detail.show { display:block; }
 .cal-detail .cd-header {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;
 }
-.cal-detail .cd-title { font-size:14px; font-weight:700; }
-.cal-detail .cd-close { background:none; border:none; font-size:18px; color:var(--text3); cursor:pointer; }
-.cal-detail .cd-summary {
-  display:flex; gap:8px; margin-bottom:12px;
+.cal-detail .cd-title { font-size:15px; font-weight:700; }
+.cal-detail .cd-close { background:none; border:none; font-size:20px; color:var(--text3); cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.cal-detail .cd-close:active { background:var(--bg); }
+
+/* 详情汇总区 */
+.cd-summary {
+  background:linear-gradient(135deg,#fff7ed,#ffedd5); border-radius:14px; padding:14px; margin-bottom:14px;
 }
-.cal-detail .cd-sum-item {
-  flex:1; background:var(--bg); border-radius:8px; padding:8px; text-align:center;
-}
-.cal-detail .cd-sum-item .sv { font-size:15px; font-weight:700; }
-.cal-detail .cd-sum-item .sl { font-size:10px; color:var(--text3); margin-top:2px; }
-.cal-detail .cd-meal { margin-bottom:10px; }
-.cal-detail .cd-meal-title { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px; }
-.cal-detail .cd-food {
+.cd-cal-row { display:flex; align-items:baseline; gap:6px; margin-bottom:6px; }
+.cd-cal-now { font-size:28px; font-weight:800; color:#c2410c; }
+.cd-cal-target { font-size:13px; color:#9a3412; }
+.cd-cal-bar { height:6px; background:rgba(194,65,12,0.15); border-radius:3px; overflow:hidden; margin-bottom:4px; }
+.cd-cal-fill { height:100%; background:linear-gradient(90deg,#f97316,#ea580c); border-radius:3px; }
+.cd-cal-remain { font-size:11px; color:#9a3412; }
+.cd-macros { margin-top:12px; }
+.cd-macro-row { margin-bottom:8px; }
+.cd-macro-row:last-child { margin-bottom:0; }
+.cd-macro-label { display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; }
+.cd-macro-label .ml { font-weight:600; }
+.cd-macro-label .mv { color:var(--text2); }
+.cd-macro-bar { height:5px; background:var(--bg); border-radius:3px; overflow:hidden; }
+.cd-macro-fill { height:100%; border-radius:3px; }
+.cd-macro-fill.p { background:var(--primary); }
+.cd-macro-fill.c { background:var(--blue); }
+.cd-macro-fill.f { background:var(--yellow); }
+
+.cd-meal { margin-bottom:12px; }
+.cd-meal:last-child { margin-bottom:0; }
+.cd-meal-title { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px; display:flex; justify-content:space-between; }
+.cd-meal-title .mc { color:var(--primary); font-weight:700; }
+.cd-food {
   display:flex; justify-content:space-between; align-items:center;
-  padding:5px 0; font-size:12px; border-bottom:1px solid #f5f4f0;
+  padding:6px 0; font-size:12px; border-bottom:1px solid #f5f4f0;
 }
-.cal-detail .cd-food:last-child { border-bottom:none; }
-.cal-detail .cd-food .fname { color:var(--text); }
-.cal-detail .cd-food .fcal { font-weight:600; color:var(--primary); }
-.cal-detail .cd-empty { text-align:center; color:var(--text3); font-size:12px; padding:20px 0; }
+.cd-food:last-child { border-bottom:none; }
+.cd-food .fname { color:var(--text); }
+.cd-food .fcal { font-weight:600; color:var(--primary); }
+.cd-empty { text-align:center; color:var(--text3); font-size:13px; padding:24px 0; }
 .report-card { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
 .report-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-size:13px; border-bottom:1px solid #f5f4f0; }
 .report-row:last-child { border-bottom:none; }
@@ -896,6 +915,10 @@ function renderCal() {
 }
 
 function showCalDay(key) {
+  if(selectedCalDay === key) {
+    closeCalDetail();
+    return;
+  }
   selectedCalDay = key;
   renderCal();
   const t = dayTotal(key);
@@ -905,11 +928,32 @@ function showCalDay(key) {
   if(t.records.length === 0) {
     html = `<div class="cd-empty">当天无记录</div>`;
   } else {
+    const calPct = Math.min(100, t.cal/DATA.targets.cal*100);
+    const remain = DATA.targets.cal - t.cal;
+    const pPct = Math.min(100, t.p/DATA.targets.p*100);
+    const cPct = Math.min(100, t.c/DATA.targets.c*100);
+    const fPct = Math.min(100, t.f/DATA.targets.f*100);
     html = `<div class="cd-summary">
-      <div class="cd-sum-item"><div class="sv">${t.cal}</div><div class="sl">总热量 kcal</div></div>
-      <div class="cd-sum-item"><div class="sv">${Math.round(t.p)}</div><div class="sl">蛋白质 g</div></div>
-      <div class="cd-sum-item"><div class="sv">${Math.round(t.c)}</div><div class="sl">碳水 g</div></div>
-      <div class="cd-sum-item"><div class="sv">${Math.round(t.f)}</div><div class="sl">脂肪 g</div></div>
+      <div class="cd-cal-row">
+        <span class="cd-cal-now">${t.cal}</span>
+        <span class="cd-cal-target">/ ${DATA.targets.cal} kcal</span>
+      </div>
+      <div class="cd-cal-bar"><div class="cd-cal-fill" style="width:${calPct}%"></div></div>
+      <div class="cd-cal-remain">${remain>=0?'还可吃 '+Math.round(remain)+' kcal':'已超 '+Math.round(-remain)+' kcal'}</div>
+      <div class="cd-macros">
+        <div class="cd-macro-row">
+          <div class="cd-macro-label"><span class="ml">蛋白质</span><span class="mv">${Math.round(t.p)} / ${DATA.targets.p}g</span></div>
+          <div class="cd-macro-bar"><div class="cd-macro-fill p" style="width:${pPct}%"></div></div>
+        </div>
+        <div class="cd-macro-row">
+          <div class="cd-macro-label"><span class="ml">碳水</span><span class="mv">${Math.round(t.c)} / ${DATA.targets.c}g</span></div>
+          <div class="cd-macro-bar"><div class="cd-macro-fill c" style="width:${cPct}%"></div></div>
+        </div>
+        <div class="cd-macro-row">
+          <div class="cd-macro-label"><span class="ml">脂肪</span><span class="mv">${Math.round(t.f)} / ${DATA.targets.f}g</span></div>
+          <div class="cd-macro-bar"><div class="cd-macro-fill f" style="width:${fPct}%"></div></div>
+        </div>
+      </div>
     </div>`;
     const meals = {};
     t.records.forEach(r => {
@@ -920,7 +964,7 @@ function showCalDay(key) {
       if(meals[meal]) {
         const mealCal = meals[meal].reduce((s,r)=>s+r.cal,0);
         html += `<div class="cd-meal">
-          <div class="cd-meal-title">${meal} · ${mealCal} kcal</div>`;
+          <div class="cd-meal-title"><span>${meal}</span><span class="mc">${mealCal} kcal</span></div>`;
         meals[meal].forEach(r => {
           html += `<div class="cd-food"><span class="fname">${r.foodName} ${r.weight}g</span><span class="fcal">${r.cal} kcal</span></div>`;
         });
