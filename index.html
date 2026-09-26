@@ -264,6 +264,33 @@ canvas { width:100% !important; display:block; }
 .body-cell .bc-status { color:var(--red); font-weight:600; }
 .body-cell.warn { background:#fdf0ed; }
 .body-cell.warn .bc-val { color:var(--red); }
+
+/* ===== 运动页 ===== */
+.sport-week { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:8px; }
+.sport-day { text-align:center; padding:8px 2px; border-radius:10px; background:var(--bg); font-size:11px; }
+.sport-day .dow { font-weight:600; margin-bottom:4px; color:var(--text2); }
+.sport-day .type { font-size:10px; line-height:1.3; color:var(--text3); }
+.sport-day.active { background:#fff4e6; }
+.sport-day.active .dow { color:var(--primary); }
+.sport-day.rest { opacity:0.5; }
+.sport-section { margin-bottom:16px; }
+.sport-section h4 { font-size:14px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.sport-section h4 .tag { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:500; }
+.tag-visceral { background:#fee2e2; color:#dc2626; }
+.tag-jaw { background:#dbeafe; color:#2563eb; }
+.tag-muscle { background:#dcfce7; color:#16a34a; }
+.exercise-item { background:var(--bg); border-radius:12px; padding:10px 12px; margin-bottom:6px; }
+.exercise-item .ex-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.exercise-item .ex-desc { font-size:11px; color:var(--text2); line-height:1.4; }
+.exercise-item .ex-meta { font-size:10px; color:var(--text3); margin-top:4px; }
+.hiit-box { background:linear-gradient(135deg,#fff7ed,#fed7aa); border-radius:12px; padding:12px; margin-bottom:8px; }
+.hiit-box .hiit-title { font-size:13px; font-weight:700; color:#c2410c; margin-bottom:6px; }
+.hiit-box .hiit-step { font-size:11px; color:#7c2d12; line-height:1.5; margin-bottom:2px; }
+.daily-habit { display:flex; align-items:flex-start; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
+.daily-habit:last-child { border-bottom:none; }
+.daily-habit .habit-icon { width:24px; height:24px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.daily-habit .habit-text { font-size:12px; line-height:1.4; }
+.daily-habit .habit-text strong { font-weight:600; }
 </style>
 </head>
 <body>
@@ -359,6 +386,148 @@ canvas { width:100% !important; display:block; }
   </div>
 </div>
 
+<!-- ===== 运动 ===== -->
+<div class="view" id="view-sport">
+  <div class="module" data-mid="m-sport-week" data-view="sport">
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;">本周运动计划</h3>
+      <div class="sport-week">
+        <div class="sport-day active"><div class="dow">一</div><div class="type">抗阻<br>+颈部</div></div>
+        <div class="sport-day"><div class="dow">二</div><div class="type">HIIT<br>+颈部</div></div>
+        <div class="sport-day rest"><div class="dow">三</div><div class="type">休息<br>散步</div></div>
+        <div class="sport-day"><div class="dow">四</div><div class="type">抗阻<br>+颈部</div></div>
+        <div class="sport-day"><div class="dow">五</div><div class="type">HIIT<br>+颈部</div></div>
+        <div class="sport-day"><div class="dow">六</div><div class="type">有氧<br>40min</div></div>
+        <div class="sport-day rest"><div class="dow">日</div><div class="type">休息</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5;">
+        目标：减内脏脂肪 + 改善双下巴 + 增加肌肉量。颈部训练每天做，5分钟。
+      </div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-hiit" data-view="sport">
+    <div class="card">
+      <div class="sport-section">
+        <h4>🔥 HIIT 减内脏脂肪 <span class="tag tag-visceral">针对性</span></h4>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
+          研究显示HIIT比中低强度有氧多减28.5%内脏脂肪，跑步HIIT效果优于骑车。每周2~3次，25分钟。
+        </div>
+        <div class="hiit-box">
+          <div class="hiit-title">入门方案（25分钟）</div>
+          <div class="hiit-step">① 热身：快走/慢跑 5分钟</div>
+          <div class="hiit-step">② 8组循环：30秒全力（冲刺跑/跳绳/高抬腿）+ 60秒慢走恢复</div>
+          <div class="hiit-step">③ 冷身：拉伸 5分钟</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.5;">
+          注意：新手从4组开始，逐步加到8组。膝盖不好用骑车/游泳替代冲刺跑。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-neck" data-view="sport">
+    <div class="card">
+      <div class="sport-section">
+        <h4>👄 颈部/下颌训练 <span class="tag tag-jaw">改善双下巴</span></h4>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
+          双下巴=脂肪堆积+低头族体态+颈阔肌松弛。全身减脂是根本（体脂降到15%以下明显改善），以下训练改善线条和体态。每天5分钟。
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">1. 收下巴（Chin Tuck）</div>
+          <div class="ex-desc">坐直，头水平向后收，做出"双下巴"，感觉后颈拉伸。</div>
+          <div class="ex-meta">保持5秒 × 15次 · 改善头前伸体态</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">2. 仰头拉伸</div>
+          <div class="ex-desc">抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。</div>
+          <div class="ex-meta">保持15秒 × 5次 · 锻炼颈阔肌</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">3. 舌头抵上颚</div>
+          <div class="ex-desc">舌头顶住上颚，张嘴向下拉形成对抗力。</div>
+          <div class="ex-meta">保持15秒 × 5次 · 激活下颌肌肉</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">4. 颈部转动</div>
+          <div class="ex-desc">缓慢顺时针转一圈，再逆时针转一圈，动作要慢。</div>
+          <div class="ex-meta">各方向 × 5圈 · 放松胸锁乳突肌</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">
+          日常：看手机举到视线水平，减少低头。每低头30分钟做一次收下巴。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-resistance" data-view="sport">
+    <div class="card">
+      <div class="sport-section">
+        <h4>💪 抗阻训练 <span class="tag tag-muscle">增肌保代谢</span></h4>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
+          你肌肉率41.2%不足，抗阻训练增加肌肉、提高基础代谢。每周2次，全身训练，40分钟。
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">1. 哑铃深蹲</div>
+          <div class="ex-desc">双手持哑铃放肩上，下蹲到大腿平行地面，站起。</div>
+          <div class="ex-meta">3组 × 12次 · 练腿+核心</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">2. 俯卧撑（跪姿也行）</div>
+          <div class="ex-desc">身体一条线，下降到胸接近地面，推起。</div>
+          <div class="ex-meta">3组 × 10~12次 · 练胸肩三头</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">3. 哑铃划船</div>
+          <div class="ex-desc">一手扶凳，另一手拉哑铃到腰侧，感受背部收缩。</div>
+          <div class="ex-meta">3组 × 12次/侧 · 练背</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">4. 哑铃推举</div>
+          <div class="ex-desc">坐姿，哑铃从肩推到头顶，缓慢放下。</div>
+          <div class="ex-meta">3组 × 12次 · 练肩</div>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-name">5. 臀桥</div>
+          <div class="ex-desc">仰卧屈膝，臀部发力顶起，顶端夹紧2秒。</div>
+          <div class="ex-meta">3组 × 15次 · 练臀后链</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">
+          原则：能轻松完成12次就加重量。运动后30分钟内补充蛋白质（牛奶+鸡蛋）。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" data-mid="m-daily" data-view="sport">
+    <div class="card">
+      <div class="sport-section">
+        <h4>📋 日常习惯</h4>
+        <div class="daily-habit">
+          <div class="habit-icon">🚶</div>
+          <div class="habit-text"><strong>每天8000~10000步</strong>，饭后散步15分钟帮助降血糖</div>
+        </div>
+        <div class="daily-habit">
+          <div class="habit-icon">💧</div>
+          <div class="habit-text"><strong>喝水2000~2500ml</strong>，晨起一杯、餐前半小时一杯</div>
+        </div>
+        <div class="daily-habit">
+          <div class="habit-icon">😴</div>
+          <div class="habit-text"><strong>23点前睡，7~8小时</strong>，睡眠不足会增加饥饿感</div>
+        </div>
+        <div class="daily-habit">
+          <div class="habit-icon">🪑</div>
+          <div class="habit-text"><strong>每坐1小时起身5分钟</strong>，久坐抵消运动效果</div>
+        </div>
+        <div class="daily-habit">
+          <div class="habit-icon">📱</div>
+          <div class="habit-text"><strong>手机举到视线水平</strong>，减少低头，预防双下巴</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <!-- 底部导航 -->
@@ -374,6 +543,10 @@ canvas { width:100% !important; display:block; }
   <div class="tab" data-view="cal" onclick="switchTab('cal')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
     <span>日历</span>
+  </div>
+  <div class="tab" data-view="sport" onclick="switchTab('sport')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5 17.5 17.5"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+    <span>运动</span>
   </div>
 </div>
 
@@ -813,7 +986,7 @@ function switchTab(view) {
   document.querySelector(`.tabbar .tab[data-view="${view}"]`).classList.add("active");
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
-  const titles = {today:"今日", trend:"趋势", cal:"日历"};
+  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动"};
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view];
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
