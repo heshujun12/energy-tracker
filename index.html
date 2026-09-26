@@ -266,31 +266,69 @@ canvas { width:100% !important; display:block; }
 .body-cell.warn .bc-val { color:var(--red); }
 
 /* ===== 运动页 ===== */
-.sport-week { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:8px; }
-.sport-day { text-align:center; padding:8px 2px; border-radius:10px; background:var(--bg); font-size:11px; }
-.sport-day .dow { font-weight:600; margin-bottom:4px; color:var(--text2); }
-.sport-day .type { font-size:10px; line-height:1.3; color:var(--text3); }
-.sport-day.active { background:#fff4e6; }
-.sport-day.active .dow { color:var(--primary); }
-.sport-day.rest { opacity:0.5; }
+.sport-day-selector { display:flex; gap:6px; margin-bottom:14px; }
+.sport-day-btn {
+  flex:1; text-align:center; padding:8px 2px; border-radius:10px;
+  background:var(--bg); cursor:pointer; transition:all .2s;
+}
+.sport-day-btn .dow { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:3px; }
+.sport-day-btn .dtype { font-size:9px; color:var(--text3); line-height:1.2; }
+.sport-day-btn.active { background:var(--primary); }
+.sport-day-btn.active .dow, .sport-day-btn.active .dtype { color:#fff; }
+.sport-day-btn.rest .dow { color:var(--text3); }
+.sport-day-btn.done::after {
+  content:"✓"; display:block; font-size:10px; color:var(--green); font-weight:700; margin-top:2px;
+}
+.sport-day-btn.active.done::after { color:#fff; }
+
+.sport-day-title {
+  font-size:14px; font-weight:700; margin-bottom:10px;
+  display:flex; align-items:center; gap:6px;
+}
 .sport-section { margin-bottom:16px; }
-.sport-section h4 { font-size:14px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.sport-section:last-child { margin-bottom:0; }
+.sport-section h4 {
+  font-size:13px; font-weight:700; margin-bottom:8px;
+  display:flex; align-items:center; gap:6px;
+}
 .sport-section h4 .tag { font-size:10px; padding:2px 6px; border-radius:4px; font-weight:500; }
 .tag-visceral { background:#fee2e2; color:#dc2626; }
 .tag-jaw { background:#dbeafe; color:#2563eb; }
 .tag-muscle { background:#dcfce7; color:#16a34a; }
-.exercise-item { background:var(--bg); border-radius:12px; padding:10px 12px; margin-bottom:6px; }
-.exercise-item .ex-name { font-size:13px; font-weight:600; margin-bottom:2px; }
-.exercise-item .ex-desc { font-size:11px; color:var(--text2); line-height:1.4; }
-.exercise-item .ex-meta { font-size:10px; color:var(--text3); margin-top:4px; }
-.hiit-box { background:linear-gradient(135deg,#fff7ed,#fed7aa); border-radius:12px; padding:12px; margin-bottom:8px; }
-.hiit-box .hiit-title { font-size:13px; font-weight:700; color:#c2410c; margin-bottom:6px; }
-.hiit-box .hiit-step { font-size:11px; color:#7c2d12; line-height:1.5; margin-bottom:2px; }
-.daily-habit { display:flex; align-items:flex-start; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
-.daily-habit:last-child { border-bottom:none; }
-.daily-habit .habit-icon { width:24px; height:24px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
-.daily-habit .habit-text { font-size:12px; line-height:1.4; }
-.daily-habit .habit-text strong { font-weight:600; }
+.tag-cardio { background:#fef3c7; color:#d97706; }
+
+.check-item {
+  display:flex; align-items:flex-start; gap:10px; padding:10px 12px;
+  background:var(--bg); border-radius:10px; margin-bottom:6px; cursor:pointer;
+  transition:all .2s;
+}
+.check-item.done { opacity:0.55; }
+.check-item.done .ex-name { text-decoration:line-through; }
+.check-box {
+  width:20px; height:20px; border-radius:6px; border:2px solid #d4d4d4;
+  flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center;
+  transition:all .2s; font-size:12px; color:#fff;
+}
+.check-item.done .check-box { background:var(--green); border-color:var(--green); }
+.check-item .ex-content { flex:1; }
+.check-item .ex-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.check-item .ex-desc { font-size:11px; color:var(--text2); line-height:1.4; }
+.check-item .ex-meta { font-size:10px; color:var(--text3); margin-top:3px; }
+
+.hiit-box { background:linear-gradient(135deg,#fff7ed,#fed7aa); border-radius:10px; padding:10px 12px; margin-bottom:6px; }
+.hiit-box .hiit-title { font-size:12px; font-weight:700; color:#c2410c; margin-bottom:4px; }
+.hiit-box .hiit-step { font-size:11px; color:#7c2d12; line-height:1.5; }
+
+.rest-box {
+  text-align:center; padding:30px 20px; color:var(--text3);
+}
+.rest-box .rest-icon { font-size:32px; margin-bottom:8px; }
+.rest-box .rest-text { font-size:13px; line-height:1.6; }
+
+.sport-tip {
+  font-size:11px; color:var(--text3); line-height:1.5; margin-top:8px;
+  padding:8px 10px; background:var(--bg); border-radius:8px;
+}
 </style>
 </head>
 <body>
@@ -388,142 +426,14 @@ canvas { width:100% !important; display:block; }
 
 <!-- ===== 运动 ===== -->
 <div class="view" id="view-sport">
-  <div class="module" data-mid="m-sport-week" data-view="sport">
+  <div class="module" data-mid="m-sport" data-view="sport">
     <div class="card">
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;">本周运动计划</h3>
-      <div class="sport-week">
-        <div class="sport-day active"><div class="dow">一</div><div class="type">抗阻<br>+颈部</div></div>
-        <div class="sport-day"><div class="dow">二</div><div class="type">HIIT<br>+颈部</div></div>
-        <div class="sport-day rest"><div class="dow">三</div><div class="type">休息<br>散步</div></div>
-        <div class="sport-day"><div class="dow">四</div><div class="type">抗阻<br>+颈部</div></div>
-        <div class="sport-day"><div class="dow">五</div><div class="type">HIIT<br>+颈部</div></div>
-        <div class="sport-day"><div class="dow">六</div><div class="type">有氧<br>40min</div></div>
-        <div class="sport-day rest"><div class="dow">日</div><div class="type">休息</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="font-size:15px;font-weight:700;">本周运动计划</h3>
+        <div id="sportProgress" style="font-size:12px;color:var(--text2);">0/0 已完成</div>
       </div>
-      <div style="font-size:11px;color:var(--text3);line-height:1.5;">
-        目标：减内脏脂肪 + 改善双下巴 + 增加肌肉量。颈部训练每天做，5分钟。
-      </div>
-    </div>
-  </div>
-
-  <div class="module" data-mid="m-hiit" data-view="sport">
-    <div class="card">
-      <div class="sport-section">
-        <h4>🔥 HIIT 减内脏脂肪 <span class="tag tag-visceral">针对性</span></h4>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
-          研究显示HIIT比中低强度有氧多减28.5%内脏脂肪，跑步HIIT效果优于骑车。每周2~3次，25分钟。
-        </div>
-        <div class="hiit-box">
-          <div class="hiit-title">入门方案（25分钟）</div>
-          <div class="hiit-step">① 热身：快走/慢跑 5分钟</div>
-          <div class="hiit-step">② 8组循环：30秒全力（冲刺跑/跳绳/高抬腿）+ 60秒慢走恢复</div>
-          <div class="hiit-step">③ 冷身：拉伸 5分钟</div>
-        </div>
-        <div style="font-size:11px;color:var(--text3);line-height:1.5;">
-          注意：新手从4组开始，逐步加到8组。膝盖不好用骑车/游泳替代冲刺跑。
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="module" data-mid="m-neck" data-view="sport">
-    <div class="card">
-      <div class="sport-section">
-        <h4>👄 颈部/下颌训练 <span class="tag tag-jaw">改善双下巴</span></h4>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
-          双下巴=脂肪堆积+低头族体态+颈阔肌松弛。全身减脂是根本（体脂降到15%以下明显改善），以下训练改善线条和体态。每天5分钟。
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">1. 收下巴（Chin Tuck）</div>
-          <div class="ex-desc">坐直，头水平向后收，做出"双下巴"，感觉后颈拉伸。</div>
-          <div class="ex-meta">保持5秒 × 15次 · 改善头前伸体态</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">2. 仰头拉伸</div>
-          <div class="ex-desc">抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。</div>
-          <div class="ex-meta">保持15秒 × 5次 · 锻炼颈阔肌</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">3. 舌头抵上颚</div>
-          <div class="ex-desc">舌头顶住上颚，张嘴向下拉形成对抗力。</div>
-          <div class="ex-meta">保持15秒 × 5次 · 激活下颌肌肉</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">4. 颈部转动</div>
-          <div class="ex-desc">缓慢顺时针转一圈，再逆时针转一圈，动作要慢。</div>
-          <div class="ex-meta">各方向 × 5圈 · 放松胸锁乳突肌</div>
-        </div>
-        <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">
-          日常：看手机举到视线水平，减少低头。每低头30分钟做一次收下巴。
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="module" data-mid="m-resistance" data-view="sport">
-    <div class="card">
-      <div class="sport-section">
-        <h4>💪 抗阻训练 <span class="tag tag-muscle">增肌保代谢</span></h4>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">
-          你肌肉率41.2%不足，抗阻训练增加肌肉、提高基础代谢。每周2次，全身训练，40分钟。
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">1. 哑铃深蹲</div>
-          <div class="ex-desc">双手持哑铃放肩上，下蹲到大腿平行地面，站起。</div>
-          <div class="ex-meta">3组 × 12次 · 练腿+核心</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">2. 俯卧撑（跪姿也行）</div>
-          <div class="ex-desc">身体一条线，下降到胸接近地面，推起。</div>
-          <div class="ex-meta">3组 × 10~12次 · 练胸肩三头</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">3. 哑铃划船</div>
-          <div class="ex-desc">一手扶凳，另一手拉哑铃到腰侧，感受背部收缩。</div>
-          <div class="ex-meta">3组 × 12次/侧 · 练背</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">4. 哑铃推举</div>
-          <div class="ex-desc">坐姿，哑铃从肩推到头顶，缓慢放下。</div>
-          <div class="ex-meta">3组 × 12次 · 练肩</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-name">5. 臀桥</div>
-          <div class="ex-desc">仰卧屈膝，臀部发力顶起，顶端夹紧2秒。</div>
-          <div class="ex-meta">3组 × 15次 · 练臀后链</div>
-        </div>
-        <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">
-          原则：能轻松完成12次就加重量。运动后30分钟内补充蛋白质（牛奶+鸡蛋）。
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="module" data-mid="m-daily" data-view="sport">
-    <div class="card">
-      <div class="sport-section">
-        <h4>📋 日常习惯</h4>
-        <div class="daily-habit">
-          <div class="habit-icon">🚶</div>
-          <div class="habit-text"><strong>每天8000~10000步</strong>，饭后散步15分钟帮助降血糖</div>
-        </div>
-        <div class="daily-habit">
-          <div class="habit-icon">💧</div>
-          <div class="habit-text"><strong>喝水2000~2500ml</strong>，晨起一杯、餐前半小时一杯</div>
-        </div>
-        <div class="daily-habit">
-          <div class="habit-icon">😴</div>
-          <div class="habit-text"><strong>23点前睡，7~8小时</strong>，睡眠不足会增加饥饿感</div>
-        </div>
-        <div class="daily-habit">
-          <div class="habit-icon">🪑</div>
-          <div class="habit-text"><strong>每坐1小时起身5分钟</strong>，久坐抵消运动效果</div>
-        </div>
-        <div class="daily-habit">
-          <div class="habit-icon">📱</div>
-          <div class="habit-text"><strong>手机举到视线水平</strong>，减少低头，预防双下巴</div>
-        </div>
-      </div>
+      <div class="sport-day-selector" id="sportDaySelector"></div>
+      <div id="sportDayContent"></div>
     </div>
   </div>
 </div>
@@ -990,14 +900,185 @@ function switchTab(view) {
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view];
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
+  if(view==="sport") renderSportDay();
   window.scrollTo(0,0);
+}
+
+// ===== 运动计划 =====
+const SPORT_PLAN = {
+  1: {
+    title: "抗阻训练 + 颈部训练",
+    sections: [
+      {name:"抗阻训练", tag:"增肌保代谢", tagClass:"tag-muscle",
+       tip:"能轻松完成12次就加重量。运动后30分钟内补充蛋白质。",
+       items:[
+         {id:"r1", name:"哑铃深蹲", desc:"双手持哑铃放肩上，下蹲到大腿平行地面，站起。", meta:"3组 × 12次 · 练腿+核心"},
+         {id:"r2", name:"俯卧撑（跪姿也行）", desc:"身体一条线，下降到胸接近地面，推起。", meta:"3组 × 10~12次 · 练胸肩三头"},
+         {id:"r3", name:"哑铃划船", desc:"一手扶凳，另一手拉哑铃到腰侧，感受背部收缩。", meta:"3组 × 12次/侧 · 练背"},
+         {id:"r4", name:"哑铃推举", desc:"坐姿，哑铃从肩推到头顶，缓慢放下。", meta:"3组 × 12次 · 练肩"},
+         {id:"r5", name:"臀桥", desc:"仰卧屈膝，臀部发力顶起，顶端夹紧2秒。", meta:"3组 × 15次 · 练臀后链"},
+       ]},
+      {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
+       tip:"日常看手机举到视线水平，每低头30分钟做一次收下巴。",
+       items:[
+         {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
+         {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
+         {id:"n3", name:"舌头抵上颚", desc:"舌头顶住上颚，张嘴向下拉形成对抗力。", meta:"保持15秒 × 5次"},
+         {id:"n4", name:"颈部转动", desc:"缓慢顺时针转一圈，再逆时针转一圈，动作要慢。", meta:"各方向 × 5圈"},
+       ]}
+    ]
+  },
+  2: {
+    title: "HIIT + 颈部训练",
+    sections: [
+      {name:"HIIT 减内脏脂肪", tag:"针对性", tagClass:"tag-visceral",
+       tip:"HIIT比中低强度有氧多减28.5%内脏脂肪。新手从4组开始，逐步加到8组。",
+       items:[
+         {id:"h1", name:"热身", desc:"快走/慢跑，身体微微出汗。", meta:"5分钟"},
+         {id:"h2", name:"HIIT循环", desc:"30秒全力（冲刺跑/跳绳/高抬腿）+ 60秒慢走恢复，重复8组。", meta:"8组 × 1.5分钟"},
+         {id:"h3", name:"冷身拉伸", desc:"拉伸大腿、小腿、臀部，深呼吸放松。", meta:"5分钟"},
+       ]},
+      {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
+       tip:"每天5分钟，坚持才有效果。",
+       items:[
+         {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
+         {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
+         {id:"n3", name:"舌头抵上颚", desc:"舌头顶住上颚，张嘴向下拉形成对抗力。", meta:"保持15秒 × 5次"},
+         {id:"n4", name:"颈部转动", desc:"缓慢顺时针转一圈，再逆时针转一圈，动作要慢。", meta:"各方向 × 5圈"},
+       ]}
+    ]
+  },
+  3: { title:"休息日", rest:true, restText:"今天休息，让肌肉恢复。可以散步20~30分钟，保持活动量。" },
+  4: { title:"抗阻训练 + 颈部训练", sections:null }, // 复用周一
+  5: { title:"HIIT + 颈部训练", sections:null }, // 复用周二
+  6: {
+    title: "有氧运动",
+    sections: [
+      {name:"有氧训练", tag:"脂肪氧化", tagClass:"tag-cardio",
+       tip:"中等强度：能说话但喘。可以快走、慢跑、骑车、游泳。",
+       items:[
+         {id:"c1", name:"中等强度有氧", desc:"快走/慢跑/骑车/游泳，保持心率在最大心率60~70%。", meta:"40分钟"},
+         {id:"c2", name:"拉伸放松", desc:"运动后拉伸主要肌群，每个动作保持20~30秒。", meta:"10分钟"},
+       ]}
+    ]
+  },
+  0: { title:"休息日", rest:true, restText:"今天完全休息。好好睡觉，7~8小时，明天开始新的一周。" }
+};
+
+let currentSportDay = 1;
+
+function getWeekKey() {
+  const now = new Date();
+  const onejan = new Date(now.getFullYear(),0,1);
+  const week = Math.ceil((((now - onejan)/86400000) + onejan.getDay()+1)/7);
+  return now.getFullYear()+"-W"+week;
+}
+
+function getCheckinData() {
+  try {
+    return JSON.parse(localStorage.getItem("sport_checkin") || "{}");
+  } catch(e) { return {}; }
+}
+function saveCheckinData(data) {
+  localStorage.setItem("sport_checkin", JSON.stringify(data));
+}
+function getDayCheckins(day) {
+  const all = getCheckinData();
+  const key = getWeekKey()+"-"+day;
+  return all[key] || [];
+}
+function toggleSportCheckin(itemId) {
+  const all = getCheckinData();
+  const key = getWeekKey()+"-"+currentSportDay;
+  if(!all[key]) all[key] = [];
+  const idx = all[key].indexOf(itemId);
+  if(idx >= 0) all[key].splice(idx,1);
+  else all[key].push(itemId);
+  saveCheckinData(all);
+  renderSportDay();
+}
+
+function getDayPlan(day) {
+  const plan = SPORT_PLAN[day];
+  if(day === 4) return {...SPORT_PLAN[1], title:plan.title};
+  if(day === 5) return {...SPORT_PLAN[2], title:plan.title};
+  return plan;
+}
+
+function getDayTotalItems(day) {
+  const plan = getDayPlan(day);
+  if(plan.rest) return 0;
+  let total = 0;
+  plan.sections.forEach(s => total += s.items.length);
+  return total;
+}
+
+function renderSportDaySelector() {
+  const days = [{d:1,l:"一"},{d:2,l:"二"},{d:3,l:"三"},{d:4,l:"四"},{d:5,l:"五"},{d:6,l:"六"},{d:0,l:"日"}];
+  const types = {1:"抗阻",2:"HIIT",3:"休息",4:"抗阻",5:"HIIT",6:"有氧",0:"休息"};
+  let html = "";
+  days.forEach(d => {
+    const done = getDayCheckins(d.d).length;
+    const total = getDayTotalItems(d.d);
+    const isDone = total > 0 && done >= total;
+    const isRest = d.d === 3 || d.d === 0;
+    html += `<div class="sport-day-btn ${currentSportDay===d.d?'active':''} ${isRest?'rest':''} ${isDone?'done':''}" onclick="selectSportDay(${d.d})">
+      <div class="dow">${d.l}</div>
+      <div class="dtype">${types[d.d]}</div>
+    </div>`;
+  });
+  document.getElementById("sportDaySelector").innerHTML = html;
+}
+
+function selectSportDay(day) {
+  currentSportDay = day;
+  renderSportDay();
+}
+
+function renderSportDay() {
+  renderSportDaySelector();
+  const plan = getDayPlan(currentSportDay);
+  const checkins = getDayCheckins(currentSportDay);
+  const total = getDayTotalItems(currentSportDay);
+  document.getElementById("sportProgress").textContent = total>0 ? `${checkins.length}/${total} 已完成` : "休息日";
+
+  let html = `<div class="sport-day-title">${plan.title}</div>`;
+
+  if(plan.rest) {
+    html += `<div class="rest-box">
+      <div class="rest-icon">😌</div>
+      <div class="rest-text">${plan.restText}</div>
+    </div>`;
+  } else {
+    plan.sections.forEach(sec => {
+      html += `<div class="sport-section">
+        <h4>${sec.name} <span class="tag ${sec.tagClass}">${sec.tag}</span></h4>`;
+      sec.items.forEach(item => {
+        const done = checkins.includes(item.id);
+        html += `<div class="check-item ${done?'done':''}" onclick="toggleSportCheckin('${item.id}')">
+          <div class="check-box">${done?'✓':''}</div>
+          <div class="ex-content">
+            <div class="ex-name">${item.name}</div>
+            <div class="ex-desc">${item.desc}</div>
+            <div class="ex-meta">${item.meta}</div>
+          </div>
+        </div>`;
+      });
+      if(sec.tip) html += `<div class="sport-tip">💡 ${sec.tip}</div>`;
+      html += `</div>`;
+    });
+  }
+
+  document.getElementById("sportDayContent").innerHTML = html;
 }
 
 // ===== 初始化 =====
 function init() {
   const d = new Date();
   calYear = d.getFullYear(); calMonth = d.getMonth();
+  currentSportDay = d.getDay(); // 0=周日
   renderToday();
+  renderSportDay();
 }
 init();
 </script>
