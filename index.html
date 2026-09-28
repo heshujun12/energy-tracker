@@ -516,6 +516,13 @@ canvas { width:100% !important; display:block; }
 
 <!-- ===== 运动 ===== -->
 <div class="view" id="view-sport">
+  <div class="card" id="sportEnergyCard" style="margin-bottom:12px;background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:15px;font-weight:700;">今日能量</h3>
+      <span id="sportEnergyDate" style="font-size:12px;color:var(--text3);"></span>
+    </div>
+    <div id="sportEnergyBody"></div>
+  </div>
   <div class="module" data-mid="m-sport" data-view="sport">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -645,7 +652,7 @@ const DATA = {
         {time:"21:00", meal:"加餐", foodName:"光合力量风干鸡肉条(2根共30g)", weight:30, cal:94, p:15.8, c:5.0, f:1.0},
         {time:"23:00", meal:"加餐", foodName:"腰果(2颗)", weight:3, cal:17, p:0.6, c:0.9, f:1.4},
       ],
-      water: 0, exercise: 330, weight: 81.01
+      water: 0, exercise: 330, steps: 3085, workoutMin: 2, activityCount: 10, weight: 81.01
     },
     "2026-09-25": {
       records: [
@@ -692,14 +699,14 @@ function todayKey() {
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 function getDay(key) {
-  if(!DATA.days[key]) DATA.days[key] = {records:[], water:0, exercise:0, weight:null};
+  if(!DATA.days[key]) DATA.days[key] = {records:[], water:0, exercise:0, steps:0, workoutMin:0, activityCount:0, weight:null};
   return DATA.days[key];
 }
 function dayTotal(key) {
   const d = getDay(key);
   let cal=0,p=0,c=0,f=0;
   d.records.forEach(r => { cal+=r.cal; p+=r.p; c+=r.c; f+=r.f; });
-  return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), records:d.records, water:d.water, exercise:d.exercise, weight:d.weight};
+  return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), records:d.records, water:d.water, exercise:d.exercise, steps:d.steps||0, workoutMin:d.workoutMin||0, activityCount:d.activityCount||0, weight:d.weight};
 }
 
 // ===== 今日 =====
@@ -1399,10 +1406,62 @@ function switchTab(view) {
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view]||"";
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
-  if(view==="sport") renderSportDay();
+  if(view==="sport") { renderSportEnergy(); renderSportDay(); }
   if(view==="recipe") renderRecipeList();
   if(view==="snacks") renderSnacks();
   window.scrollTo(0,0);
+}
+
+// ===== 今日能量（运动消耗 + 能量缺口） =====
+function getLatestBmr() {
+  const tk = todayKey();
+  let bmr = 0;
+  DATA.weightHistory.forEach(w => {
+    if(w.date <= tk) bmr = w.bmr;
+  });
+  return bmr;
+}
+function renderSportEnergy() {
+  const el = document.getElementById("sportEnergyCard");
+  if(!el) return;
+  const body = document.getElementById("sportEnergyBody");
+  const dateEl = document.getElementById("sportEnergyDate");
+  const tk = todayKey();
+  const t = dayTotal(tk);
+  const bmr = getLatestBmr();
+  const exercise = t.exercise || 0;
+  const total = bmr + exercise;
+  const intake = t.cal || 0;
+  const gap = total - intake;
+  const gapAbs = Math.abs(gap);
+  const isDeficit = gap >= 0;
+  const fatEst = Math.round(gapAbs / 7700 * 1000); // 按1kg脂肪≈7700kcal估算
+  const d = new Date();
+  const week = "日一二三四五六"[d.getDay()];
+  dateEl.textContent = `${d.getMonth()+1}月${d.getDate()}日 周${week}`;
+
+  let html = `
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <div style="flex:1;background:var(--primary-light);border-radius:12px;padding:12px 10px;text-align:center;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">今日运动消耗</div>
+        <div style="font-size:26px;font-weight:800;color:var(--primary);line-height:1.1;">${exercise}<span style="font-size:12px;font-weight:400;color:var(--text3);"> kcal</span></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;">步数 ${t.steps} · 锻炼 ${t.workoutMin}min · 活动 ${t.activityCount}次</div>
+      </div>
+      <div style="flex:1;background:${isDeficit?'var(--green-light)':'#fef2f2'};border-radius:12px;padding:12px 10px;text-align:center;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">今日能量缺口</div>
+        <div style="font-size:26px;font-weight:800;color:${isDeficit?'var(--green)':'#dc2626'};line-height:1.1;">${gap>0?'+':''}${gapAbs}<span style="font-size:12px;font-weight:400;color:var(--text3);"> kcal</span></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;">${isDeficit?'约减脂'+fatEst+'g':'热量盈余'+fatEst+'g'}</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.7;">
+      总消耗 ${total} = 基础代谢 ${bmr} + 运动 ${exercise} ｜ 已摄入 ${intake}
+    </div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.6;margin-top:6px;padding-top:8px;border-top:1px dashed var(--border);">
+      ${isDeficit
+        ? `缺口 ${gap} kcal：今天在安全减脂区间（300~500 最理想）。继续控制晚餐主食，缺口会更稳。`
+        : `已摄入超过消耗 ${gapAbs} kcal：今天热量盈余，明天稍微减一餐主食就能拉平。`}
+    </div>`;
+  body.innerHTML = html;
 }
 
 // ===== 运动计划 =====
