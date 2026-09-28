@@ -1432,14 +1432,14 @@ function renderRecipeList() {
   const allTags = [...new Set(RECIPES.flatMap(r => r.tags || []))];
   
   let html = `
-    <div style="margin-bottom:12px;">
+    <div style="margin-bottom:8px;">
       <input type="text" id="recipeSearch" placeholder="搜索菜名或食材..." 
-        style="width:100%;padding:10px 14px;border:1px solid #e8e2db;border-radius:10px;font-size:14px;background:#fff;outline:none;"
+        style="width:100%;padding:9px 14px;border:1px solid #e8e2db;border-radius:10px;font-size:14px;background:#fff;outline:none;box-sizing:border-box;"
         oninput="recipeFilter=this.value;renderRecipeList()" value="${recipeFilter}">
     </div>
-    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px;-webkit-overflow-scrolling:touch;">
-      <span onclick="recipeTagFilter='';renderRecipeList()" style="padding:5px 12px;border-radius:14px;font-size:12px;white-space:nowrap;cursor:pointer;${recipeTagFilter===''?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">全部</span>
-      ${allTags.map(t => `<span onclick="recipeTagFilter='${t}';renderRecipeList()" style="padding:5px 12px;border-radius:14px;font-size:12px;white-space:nowrap;cursor:pointer;${recipeTagFilter===t?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">${t}</span>`).join("")}
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+      <span onclick="recipeTagFilter='';renderRecipeList()" style="padding:4px 10px;border-radius:14px;font-size:12px;cursor:pointer;${recipeTagFilter===''?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">全部</span>
+      ${allTags.map(t => `<span onclick="recipeTagFilter='${t}';renderRecipeList()" style="padding:4px 10px;border-radius:14px;font-size:12px;cursor:pointer;${recipeTagFilter===t?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">${t}</span>`).join("")}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">`;
   
@@ -1513,10 +1513,24 @@ function showRecipeDetail(id) {
     <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;">做法</h4>
     <div style="margin-bottom:16px;">${stepsHtml}</div>
     <div style="font-size:12px;color:var(--text2);background:var(--bg);padding:10px;border-radius:8px;margin-bottom:12px;">💡 ${r.note}</div>
-    <a onclick="renderRecipeList()" style="display:block;text-align:center;padding:10px;background:var(--bg);border-radius:10px;font-size:13px;cursor:pointer;">← 返回食谱列表</a>
+    <a onclick="recipeGoBack()" style="display:block;text-align:center;padding:10px;background:var(--bg);border-radius:10px;font-size:13px;cursor:pointer;">← 返回食谱列表</a>
   `;
   detail.style.display = "";
   window.scrollTo(0,0);
+  history.pushState({recipeDetail:id}, "");
+}
+
+function recipeGoBack() {
+  history.back();
+}
+window.addEventListener("popstate", function(e) {
+  if(e.state && e.state.recipeDetail) {
+    // came back from detail - do nothing, list already shown
+  } else {
+    // user pressed back on list - just show list
+    renderRecipeList();
+  }
+});
 }
 
 // ===== 初始化 =====
