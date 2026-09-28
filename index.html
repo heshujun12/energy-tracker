@@ -523,6 +523,16 @@ canvas { width:100% !important; display:block; }
   </div>
 </div>
 
+<div class="view" id="view-recipe">
+  <div class="module">
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">我的健康食谱</h3>
+      <div id="recipeList"></div>
+    </div>
+  </div>
+  <div class="card" id="recipeDetail" style="display:none;"></div>
+</div>
+
 
 
 <!-- 底部导航 -->
@@ -542,6 +552,10 @@ canvas { width:100% !important; display:block; }
   <div class="tab" data-view="sport" onclick="switchTab('sport')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5 17.5 17.5"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
     <span>运动</span>
+  </div>
+  <div class="tab" data-view="recipe" onclick="switchTab('recipe')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+    <span>食谱</span>
   </div>
 </div>
 
@@ -1149,11 +1163,12 @@ function switchTab(view) {
   document.querySelector(`.tabbar .tab[data-view="${view}"]`).classList.add("active");
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
-  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动"};
+  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱"};
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view];
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
   if(view==="sport") renderSportDay();
+  if(view==="recipe") renderRecipeList();
   window.scrollTo(0,0);
 }
 
@@ -1364,6 +1379,93 @@ function downloadFile(content, filename, type) {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// ===== 食谱 =====
+const RECIPES = [
+  {
+    id: "tomato-beef",
+    name: "番茄牛腩土豆",
+    emoji: "🍅",
+    color: "#f97316",
+    servings: 4,
+    perServing: {cal: 240, p: 10, c: 12.5, f: 15},
+    tags: ["高蛋白", "下饭", "家宴"],
+    ingredients: [
+      {name: "牛腩", amount: "500g"},
+      {name: "番茄", amount: "4个(约600g)"},
+      {name: "土豆", amount: "2个(约300g)"},
+      {name: "洋葱", amount: "半个"},
+      {name: "姜片", amount: "3片"},
+      {name: "番茄酱", amount: "2勺"},
+      {name: "盐/糖/油", amount: "适量"}
+    ],
+    steps: [
+      "牛腩切块，冷水下锅焯水，撇去浮沫捞出",
+      "番茄切块，土豆切块，洋葱切丝",
+      "锅中放油，炒香洋葱和姜片，下牛腩翻炒至表面微黄",
+      "加入番茄块炒出汁，加番茄酱2勺炒匀",
+      "加热水没过食材，大火烧开转小火炖1小时",
+      "加入土豆块，继续炖20分钟至土豆软烂",
+      "加盐和少许糖调味，收汁即可"
+    ],
+    note: "一次做4份，分装冷冻。吃的时候配一碗米饭，营养均衡。"
+  }
+];
+
+function renderRecipeList() {
+  const list = document.getElementById("recipeList");
+  const detail = document.getElementById("recipeDetail");
+  detail.style.display = "none";
+  list.parentElement.style.display = "";
+  
+  let html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">`;
+  RECIPES.forEach(r => {
+    html += `<div class="recipe-card" onclick="showRecipeDetail('${r.id}')" style="background:${r.color}15;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
+      <div style="font-size:40px;margin-bottom:8px;">${r.emoji}</div>
+      <div style="font-size:14px;font-weight:700;">${r.name}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px;">${r.perServing.cal}kcal/份 · P${r.perServing.p}g</div>
+    </div>`;
+  });
+  html += `</div>`;
+  list.innerHTML = html;
+}
+
+function showRecipeDetail(id) {
+  const r = RECIPES.find(x => x.id === id);
+  if(!r) return;
+  
+  const list = document.getElementById("recipeList");
+  const detail = document.getElementById("recipeDetail");
+  list.parentElement.style.display = "none";
+  
+  let tagsHtml = r.tags.map(t => `<span style="display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text2);margin-right:4px;">${t}</span>`).join("");
+  
+  let ingHtml = r.ingredients.map(i => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px;"><span>${i.name}</span><span style="color:var(--text2);">${i.amount}</span></div>`).join("");
+  
+  let stepsHtml = r.steps.map((s,idx) => `<div style="display:flex;gap:10px;margin-bottom:10px;"><div style="width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">${idx+1}</div><div style="font-size:13px;line-height:1.5;padding-top:2px;">${s}</div></div>`).join("");
+  
+  detail.innerHTML = `
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:56px;">${r.emoji}</div>
+      <h3 style="font-size:18px;font-weight:700;margin:8px 0;">${r.name}</h3>
+      <div>${tagsHtml}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin-bottom:16px;">
+      <div style="background:#fff;border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:700;color:var(--primary);">${r.perServing.cal}</div><div style="font-size:10px;color:var(--text2);">kcal/份</div></div>
+      <div style="background:#fff;border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:700;color:#22c55e;">${r.perServing.p}g</div><div style="font-size:10px;color:var(--text2);">蛋白质</div></div>
+      <div style="background:#fff;border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:700;color:#3b82f6;">${r.perServing.c}g</div><div style="font-size:10px;color:var(--text2);">碳水</div></div>
+      <div style="background:#fff;border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:700;color:#ef4444;">${r.perServing.f}g</div><div style="font-size:10px;color:var(--text2);">脂肪</div></div>
+    </div>
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;">食材（${r.servings}人份）</h4>
+    <div style="margin-bottom:16px;">${ingHtml}</div>
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;">做法</h4>
+    <div style="margin-bottom:16px;">${stepsHtml}</div>
+    <div style="font-size:12px;color:var(--text2);background:var(--bg);padding:10px;border-radius:8px;margin-bottom:12px;">💡 ${r.note}</div>
+    <a onclick="renderRecipeList()" style="display:block;text-align:center;padding:10px;background:var(--bg);border-radius:10px;font-size:13px;cursor:pointer;">← 返回食谱列表</a>
+  `;
+  detail.style.display = "";
+  window.scrollTo(0,0);
 }
 
 // ===== 初始化 =====
