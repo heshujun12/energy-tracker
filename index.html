@@ -540,27 +540,17 @@ canvas { width:100% !important; display:block; }
 
 <!-- ===== 零食库 ===== -->
 <div class="view" id="view-snacks">
-  <div class="card">
+  <div class="card" id="snackListCard">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
       <h3 style="font-size:15px;font-weight:700;">零食回购库</h3>
       <span id="snackCount" style="font-size:12px;color:var(--text3);"></span>
     </div>
     <div id="snackGrid" style="display:flex;flex-direction:column;gap:6px;"></div>
     <div style="margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6;">
-      营养/性价比由系统按成分和价格评分；口味点星星由你评（5星=10分，自动保存到本机）。综合分 9+ 强烈回购，7.5+ 可回购。
+      营养/性价比由系统按成分和价格评分（5分制）；口味点星星由你评（1星=1分）。综合分 4.5+ 强烈回购，3.8+ 可回购。
     </div>
   </div>
-</div>
-
-<!-- ===== 零食详情（整页切换） ===== -->
-<div class="view" id="view-snack-detail">
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <span onclick="backToSnacks()" style="font-size:22px;color:#666;cursor:pointer;padding:4px 8px;">←</span>
-      <span id="sdTitle" style="font-size:16px;font-weight:700;"></span>
-    </div>
-    <div id="sdBody"></div>
-  </div>
+  <div class="card" id="snackDetailCard" style="display:none;"></div>
 </div>
 </div>
 
@@ -1228,31 +1218,31 @@ function isSameWeek(ds, ref) {
 const SNACK_LIBRARY = [
   {id:"zhenzero-yogurt", name:"0蔗糖酸奶", brand:"真零", spec:"720g×2桶", price:39.87,
    img:"assets/snacks/zhenzero-yogurt.jpg", pdd:"真零0蔗糖酸奶",
-   per:{cal:60, p:4, c:5, f:2.5}, serving:150, scores:{nutrition:8.5, value:7.0}},
+   per:{cal:60, p:4, c:5, f:2.5}, serving:150, scores:{nutrition:4.3, value:3.5}},
   {id:"ocuk-oat", name:"全麦脆燕麦片", brand:"欧扎克", spec:"1.05kg+400g", price:49.4,
    img:"assets/snacks/ocuk-oat.jpg", pdd:"欧扎克全麦脆燕麦片",
-   per:{cal:370, p:12, c:65, f:5}, serving:40, scores:{nutrition:6.5, value:7.5}},
+   per:{cal:370, p:12, c:65, f:5}, serving:40, scores:{nutrition:3.3, value:3.8}},
   {id:"yanjin-suro", name:"手撕素肉", brand:"盐津铺子", spec:"多口味混合", price:17.9,
    img:"assets/snacks/yanjin-suro.jpg", pdd:"盐津铺子手撕素肉",
-   per:{cal:180, p:15, c:10, f:9}, serving:30, scores:{nutrition:6.5, value:7.5}},
+   per:{cal:180, p:15, c:10, f:9}, serving:30, scores:{nutrition:3.3, value:3.8}},
   {id:"yanjin-quail", name:"鹌鹑蛋(盐焗+酱卤)", brand:"盐津铺子", spec:"双味混搭", price:27.3,
    img:"assets/snacks/yanjin-quail.jpg", pdd:"盐津铺子鹌鹑蛋",
-   per:{cal:160, p:13, c:3, f:11}, serving:40, scores:{nutrition:6.0, value:6.5}},
+   per:{cal:160, p:13, c:3, f:11}, serving:40, scores:{nutrition:3.0, value:3.3}},
   {id:"shen-egg", name:"低脂鸡蛋干", brand:"沈师傅", spec:"100g×3袋", price:20.67,
    img:"assets/snacks/shen-egg.jpg", pdd:"沈师傅低脂鸡蛋干",
-   per:{cal:140, p:16, c:4, f:6}, serving:50, scores:{nutrition:8.0, value:6.0}},
+   per:{cal:140, p:16, c:4, f:6}, serving:50, scores:{nutrition:4.0, value:3.0}},
   {id:"kangaroo-beef", name:"水煮牛腱肉", brand:"袋鼠先生", spec:"150g/包", price:44.89,
    img:"assets/snacks/kangaroo-beef.jpg", pdd:"袋鼠先生水煮牛腱肉",
-   per:{cal:153, p:29.7, c:0, f:3.7}, serving:30, scores:{nutrition:9.5, value:5.5}},
+   per:{cal:153, p:29.7, c:0, f:3.7}, serving:30, scores:{nutrition:4.8, value:2.8}},
   {id:"growth-chicken", name:"风干鸡胸肉干条", brand:"光合力量", spec:"500g/罐 香辣", price:27.35,
    img:"assets/snacks/growth-chicken.jpg", pdd:"光合力量风干鸡胸肉干",
-   per:{cal:312, p:52.8, c:16.8, f:3.3}, serving:30, scores:{nutrition:7.5, value:8.5}},
+   per:{cal:312, p:52.8, c:16.8, f:3.3}, serving:30, scores:{nutrition:3.8, value:4.3}},
   {id:"rougandang-sausage", name:"玉米鸡胸肉肠", brand:"肉敢当", spec:"100g×3根", price:19.9,
    img:"assets/snacks/rougandang-sausage.jpg", pdd:"肉敢当玉米鸡胸肉肠",
-   per:{cal:110, p:12, c:3, f:5}, serving:100, scores:{nutrition:7.5, value:7.5}},
+   per:{cal:110, p:12, c:3, f:5}, serving:100, scores:{nutrition:3.8, value:3.8}},
   {id:"uxing-balls", name:"口袋鸡胸肉弹弹丸", brand:"优形", spec:"10袋组合", price:29.9,
    img:"assets/snacks/uxing-balls.jpg", pdd:"优形鸡胸肉弹弹丸",
-   per:{cal:110, p:15, c:2, f:4}, serving:48, scores:{nutrition:8.5, value:7.0}},
+   per:{cal:110, p:15, c:2, f:4}, serving:48, scores:{nutrition:4.3, value:3.5}},
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
@@ -1269,13 +1259,13 @@ function setSnackNote(id, v){
   all[id]=v; localStorage.setItem('snackNotes', JSON.stringify(all));
 }
 function snackGrade(s){
-  if(s>=9) return {label:"强烈回购", color:"#22c55e"};
-  if(s>=7.5) return {label:"可回购", color:"#f59e0b"};
-  if(s>=6) return {label:"偶尔解馋", color:"#94a3b8"};
+  if(s>=4.5) return {label:"强烈回购", color:"#22c55e"};
+  if(s>=3.8) return {label:"可回购", color:"#f59e0b"};
+  if(s>=3.0) return {label:"偶尔解馋", color:"#94a3b8"};
   return {label:"不推荐", color:"#ef4444"};
 }
 function snackOverall(s, taste){
-  if(taste>0) return Math.round((s.scores.nutrition*0.4 + taste*2*0.35 + s.scores.value*0.25)*10)/10;
+  if(taste>0) return Math.round((s.scores.nutrition*0.4 + taste*0.35 + s.scores.value*0.25)*10)/10;
   return Math.round((s.scores.nutrition*0.65 + s.scores.value*0.35)*10)/10;
 }
 function renderSnacks(){
@@ -1286,7 +1276,6 @@ function renderSnacks(){
   }).sort((a,b)=>b.overall-a.overall);
   document.getElementById("snackCount").textContent = "已收录 "+SNACK_LIBRARY.length+" 款";
   grid.innerHTML = list.map(s=>{
-    const g = snackGrade(s.overall);
     const p = s.per;
     const cal = Math.round(p.cal*s.serving/100);
     const pr = (p.p*s.serving/100).toFixed(1);
@@ -1300,7 +1289,7 @@ function renderSnacks(){
         <div style="font-size:10px;color:var(--text3);margin-top:1px;">${cal}kcal/份 · 蛋白${pr}g · 营养${s.scores.nutrition} 价${s.scores.value}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
-        <div style="font-size:17px;font-weight:800;color:#f97316;">${s.overall}</div>
+        <div style="font-size:16px;font-weight:800;color:#f97316;">${s.overall}<span style="font-size:9px;color:#999;font-weight:400;">/5</span></div>
         <div style="line-height:1;">${starsReadOnly}</div>
       </div>
     </div>`;
@@ -1313,47 +1302,82 @@ function showSnackDetail(id){
   const overall = snackOverall(s, taste);
   const note = getSnackNote(id);
   const p = s.per;
-  const starBtns = [1,2,3,4,5].map(n=>
-    `<span onclick="setTasteFromDetail('${id}',${n})" style="cursor:pointer;color:${n<=taste?'#f59e0b':'#e5e7eb'};font-size:28px;padding:0 3px;">★</span>`
+  const calServing = Math.round(p.cal*s.serving/100);
+  const pServing = (p.p*s.serving/100).toFixed(1);
+  const cServing = (p.c*s.serving/100).toFixed(1);
+  const fServing = (p.f*s.serving/100).toFixed(1);
+  const starHtml = [1,2,3,4,5].map(i=>
+    `<span onclick="setTasteFromDetail('${id}',${i})" style="font-size:18px;cursor:pointer;color:${i<=taste?'#f59e0b':'rgba(255,255,255,0.5)'};">★</span>`
   ).join("");
   const pddUrl = "https://mobile.yangkeduo.com/search_result.html?search_key=" + encodeURIComponent(s.pdd);
-  document.getElementById("sdTitle").textContent = s.name;
-  document.getElementById("sdBody").innerHTML = `
-    <img src="${s.img}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:12px;" onerror="this.style.display='none';">
-    <div style="font-size:12px;color:#666;margin-bottom:12px;">${s.brand} · ${s.spec} · 实付 ¥${s.price}</div>
-    <div style="display:flex;justify-content:space-around;background:#f9fafb;border-radius:10px;padding:12px;margin-bottom:12px;text-align:center;">
-      <div><div style="font-size:22px;font-weight:800;color:#f97316;">${overall}</div><div style="font-size:10px;color:#999;">综合分</div></div>
-      <div><div style="font-size:16px;font-weight:700;">${s.scores.nutrition}</div><div style="font-size:10px;color:#999;">营养</div></div>
-      <div><div style="font-size:16px;font-weight:700;">${s.scores.value}</div><div style="font-size:10px;color:#999;">性价比</div></div>
-      <div><div style="font-size:16px;font-weight:700;">${taste>0?taste/2+"星":"未评"}</div><div style="font-size:10px;color:#999;">口味</div></div>
+  document.getElementById("snackListCard").style.display = "none";
+  const d = document.getElementById("snackDetailCard");
+  d.style.display = "";
+  d.innerHTML = `
+    <div style="margin:-16px -16px 0;overflow:hidden;border-radius:16px 16px 0 0;position:relative;">
+      <div style="position:relative;height:180px;overflow:hidden;">
+        <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='#f3f4f6';">
+        <div onclick="snackGoBack()" style="position:absolute;top:10px;left:10px;width:30px;height:30px;background:rgba(0,0,0,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.72));padding:30px 14px 10px;">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;">
+            <h3 style="font-size:18px;font-weight:700;color:#fff;margin:0;">${s.name} <span style="font-size:11px;font-weight:400;opacity:0.85;">${s.spec}</span></h3>
+            <div style="flex-shrink:0;">${starHtml}</div>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;">${s.brand} · 实付 ¥${s.price}</div>
+        </div>
+      </div>
     </div>
-    <div style="font-size:13px;color:#333;margin-bottom:14px;line-height:1.8;">
-      <b>每 100g 营养</b><br>
-      热量 ${p.cal} kcal · 蛋白 ${p.p}g · 碳水 ${p.c}g · 脂肪 ${p.f}g<br><br>
-      <b>建议一份 ${s.serving}g</b><br>
-      ≈ ${Math.round(p.cal*s.serving/100)} kcal · 蛋白 ${(p.p*s.serving/100).toFixed(1)}g
+    <div style="display:flex;justify-content:space-around;text-align:center;padding:12px 0 10px;margin-bottom:10px;border-bottom:1px solid #f3ede7;">
+      <div><span style="font-size:19px;font-weight:700;color:#f97316;">${calServing}</span><span style="font-size:10px;color:#aaa;"> kcal</span><div style="font-size:9px;color:#bbb;margin-top:1px;">每份(${s.serving}g)</div></div>
+      <div><span style="font-size:19px;font-weight:700;color:#22c55e;">${pServing}</span><span style="font-size:10px;color:#aaa;"> g</span><div style="font-size:9px;color:#bbb;margin-top:1px;">蛋白质</div></div>
+      <div><span style="font-size:19px;font-weight:700;color:#3b82f6;">${cServing}</span><span style="font-size:10px;color:#aaa;"> g</span><div style="font-size:9px;color:#bbb;margin-top:1px;">碳水</div></div>
+      <div><span style="font-size:19px;font-weight:700;color:#ef4444;">${fServing}</span><span style="font-size:10px;color:#aaa;"> g</span><div style="font-size:9px;color:#bbb;margin-top:1px;">脂肪</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-around;text-align:center;padding:6px 0 12px;margin-bottom:12px;border-bottom:1px solid #f3ede7;font-size:12px;color:#666;">
+      <div>综合 <b style="color:#f97316;font-size:15px;">${overall}</b>/5</div>
+      <div>营养 <b>${s.scores.nutrition}</b>/5</div>
+      <div>性价比 <b>${s.scores.value}</b>/5</div>
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-size:13px;color:#666;margin-bottom:6px;">口味打分（点星星）</div>
-      <div>${starBtns}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+        <div style="width:3px;height:13px;background:#f97316;border-radius:2px;"></div>
+        <span style="font-size:13px;font-weight:700;color:#333;">每 100g 营养</span>
+      </div>
+      <div style="font-size:13px;color:#555;line-height:1.7;padding:0 2px;">
+        热量 ${p.cal} kcal · 蛋白 ${p.p}g · 碳水 ${p.c}g · 脂肪 ${p.f}g
+      </div>
     </div>
     <div style="margin-bottom:14px;">
-      <div style="font-size:13px;color:#666;margin-bottom:6px;">我的备注</div>
-      <textarea id="snackNoteInput" style="width:100%;height:70px;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:13px;resize:none;" placeholder="比如：太咸/适合夜宵/回购">${note}</textarea>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+        <div style="width:3px;height:13px;background:#f97316;border-radius:2px;"></div>
+        <span style="font-size:13px;font-weight:700;color:#333;">我的备注</span>
+      </div>
+      <textarea id="snackNoteInput" style="width:100%;height:60px;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:13px;resize:none;box-sizing:border-box;" placeholder="比如：太咸/适合夜宵/回购">${note}</textarea>
     </div>
-    <a href="${pddUrl}" target="_blank" style="display:block;text-align:center;background:#e03239;color:#fff;padding:12px;border-radius:8px;font-size:14px;text-decoration:none;margin-bottom:8px;">拼多多搜「${s.pdd}」</a>
-    <button onclick="saveSnackNote('${id}')" style="width:100%;background:#f97316;color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;cursor:pointer;">保存备注</button>
+    <a href="${pddUrl}" target="_blank" style="display:block;text-align:center;background:#e03239;color:#fff;padding:11px;border-radius:8px;font-size:14px;text-decoration:none;margin-bottom:8px;">拼多多搜「${s.pdd}」</a>
+    <button onclick="saveSnackNote('${id}')" style="width:100%;background:#f97316;color:#fff;border:none;padding:11px;border-radius:8px;font-size:14px;cursor:pointer;">保存备注</button>
   `;
-  switchTab("snack-detail");
+  window.scrollTo(0,0);
+  history.pushState({snackDetail:id}, "");
 }
+function snackGoBack(){ history.back(); }
 function backToSnacks(){
-  switchTab("snacks");
+  document.getElementById("snackDetailCard").style.display = "none";
+  document.getElementById("snackListCard").style.display = "";
   renderSnacks();
+  window.scrollTo(0,0);
 }
+window.addEventListener("popstate", function(e) {
+  if(document.getElementById("view-snacks").classList.contains("active") &&
+     document.getElementById("snackDetailCard").style.display !== "none") {
+    backToSnacks();
+  }
+});
 function setTasteFromDetail(id, stars){
-  setTasteScore(id, stars*2);
+  setTasteScore(id, stars);
   showSnackDetail(id);
-  renderSnacks();
 }
 function saveSnackNote(id){
   const v = document.getElementById("snackNoteInput").value;
@@ -1370,7 +1394,7 @@ function switchTab(view) {
   if(tabBtn) tabBtn.classList.add("active");
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
-  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食", "snack-detail":"零食详情"};
+  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食"};
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view]||"";
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
