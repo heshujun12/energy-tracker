@@ -1384,6 +1384,8 @@ function downloadFile(content, filename, type) {
 
 // ===== 食谱 =====
 let RECIPES = [];
+let recipeFilter = "";
+let recipeTagFilter = "";
 
 async function loadRecipes() {
   try {
@@ -1392,7 +1394,6 @@ async function loadRecipes() {
       RECIPES = await res.json();
     }
   } catch(e) {
-    // 加载失败时用内置默认
     RECIPES = [{
       id: "tomato-beef", name: "番茄牛腩土豆", emoji: "🍅", color: "#f97316",
       servings: 4, perServing: {cal:240,p:10,c:12.5,f:15},
@@ -1404,18 +1405,67 @@ async function loadRecipes() {
   }
 }
 
+function getRecipeRatings() {
+  try { return JSON.parse(localStorage.getItem("recipe_ratings") || "{}"); } catch(e) { return {}; }
+}
+function saveRecipeRating(id, stars) {
+  const r = getRecipeRatings();
+  r[id] = stars;
+  localStorage.setItem("recipe_ratings", JSON.stringify(r));
+}
+function renderStars(rating, size) {
+  if(!size) size = 12;
+  let html = "";
+  for(let i=1;i<=5;i++) {
+    html += `<span style="font-size:${size}px;color:${i<=rating?'#f59e0b':'#e0e0e0'};">★</span>`;
+  }
+  return html;
+}
+
 function renderRecipeList() {
   const list = document.getElementById("recipeList");
   const detail = document.getElementById("recipeDetail");
   detail.style.display = "none";
   list.parentElement.style.display = "";
   
-  let html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">`;
-  RECIPES.forEach(r => {
-    html += `<div class="recipe-card" onclick="showRecipeDetail('${r.id}')" style="background:${r.color}15;border-radius:12px;padding:16px;cursor:pointer;text-align:center;">
-      <div style="font-size:40px;margin-bottom:8px;">${r.emoji}</div>
-      <div style="font-size:14px;font-weight:700;">${r.name}</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:4px;">${r.perServing.cal}kcal/份 · P${r.perServing.p}g</div>
+  const ratings = getRecipeRatings();
+  const allTags = [...new Set(RECIPES.flatMap(r => r.tags || []))];
+  
+  let html = `
+    <div style="margin-bottom:12px;">
+      <input type="text" id="recipeSearch" placeholder="搜索菜名或食材..." 
+        style="width:100%;padding:10px 14px;border:1px solid #e8e2db;border-radius:10px;font-size:14px;background:#fff;outline:none;"
+        oninput="recipeFilter=this.value;renderRecipeList()" value="${recipeFilter}">
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px;-webkit-overflow-scrolling:touch;">
+      <span onclick="recipeTagFilter='';renderRecipeList()" style="padding:5px 12px;border-radius:14px;font-size:12px;white-space:nowrap;cursor:pointer;${recipeTagFilter===''?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">全部</span>
+      ${allTags.map(t => `<span onclick="recipeTagFilter='${t}';renderRecipeList()" style="padding:5px 12px;border-radius:14px;font-size:12px;white-space:nowrap;cursor:pointer;${recipeTagFilter===t?'background:#f97316;color:#fff':'background:#fff;color:#666;border:1px solid #e8e2db;'}">${t}</span>`).join("")}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">`;
+  
+  const filtered = RECIPES.filter(r => {
+    if(recipeTagFilter && !(r.tags||[]).includes(recipeTagFilter)) return false;
+    if(recipeFilter) {
+      const q = recipeFilter.toLowerCase();
+      const ing = (r.ingredients||[]).map(i=>i.name).join(" ");
+      return r.name.toLowerCase().includes(q) || ing.toLowerCase().includes(q);
+    }
+    return true;
+  });
+  
+  if(filtered.length === 0) {
+    html += `<div style="grid-column:1/-1;text-align:center;padding:30px;color:#999;font-size:13px;">没有找到相关食谱</div>`;
+  }
+  
+  filtered.forEach(r => {
+    const rating = ratings[r.id] || 0;
+    html += `<div onclick="showRecipeDetail('${r.id}')" style="background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+      <div style="height:90px;background:linear-gradient(135deg,${r.color}30,${r.color}60);display:flex;align-items:center;justify-content:center;font-size:42px;">${r.emoji}</div>
+      <div style="padding:8px 10px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</div>
+        <div style="margin-bottom:2px;">${renderStars(rating, 10)}</div>
+        <div style="font-size:11px;color:#f97316;font-weight:600;">${r.perServing.cal} kcal/份</div>
+      </div>
     </div>`;
   });
   html += `</div>`;
@@ -1430,17 +1480,27 @@ function showRecipeDetail(id) {
   const detail = document.getElementById("recipeDetail");
   list.parentElement.style.display = "none";
   
-  let tagsHtml = r.tags.map(t => `<span style="display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text2);margin-right:4px;">${t}</span>`).join("");
+  const ratings = getRecipeRatings();
+  const myRating = ratings[id] || 0;
   
-  let ingHtml = r.ingredients.map(i => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px;"><span>${i.name}</span><span style="color:var(--text2);">${i.amount}</span></div>`).join("");
+  let tagsHtml = (r.tags||[]).map(t => `<span style="display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text2);margin-right:4px;">${t}</span>`).join("");
   
-  let stepsHtml = r.steps.map((s,idx) => `<div style="display:flex;gap:10px;margin-bottom:10px;"><div style="width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">${idx+1}</div><div style="font-size:13px;line-height:1.5;padding-top:2px;">${s}</div></div>`).join("");
+  let ingHtml = r.ingredients.map(i => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px;"><span>${i.name}</span><span style="color:var(--text2);">${i.amount}</span></div>`).join("");
+  
+  let stepsHtml = r.steps.map((s,idx) => `<div style="display:flex;gap:10px;margin-bottom:12px;"><div style="width:24px;height:24px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:600;">${idx+1}</div><div style="font-size:13px;line-height:1.6;padding-top:3px;">${s}</div></div>`).join("");
+  
+  let starHtml = "";
+  for(let i=1;i<=5;i++) {
+    starHtml += `<span onclick="saveRecipeRating('${id}',${i});showRecipeDetail('${id}')" style="font-size:28px;cursor:pointer;color:${i<=myRating?'#f59e0b':'#e0e0e0'};margin:0 2px;">★</span>`;
+  }
   
   detail.innerHTML = `
-    <div style="text-align:center;padding:20px 0;">
-      <div style="font-size:56px;">${r.emoji}</div>
-      <h3 style="font-size:18px;font-weight:700;margin:8px 0;">${r.name}</h3>
-      <div>${tagsHtml}</div>
+    <div style="text-align:center;padding:16px 0 12px;">
+      <div style="font-size:56px;margin-bottom:8px;">${r.emoji}</div>
+      <h3 style="font-size:18px;font-weight:700;margin:4px 0;">${r.name}</h3>
+      <div style="margin:6px 0;">${tagsHtml}</div>
+      <div style="margin:8px 0 4px;">${starHtml}</div>
+      <div style="font-size:11px;color:var(--text2);">${myRating>0?'已打'+myRating+'星':'点击星星打分'}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin-bottom:16px;">
       <div style="background:#fff;border-radius:10px;padding:10px;"><div style="font-size:18px;font-weight:700;color:var(--primary);">${r.perServing.cal}</div><div style="font-size:10px;color:var(--text2);">kcal/份</div></div>
