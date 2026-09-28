@@ -1524,14 +1524,12 @@ function recipeGoBack() {
   history.back();
 }
 window.addEventListener("popstate", function(e) {
-  if(e.state && e.state.recipeDetail) {
-    // came back from detail - do nothing, list already shown
-  } else {
-    // user pressed back on list - just show list
+  // 从食谱详情返回到列表
+  if(document.getElementById("view-recipe").style.display !== "none" && 
+     document.getElementById("recipeDetail").style.display !== "none") {
     renderRecipeList();
   }
 });
-}
 
 // ===== 初始化 =====
 function init() {
