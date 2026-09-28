@@ -1486,87 +1486,92 @@ function showRecipeDetail(id) {
   
   let starHtml = "";
   for(let i=1;i<=5;i++) {
-    starHtml += `<span onclick="saveRecipeRating('${id}',${i});showRecipeDetail('${id}')" style="font-size:22px;cursor:pointer;color:${i<=myRating?'#f59e0b':'#e0e0e0'};">★</span>`;
+    starHtml += `<span onclick="saveRecipeRating('${id}',${i});showRecipeDetail('${id}')" style="font-size:16px;cursor:pointer;color:${i<=myRating?'#f59e0b':'rgba(255,255,255,0.5)'};">★</span>`;
   }
   
-  // 食材列表
-  let ingListHtml = r.ingredients.map(i => 
-    `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;"><span style="color:#333;">${i.name}</span><span style="color:#999;">${i.amount}</span></div>`
+  // 食材chip
+  let ingChips = r.ingredients.map(i => 
+    `<span style="display:inline-block;padding:3px 9px;background:#faf7f4;border-radius:20px;font-size:11px;color:#555;margin:0 4px 4px 0;">${i.name} <span style="color:#aaa;">${i.amount}</span></span>`
   ).join("");
   
-  // 步骤网格（有图的2列卡片，无图的纯文字）
-  let stepsWithImg = r.steps.map((s,idx) => {
+  // 步骤：统一3列网格，有图显示图，无图显示纯色卡片
+  let steps = r.steps.map((s,idx) => {
     const text = typeof s === "string" ? s : s.text;
     const img = typeof s === "string" ? null : s.img;
     return {text, img, idx: idx+1};
   });
   
-  let stepsGridHtml = "";
-  let noImgSteps = [];
-  stepsWithImg.forEach(s => {
+  let cols = 3;
+  let stepsHtml = `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:7px;">`;
+  steps.forEach(s => {
     if(s.img) {
-      stepsGridHtml += `<div style="border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+      stepsHtml += `<div style="border-radius:9px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.07);">
         <div style="position:relative;">
-          <img src="${s.img}" style="width:100%;height:100px;object-fit:cover;display:block;" loading="lazy">
-          <div style="position:absolute;top:6px;left:6px;width:20px;height:20px;background:${r.color};color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">${s.idx}</div>
+          <img src="${s.img}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;" loading="lazy">
+          <div style="position:absolute;top:4px;left:4px;width:17px;height:17px;background:${r.color};color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,0.2);">${s.idx}</div>
         </div>
-        <div style="padding:6px 8px;font-size:11px;line-height:1.4;color:#444;min-height:36px;">${s.text}</div>
+        <div style="padding:4px 6px 5px;font-size:10px;line-height:1.3;color:#444;height:30px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${s.text}</div>
       </div>`;
     } else {
-      noImgSteps.push(s);
+      stepsHtml += `<div style="border-radius:9px;background:#faf7f4;padding:8px 7px;position:relative;min-height:90px;">
+        <div style="width:17px;height:17px;background:${r.color};color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-bottom:4px;">${s.idx}</div>
+        <div style="font-size:10px;line-height:1.4;color:#555;">${s.text}</div>
+      </div>`;
     }
   });
-  
-  let noImgHtml = noImgSteps.map(s => 
-    `<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;">
-      <div style="width:20px;height:20px;background:${r.color}20;color:${r.color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${s.idx}</div>
-      <div style="font-size:12px;line-height:1.5;color:#444;padding-top:2px;">${s.text}</div>
-    </div>`
-  ).join("");
+  // 最后补一个贴士格子（当步骤数不是3的倍数时自然填充）
+  const remainder = steps.length % cols;
+  if(remainder !== 0) {
+    const span = cols - remainder;
+    stepsHtml += `<div style="border-radius:9px;background:${r.color}12;padding:8px 10px;grid-column:span ${span};display:flex;align-items:center;font-size:10px;line-height:1.5;color:#666;">
+      <span style="margin-right:5px;">💡</span><span>${r.note}</span>
+    </div>`;
+  }
+  stepsHtml += `</div>`;
+  const tipShown = remainder !== 0;
   
   detail.innerHTML = `
-    <div style="margin:-20px -20px 0;overflow:hidden;border-radius:16px 16px 0 0;">
-      <div style="position:relative;height:180px;overflow:hidden;">
-        ${r.image ? `<img src="${r.image}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,${r.color}30,${r.color}60);display:flex;align-items:center;justify-content:center;font-size:64px;">${r.emoji}</div>`}
-        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.65));padding:28px 14px 10px;">
-          <h3 style="font-size:19px;font-weight:700;color:#fff;margin-bottom:4px;">${r.name}</h3>
-          <div style="display:flex;align-items:center;gap:6px;">
-            ${(r.tags||[]).map(t => `<span style="padding:1px 7px;background:rgba(255,255,255,0.25);border-radius:5px;font-size:10px;color:#fff;">${t}</span>`).join("")}
-            <span style="margin-left:auto;">${starHtml}</span>
+    <div style="margin:-16px -16px 0;overflow:hidden;border-radius:16px 16px 0 0;position:relative;">
+      <div style="position:relative;height:120px;overflow:hidden;">
+        ${r.image ? `<img src="${r.image}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,${r.color}30,${r.color}60);display:flex;align-items:center;justify-content:center;font-size:56px;">${r.emoji}</div>`}
+        <div onclick="recipeGoBack()" style="position:absolute;top:10px;left:10px;width:30px;height:30px;background:rgba(0,0,0,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.7));padding:24px 12px 8px;">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;">
+            <h3 style="font-size:17px;font-weight:700;color:#fff;">${r.name} <span style="font-size:11px;font-weight:400;opacity:0.85;">${r.servings}人份</span></h3>
+            <div style="flex-shrink:0;">${starHtml}</div>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:3px;">
+            ${(r.tags||[]).map(t => `<span style="padding:1px 7px;background:rgba(255,255,255,0.22);border-radius:5px;font-size:9px;color:#fff;">${t}</span>`).join("")}
           </div>
         </div>
       </div>
     </div>
     
-    <div style="display:flex;justify-content:space-around;text-align:center;padding:10px 0;border-bottom:1px solid #f5f0eb;margin:0 -4px 12px;">
-      <div><div style="font-size:18px;font-weight:700;color:${r.color};">${r.perServing.cal}</div><div style="font-size:10px;color:#999;">kcal/份</div></div>
-      <div><div style="font-size:18px;font-weight:700;color:#22c55e;">${r.perServing.p}g</div><div style="font-size:10px;color:#999;">蛋白质</div></div>
-      <div><div style="font-size:18px;font-weight:700;color:#3b82f6;">${r.perServing.c}g</div><div style="font-size:10px;color:#999;">碳水</div></div>
-      <div><div style="font-size:18px;font-weight:700;color:#ef4444;">${r.perServing.f}g</div><div style="font-size:10px;color:#999;">脂肪</div></div>
+    <div style="display:flex;justify-content:space-around;text-align:center;padding:9px 0;margin-bottom:9px;border-bottom:1px solid #f3ede7;">
+      <div><span style="font-size:17px;font-weight:700;color:${r.color};">${r.perServing.cal}</span><span style="font-size:9px;color:#aaa;margin-left:1px;">kcal</span></div>
+      <div><span style="font-size:17px;font-weight:700;color:#22c55e;">${r.perServing.p}</span><span style="font-size:9px;color:#aaa;margin-left:1px;">g蛋白</span></div>
+      <div><span style="font-size:17px;font-weight:700;color:#3b82f6;">${r.perServing.c}</span><span style="font-size:9px;color:#aaa;margin-left:1px;">g碳水</span></div>
+      <div><span style="font-size:17px;font-weight:700;color:#ef4444;">${r.perServing.f}</span><span style="font-size:9px;color:#aaa;margin-left:1px;">g脂肪</span></div>
     </div>
     
-    <div style="margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-        <div style="width:3px;height:14px;background:${r.color};border-radius:2px;"></div>
-        <h4 style="font-size:14px;font-weight:700;">食材准备 · ${r.servings}人份</h4>
+    <div style="margin-bottom:9px;">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+        <div style="width:3px;height:12px;background:${r.color};border-radius:2px;"></div>
+        <span style="font-size:12px;font-weight:700;color:#333;">食材</span>
       </div>
-      ${r.ingredientImage ? `<img src="${r.ingredientImage}" style="width:100%;border-radius:10px;margin-bottom:8px;display:block;" loading="lazy">` : ""}
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;padding:0 4px;">${ingListHtml}</div>
+      <div>${ingChips}</div>
     </div>
     
-    <div style="margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-        <div style="width:3px;height:14px;background:${r.color};border-radius:2px;"></div>
-        <h4 style="font-size:14px;font-weight:700;">详细步骤</h4>
+    <div>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+        <div style="width:3px;height:12px;background:${r.color};border-radius:2px;"></div>
+        <span style="font-size:12px;font-weight:700;color:#333;">步骤</span>
       </div>
-      ${stepsGridHtml ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">${stepsGridHtml}</div>` : ""}
-      ${noImgHtml ? `<div style="padding:0 4px;">${noImgHtml}</div>` : ""}
+      ${stepsHtml}
     </div>
-    
-    <div style="font-size:12px;color:#888;background:#faf7f4;padding:10px 12px;border-radius:8px;margin-bottom:12px;line-height:1.5;">
-      <b style="color:${r.color};">小贴士</b> ${r.note}
-    </div>
-    <a onclick="recipeGoBack()" style="display:block;text-align:center;padding:10px;background:#faf7f4;border-radius:10px;font-size:13px;cursor:pointer;color:#666;">← 返回食谱列表</a>
+    ${tipShown ? "" : `<div style="margin-top:8px;font-size:10px;color:#999;background:#faf7f4;padding:7px 10px;border-radius:8px;line-height:1.5;"><b style="color:${r.color};">小贴士 </b>${r.note}</div>`}
   `;
   detail.style.display = "";
   window.scrollTo(0,0);
