@@ -376,6 +376,12 @@ canvas { width:100% !important; display:block; }
   font-size:11px; color:var(--text3); line-height:1.5; margin-top:8px;
   padding:8px 10px; background:var(--bg); border-radius:8px;
 }
+.keep-btn {
+  display:block; text-align:center; margin-top:8px;
+  padding:10px; background:var(--primary); color:#fff;
+  border-radius:10px; font-size:13px; font-weight:600;
+  text-decoration:none;
+}
 </style>
 </head>
 <body>
@@ -1158,6 +1164,7 @@ const SPORT_PLAN = {
     sections: [
       {name:"抗阻训练", tag:"增肌保代谢", tagClass:"tag-muscle",
        tip:"能轻松完成12次就加重量。运动后30分钟内补充蛋白质。",
+       keepUrl:"https://www.calorietech.com/plans/646b1f790379f800014f6709",
        items:[
          {id:"r1", name:"哑铃深蹲", desc:"双手持哑铃放肩上，下蹲到大腿平行地面，站起。", meta:"3组 × 12次 · 练腿+核心"},
          {id:"r2", name:"俯卧撑（跪姿也行）", desc:"身体一条线，下降到胸接近地面，推起。", meta:"3组 × 10~12次 · 练胸肩三头"},
@@ -1167,6 +1174,7 @@ const SPORT_PLAN = {
        ]},
       {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
        tip:"日常看手机举到视线水平，每低头30分钟做一次收下巴。",
+       keepUrl:"https://www.calorietech.com/plans/638d740d71e0f6000102bc57",
        items:[
          {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
          {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
@@ -1180,6 +1188,7 @@ const SPORT_PLAN = {
     sections: [
       {name:"HIIT 减内脏脂肪", tag:"针对性", tagClass:"tag-visceral",
        tip:"HIIT比中低强度有氧多减28.5%内脏脂肪。新手从4组开始，逐步加到8组。",
+       keepUrl:"https://calorietech.com/plans/54afac39e06249cb13904c1e",
        items:[
          {id:"h1", name:"热身", desc:"快走/慢跑，身体微微出汗。", meta:"5分钟"},
          {id:"h2", name:"HIIT循环", desc:"30秒全力（冲刺跑/跳绳/高抬腿）+ 60秒慢走恢复，重复8组。", meta:"8组 × 1.5分钟"},
@@ -1187,6 +1196,7 @@ const SPORT_PLAN = {
        ]},
       {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
        tip:"每天5分钟，坚持才有效果。",
+       keepUrl:"https://www.calorietech.com/plans/638d740d71e0f6000102bc57",
        items:[
          {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
          {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
@@ -1312,6 +1322,7 @@ function renderSportDay() {
         </div>`;
       });
       if(sec.tip) html += `<div class="sport-tip">💡 ${sec.tip}</div>`;
+      if(sec.keepUrl) html += `<a class="keep-btn" href="${sec.keepUrl}" target="_blank" rel="noopener">▶ 打开Keep跟练</a>`;
       html += `</div>`;
     });
   }
