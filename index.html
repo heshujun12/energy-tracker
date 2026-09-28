@@ -1469,6 +1469,24 @@ function init() {
   loadRecipes();
 }
 init();
+
+// ===== 左右滑动切换Tab =====
+const TAB_ORDER = ["today","trend","cal","sport","recipe"];
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener("touchstart", function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, {passive: true});
+document.addEventListener("touchend", function(e) {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if(Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    const current = document.querySelector(".tabbar .tab.active").dataset.view;
+    const idx = TAB_ORDER.indexOf(current);
+    if(dx < 0 && idx < TAB_ORDER.length - 1) switchTab(TAB_ORDER[idx+1]);
+    if(dx > 0 && idx > 0) switchTab(TAB_ORDER[idx-1]);
+  }
+}, {passive: true});
 </script>
 
 </body>
