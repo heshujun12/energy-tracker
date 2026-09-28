@@ -1382,36 +1382,26 @@ function downloadFile(content, filename, type) {
 }
 
 // ===== 食谱 =====
-const RECIPES = [
-  {
-    id: "tomato-beef",
-    name: "番茄牛腩土豆",
-    emoji: "🍅",
-    color: "#f97316",
-    servings: 4,
-    perServing: {cal: 240, p: 10, c: 12.5, f: 15},
-    tags: ["高蛋白", "下饭", "家宴"],
-    ingredients: [
-      {name: "牛腩", amount: "500g"},
-      {name: "番茄", amount: "4个(约600g)"},
-      {name: "土豆", amount: "2个(约300g)"},
-      {name: "洋葱", amount: "半个"},
-      {name: "姜片", amount: "3片"},
-      {name: "番茄酱", amount: "2勺"},
-      {name: "盐/糖/油", amount: "适量"}
-    ],
-    steps: [
-      "牛腩切块，冷水下锅焯水，撇去浮沫捞出",
-      "番茄切块，土豆切块，洋葱切丝",
-      "锅中放油，炒香洋葱和姜片，下牛腩翻炒至表面微黄",
-      "加入番茄块炒出汁，加番茄酱2勺炒匀",
-      "加热水没过食材，大火烧开转小火炖1小时",
-      "加入土豆块，继续炖20分钟至土豆软烂",
-      "加盐和少许糖调味，收汁即可"
-    ],
-    note: "一次做4份，分装冷冻。吃的时候配一碗米饭，营养均衡。"
+let RECIPES = [];
+
+async function loadRecipes() {
+  try {
+    const res = await fetch("recipes.json?t=" + Date.now());
+    if(res.ok) {
+      RECIPES = await res.json();
+    }
+  } catch(e) {
+    // 加载失败时用内置默认
+    RECIPES = [{
+      id: "tomato-beef", name: "番茄牛腩土豆", emoji: "🍅", color: "#f97316",
+      servings: 4, perServing: {cal:240,p:10,c:12.5,f:15},
+      tags: ["高蛋白","下饭","家宴"],
+      ingredients: [{name:"牛腩",amount:"500g"},{name:"番茄",amount:"4个"},{name:"土豆",amount:"2个"},{name:"洋葱",amount:"半个"},{name:"姜片",amount:"3片"},{name:"番茄酱",amount:"2勺"},{name:"盐/糖/油",amount:"适量"}],
+      steps: ["牛腩切块焯水","番茄土豆切块","炒香洋葱姜片下牛腩","加番茄炒出汁","加水炖1小时","加土豆炖20分钟","调味收汁"],
+      note: "一次做4份，分装冷冻。"
+    }];
   }
-];
+}
 
 function renderRecipeList() {
   const list = document.getElementById("recipeList");
@@ -1476,6 +1466,7 @@ function init() {
   renderToday();
   renderSportDay();
   renderCal();
+  loadRecipes();
 }
 init();
 </script>
