@@ -503,7 +503,7 @@ canvas { width:100% !important; display:block; }
 
   <div class="module" data-mid="m-week-report" data-view="cal">
     <div class="report-card">
-      <h3 style="font-size:14px;margin-bottom:10px;">本周概览</h3>
+      <h3 style="font-size:14px;margin-bottom:10px;" id="weekReportTitle">本周概览</h3>
       <div id="weekReportContent"></div>
     </div>
   </div>
@@ -1049,6 +1049,7 @@ function renderWeightTrend() {
 
 // ===== 日历 =====
 let selectedCalDay = null;
+let weekFocusDay = null; // 周概览聚焦到哪天所在周；null=本周
 
 function renderCal() {
   document.getElementById("calTitle").textContent = `${calYear}年${calMonth+1}月`;
@@ -1079,6 +1080,7 @@ function showCalDay(key) {
     return;
   }
   selectedCalDay = key;
+  weekFocusDay = key; // 周概览聚焦到这一天所在周
   renderCal();
   const t = dayTotal(key);
   const detail = document.getElementById("calDetail");
@@ -1116,6 +1118,7 @@ function showCalDay(key) {
 
 function closeCalDetail() {
   selectedCalDay = null;
+  weekFocusDay = null; // 回到本周概览
   document.getElementById("calDetail").classList.remove("show");
   renderCal();
 }
@@ -1128,18 +1131,27 @@ function changeMonth(dir) {
 }
 
 function renderWeekReport() {
-  const now = new Date();
-  const day = now.getDay() || 7;
-  const monday = new Date(now); monday.setDate(now.getDate() - day + 1);
+  // 以 weekFocusDay（日历选中日）或今天 所在的自然周（周一开始）为统计范围
+  const focus = weekFocusDay ? new Date(weekFocusDay+"T00:00:00") : new Date();
+  const day = focus.getDay() || 7;
+  const monday = new Date(focus); monday.setDate(focus.getDate() - day + 1);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+  const fmt = d => (d.getMonth()+1) + "." + d.getDate();
+  const rangeLabel = fmt(monday) + " - " + fmt(sunday);
+  const titleEl = document.getElementById("weekReportTitle");
+  if(titleEl) titleEl.textContent = rangeLabel + " 周概览";
+
   let totalCal=0, daysLogged=0, totalP=0, totalC=0, totalF=0;
   let wStart = null, wEnd = null;
   const tk = todayKey();
+  const focusIsThisWeek = !weekFocusDay || weekFocusDay === tk ||
+    (weekFocusDay && isSameWeek(weekFocusDay, new Date()));
   for(let i=0; i<7; i++) {
     const d = new Date(monday); d.setDate(monday.getDate()+i);
     const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    if(key === tk) continue; // 排除今天（记录不完整）
+    // 只有聚焦"本周"时才排除今天（记录不完整）；看历史周时整周都算
+    if(focusIsThisWeek && key === tk) continue;
     const t = dayTotal(key);
-    // 只算有至少2餐记录的完整天数
     const mealCount = new Set(t.records.map(r=>r.meal)).size;
     if(t.cal > 0 && mealCount >= 2) {
       daysLogged++; totalCal += t.cal; totalP += t.p; totalC += t.c; totalF += t.f;
@@ -1154,15 +1166,24 @@ function renderWeekReport() {
   let wRow = "";
   if(wStart !== null && wEnd !== null) {
     const diff = wEnd - wStart;
-    wRow = `<div class="report-row"><span>本周体重变化</span><span class="val">${diff>=0?"+":""}${diff.toFixed(2)} kg</span></div>`;
+    wRow = `<div class="report-row"><span>周体重变化</span><span class="val">${diff>=0?"+":""}${diff.toFixed(2)} kg</span></div>`;
   }
+  const note = daysLogged===0
+    ? `<div style="font-size:12px;color:var(--text3);padding:8px 0;">该周暂无完整饮食记录</div>`
+    : `<div class="report-row"><span>统计天数</span><span class="val" style="font-size:12px;color:var(--text3);">${daysLogged}天${focusIsThisWeek?"（已排除今天和不完整记录）":""}</span></div>${wRow}`;
   document.getElementById("weekReportContent").innerHTML = `
     <div class="report-row"><span>日均摄入</span><span class="val">${daysLogged?avg+'<span class="sub">/'+DATA.targets.cal+' kcal</span>':'-'}</span></div>
     <div class="report-row"><span>日均蛋白质</span><span class="val">${daysLogged?avgP+'<span class="sub">/'+DATA.targets.p+' g</span>':'-'}</span></div>
     <div class="report-row"><span>日均碳水</span><span class="val">${daysLogged?avgC+'<span class="sub">/'+DATA.targets.c+' g</span>':'-'}</span></div>
     <div class="report-row"><span>日均脂肪</span><span class="val">${daysLogged?avgF+'<span class="sub">/'+DATA.targets.f+' g</span>':'-'}</span></div>
-    <div class="report-row"><span>统计天数</span><span class="val" style="font-size:12px;color:var(--text3);">${daysLogged}天（已排除今天和不完整记录）</span></div>
-    ${wRow}`;
+    ${note}`;
+}
+function isSameWeek(ds, ref) {
+  const a = new Date(ds+"T00:00:00");
+  const dayA = a.getDay()||7, dayR = ref.getDay()||7;
+  const monA = new Date(a); monA.setDate(a.getDate()-dayA+1);
+  const monR = new Date(ref); monR.setDate(ref.getDate()-dayR+1);
+  return monA.toDateString() === monR.toDateString();
 }
 
 // ===== Tab切换 =====
