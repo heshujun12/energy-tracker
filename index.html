@@ -1214,42 +1214,33 @@ function isSameWeek(ds, ref) {
 
 // ===== 零食库 =====
 const SNACK_LIBRARY = [
-  {id:"zhenzero-yogurt", name:"0蔗糖酸奶", brand:"真零", spec:"720g×2桶",
-   emoji:"🥛", color:"#3b82f6",
-   per:{cal:60, p:4, c:5, f:2.5}, serving:150, price:39.87,
-   scores:{nutrition:8.5, value:7.0}},
-  {id:"ocuk-oat", name:"全麦脆燕麦片", brand:"欧扎克", spec:"1.05kg+400g",
-   emoji:"🥣", color:"#b45309",
-   per:{cal:370, p:12, c:65, f:5}, serving:40, price:49.4,
-   scores:{nutrition:6.5, value:7.5}},
-  {id:"yanjin-suro", name:"手撕素肉", brand:"盐津铺子", spec:"多口味混合",
-   emoji:"🌶️", color:"#dc2626",
-   per:{cal:180, p:15, c:10, f:9}, serving:30, price:17.9,
-   scores:{nutrition:6.5, value:7.5}},
-  {id:"yanjin-quail", name:"鹌鹑蛋(盐焗+酱卤)", brand:"盐津铺子", spec:"双味混搭",
-   emoji:"🥚", color:"#ca8a04",
-   per:{cal:160, p:13, c:3, f:11}, serving:40, price:27.3,
-   scores:{nutrition:6.0, value:6.5}},
-  {id:"shen-egg", name:"低脂鸡蛋干", brand:"沈师傅", spec:"100g×3袋",
-   emoji:"🧀", color:"#eab308",
-   per:{cal:140, p:16, c:4, f:6}, serving:50, price:20.67,
-   scores:{nutrition:8.0, value:6.0}},
-  {id:"kangaroo-beef", name:"水煮牛腱肉", brand:"袋鼠先生", spec:"150g/包",
-   emoji:"🥩", color:"#f97316",
-   per:{cal:153, p:29.7, c:0, f:3.7}, serving:30, price:44.89,
-   scores:{nutrition:9.5, value:5.5}},
-  {id:"growth-chicken", name:"风干鸡胸肉干条", brand:"光合力量", spec:"500g/罐 香辣",
-   emoji:"🍗", color:"#eab308",
-   per:{cal:312, p:52.8, c:16.8, f:3.3}, serving:30, price:27.35,
-   scores:{nutrition:7.5, value:8.5}},
-  {id:"rougandang-sausage", name:"玉米鸡胸肉肠", brand:"肉敢当", spec:"100g×3根",
-   emoji:"🌽", color:"#16a34a",
-   per:{cal:110, p:12, c:3, f:5}, serving:100, price:19.9,
-   scores:{nutrition:7.5, value:7.5}},
-  {id:"uxing-balls", name:"口袋鸡胸肉弹弹丸", brand:"优形", spec:"10袋组合",
-   emoji:"🟢", color:"#22c55e",
-   per:{cal:110, p:15, c:2, f:4}, serving:48, price:29.9,
-   scores:{nutrition:8.5, value:7.0}},
+  {id:"zhenzero-yogurt", name:"0蔗糖酸奶", brand:"真零", spec:"720g×2桶", price:39.87,
+   img:"assets/snacks/zhenzero-yogurt.jpg", pdd:"真零0蔗糖酸奶",
+   per:{cal:60, p:4, c:5, f:2.5}, serving:150, scores:{nutrition:8.5, value:7.0}},
+  {id:"ocuk-oat", name:"全麦脆燕麦片", brand:"欧扎克", spec:"1.05kg+400g", price:49.4,
+   img:"assets/snacks/ocuk-oat.jpg", pdd:"欧扎克全麦脆燕麦片",
+   per:{cal:370, p:12, c:65, f:5}, serving:40, scores:{nutrition:6.5, value:7.5}},
+  {id:"yanjin-suro", name:"手撕素肉", brand:"盐津铺子", spec:"多口味混合", price:17.9,
+   img:"assets/snacks/yanjin-suro.jpg", pdd:"盐津铺子手撕素肉",
+   per:{cal:180, p:15, c:10, f:9}, serving:30, scores:{nutrition:6.5, value:7.5}},
+  {id:"yanjin-quail", name:"鹌鹑蛋(盐焗+酱卤)", brand:"盐津铺子", spec:"双味混搭", price:27.3,
+   img:"assets/snacks/yanjin-quail.jpg", pdd:"盐津铺子鹌鹑蛋",
+   per:{cal:160, p:13, c:3, f:11}, serving:40, scores:{nutrition:6.0, value:6.5}},
+  {id:"shen-egg", name:"低脂鸡蛋干", brand:"沈师傅", spec:"100g×3袋", price:20.67,
+   img:"assets/snacks/shen-egg.jpg", pdd:"沈师傅低脂鸡蛋干",
+   per:{cal:140, p:16, c:4, f:6}, serving:50, scores:{nutrition:8.0, value:6.0}},
+  {id:"kangaroo-beef", name:"水煮牛腱肉", brand:"袋鼠先生", spec:"150g/包", price:44.89,
+   img:"assets/snacks/kangaroo-beef.jpg", pdd:"袋鼠先生水煮牛腱肉",
+   per:{cal:153, p:29.7, c:0, f:3.7}, serving:30, scores:{nutrition:9.5, value:5.5}},
+  {id:"growth-chicken", name:"风干鸡胸肉干条", brand:"光合力量", spec:"500g/罐 香辣", price:27.35,
+   img:"assets/snacks/growth-chicken.jpg", pdd:"光合力量风干鸡胸肉干",
+   per:{cal:312, p:52.8, c:16.8, f:3.3}, serving:30, scores:{nutrition:7.5, value:8.5}},
+  {id:"rougandang-sausage", name:"玉米鸡胸肉肠", brand:"肉敢当", spec:"100g×3根", price:19.9,
+   img:"assets/snacks/rougandang-sausage.jpg", pdd:"肉敢当玉米鸡胸肉肠",
+   per:{cal:110, p:12, c:3, f:5}, serving:100, scores:{nutrition:7.5, value:7.5}},
+  {id:"uxing-balls", name:"口袋鸡胸肉弹弹丸", brand:"优形", spec:"10袋组合", price:29.9,
+   img:"assets/snacks/uxing-balls.jpg", pdd:"优形鸡胸肉弹弹丸",
+   per:{cal:110, p:15, c:2, f:4}, serving:48, scores:{nutrition:8.5, value:7.0}},
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
@@ -1258,23 +1249,28 @@ function setTasteScore(id, v){
   const all = JSON.parse(localStorage.getItem('snackTaste')||'{}');
   all[id]=v; localStorage.setItem('snackTaste', JSON.stringify(all));
 }
+function getSnackNote(id){
+  try{ return JSON.parse(localStorage.getItem('snackNotes')||'{}')[id] || ""; }catch(e){ return ""; }
+}
+function setSnackNote(id, v){
+  const all = JSON.parse(localStorage.getItem('snackNotes')||'{}');
+  all[id]=v; localStorage.setItem('snackNotes', JSON.stringify(all));
+}
 function snackGrade(s){
   if(s>=9) return {label:"强烈回购", color:"#22c55e"};
   if(s>=7.5) return {label:"可回购", color:"#f59e0b"};
   if(s>=6) return {label:"偶尔解馋", color:"#94a3b8"};
   return {label:"不推荐", color:"#ef4444"};
 }
+function snackOverall(s, taste){
+  if(taste>0) return Math.round((s.scores.nutrition*0.4 + taste*2*0.35 + s.scores.value*0.25)*10)/10;
+  return Math.round((s.scores.nutrition*0.65 + s.scores.value*0.35)*10)/10;
+}
 function renderSnacks(){
   const grid = document.getElementById("snackGrid");
   const list = SNACK_LIBRARY.map(s=>{
     const taste = getTasteScore(s.id);
-    let overall;
-    if(taste>0){
-      overall = Math.round((s.scores.nutrition*0.4 + taste*2*0.35 + s.scores.value*0.25)*10)/10;
-    } else {
-      overall = Math.round((s.scores.nutrition*0.65 + s.scores.value*0.35)*10)/10;
-    }
-    return {...s, taste, overall};
+    return {...s, taste, overall: snackOverall(s, taste)};
   }).sort((a,b)=>b.overall-a.overall);
   document.getElementById("snackCount").textContent = "已收录 "+SNACK_LIBRARY.length+" 款";
   grid.innerHTML = list.map(s=>{
@@ -1282,30 +1278,85 @@ function renderSnacks(){
     const p = s.per;
     const cal = Math.round(p.cal*s.serving/100);
     const pr = (p.p*s.serving/100).toFixed(1);
-    const ca = (p.c*s.serving/100).toFixed(1);
-    const fa = (p.f*s.serving/100).toFixed(1);
-    const stars = [1,2,3,4,5].map(n=>
-      `<span onclick="rateTaste('${s.id}',${n})" style="cursor:pointer;color:${n<=s.taste?'#f59e0b':'#e5e7eb'};font-size:14px;padding:0 1px;">★</span>`
+    const starsReadOnly = [1,2,3,4,5].map(n=>
+      `<span style="color:${n<=s.taste?'#f59e0b':'#e5e7eb'};font-size:10px;">★</span>`
     ).join("");
-    return `<div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-      <div style="width:40px;height:40px;border-radius:8px;background:${s.color}18;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${s.emoji}</div>
+    return `<div onclick="showSnackDetail('${s.id}')" style="display:flex;align-items:center;gap:9px;background:#fff;border-radius:10px;padding:7px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);cursor:pointer;">
+      <img src="${s.img}" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';">
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:700;color:#222;line-height:1.2;">${s.name} <span style="font-size:10px;color:var(--text3);font-weight:400;">${s.brand}</span></div>
-        <div style="font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.spec} · ${s.serving}g≈${cal}kcal 蛋${pr}g</div>
-        <div style="font-size:10px;color:#9ca3af;margin-top:2px;">营养${s.scores.nutrition} · 性价比${s.scores.value} ${s.taste===0?'· 点星星评口味':''}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:1px;">${cal}kcal/份 · 蛋白${pr}g · 营养${s.scores.nutrition} 价${s.scores.value}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
-        <div style="font-size:16px;font-weight:800;color:${s.color};">${s.overall}<span style="font-size:9px;color:var(--text3);font-weight:400;">/10</span></div>
-        <div>${stars}</div>
-        <div style="font-size:9px;padding:1px 6px;border-radius:8px;background:${g.color}18;color:${g.color};display:inline-block;margin-top:1px;">${g.label}</div>
+        <div style="font-size:17px;font-weight:800;color:#f97316;">${s.overall}</div>
+        <div style="line-height:1;">${starsReadOnly}</div>
       </div>
     </div>`;
   }).join("");
 }
-function rateTaste(id, stars){
-  // 点满5星=10分；5星制映射到10分制
+function showSnackDetail(id){
+  const s = SNACK_LIBRARY.find(x=>x.id===id);
+  if(!s) return;
+  const taste = getTasteScore(id);
+  const overall = snackOverall(s, taste);
+  const g = snackGrade(overall);
+  const note = getSnackNote(id);
+  const p = s.per;
+  const starBtns = [1,2,3,4,5].map(n=>
+    `<span onclick="setTasteFromDetail('${id}',${n})" style="cursor:pointer;color:${n<=taste?'#f59e0b':'#e5e7eb'};font-size:28px;padding:0 3px;">★</span>`
+  ).join("");
+  const pddUrl = "https://mobile.yangkeduo.com/search_result.html?search_key=" + encodeURIComponent(s.pdd);
+  let ov = document.getElementById("snackModal");
+  if(!ov){
+    ov = document.createElement("div");
+    ov.id="snackModal";
+    ov.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;display:flex;align-items:flex-end;justify-content:center;";
+    document.body.appendChild(ov);
+    ov.onclick = e => { if(e.target===ov) closeSnackDetail(); };
+  }
+  ov.innerHTML = `<div style="background:#fff;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span style="font-size:16px;font-weight:700;">${s.name}</span>
+      <span onclick="closeSnackDetail()" style="font-size:22px;color:#999;cursor:pointer;line-height:1;">×</span>
+    </div>
+    <img src="${s.img}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:12px;">
+    <div style="font-size:12px;color:#666;margin-bottom:12px;">${s.brand} · ${s.spec} · 实付 ¥${s.price}</div>
+    <div style="display:flex;justify-content:space-around;background:#f9fafb;border-radius:10px;padding:10px;margin-bottom:12px;text-align:center;">
+      <div><div style="font-size:18px;font-weight:800;color:#f97316;">${overall}</div><div style="font-size:10px;color:#999;">综合分</div></div>
+      <div><div style="font-size:16px;font-weight:700;">${s.scores.nutrition}</div><div style="font-size:10px;color:#999;">营养</div></div>
+      <div><div style="font-size:16px;font-weight:700;">${s.scores.value}</div><div style="font-size:10px;color:#999;">性价比</div></div>
+      <div><div style="font-size:16px;font-weight:700;">${taste>0?taste/2+"星":"未评"}</div><div style="font-size:10px;color:#999;">口味</div></div>
+    </div>
+    <div style="font-size:12px;color:#333;margin-bottom:12px;line-height:1.8;">
+      每100g：${p.cal}kcal · 蛋白${p.p}g · 碳水${p.c}g · 脂肪${p.f}g<br>
+      建议一份：${s.serving}g ≈ ${Math.round(p.cal*s.serving/100)}kcal
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:12px;color:#666;margin-bottom:6px;">口味打分（点星星）</div>
+      <div>${starBtns}</div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:12px;color:#666;margin-bottom:6px;">我的备注</div>
+      <textarea id="snackNoteInput" style="width:100%;height:60px;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:13px;resize:none;" placeholder="比如：太咸/适合夜宵/回购">${note}</textarea>
+    </div>
+    <a href="${pddUrl}" target="_blank" style="display:block;text-align:center;background:#e03239;color:#fff;padding:10px;border-radius:8px;font-size:14px;text-decoration:none;margin-bottom:8px;">拼多多搜「${s.pdd}」</a>
+    <button onclick="saveSnackNote('${id}')" style="width:100%;background:#f97316;color:#fff;border:none;padding:10px;border-radius:8px;font-size:14px;cursor:pointer;">保存备注</button>
+  </div>`;
+  ov.style.display="flex";
+}
+function setTasteFromDetail(id, stars){
   setTasteScore(id, stars*2);
+  showSnackDetail(id);
   renderSnacks();
+}
+function saveSnackNote(id){
+  const v = document.getElementById("snackNoteInput").value;
+  setSnackNote(id, v);
+  closeSnackDetail();
+}
+function closeSnackDetail(){
+  const ov = document.getElementById("snackModal");
+  if(ov) ov.style.display="none";
 }
 
 
