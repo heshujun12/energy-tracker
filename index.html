@@ -552,6 +552,18 @@ canvas { width:100% !important; display:block; }
   </div>
 </div>
 
+<!-- ===== 零食详情（整页切换） ===== -->
+<div class="view" id="view-snack-detail">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span onclick="backToSnacks()" style="font-size:22px;color:#666;cursor:pointer;padding:4px 8px;">←</span>
+      <span id="sdTitle" style="font-size:16px;font-weight:700;"></span>
+    </div>
+    <div id="sdBody"></div>
+  </div>
+</div>
+</div>
+
 
 
 <!-- 底部导航 -->
@@ -1299,49 +1311,44 @@ function showSnackDetail(id){
   if(!s) return;
   const taste = getTasteScore(id);
   const overall = snackOverall(s, taste);
-  const g = snackGrade(overall);
   const note = getSnackNote(id);
   const p = s.per;
   const starBtns = [1,2,3,4,5].map(n=>
     `<span onclick="setTasteFromDetail('${id}',${n})" style="cursor:pointer;color:${n<=taste?'#f59e0b':'#e5e7eb'};font-size:28px;padding:0 3px;">★</span>`
   ).join("");
   const pddUrl = "https://mobile.yangkeduo.com/search_result.html?search_key=" + encodeURIComponent(s.pdd);
-  let ov = document.getElementById("snackModal");
-  if(!ov){
-    ov = document.createElement("div");
-    ov.id="snackModal";
-    ov.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:flex-end;justify-content:center;";
-    document.body.appendChild(ov);
-  }
-  ov.innerHTML = `<div style="background:#fff;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:16px;position:relative;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:sticky;top:0;background:#fff;padding-bottom:8px;z-index:1;">
-      <span style="font-size:16px;font-weight:700;">${s.name}</span>
-      <span onclick="closeSnackDetail()" style="font-size:26px;color:#999;cursor:pointer;line-height:1;padding:0 8px;">×</span>
-    </div>
-    <img src="${s.img}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:12px;">
+  document.getElementById("sdTitle").textContent = s.name;
+  document.getElementById("sdBody").innerHTML = `
+    <img src="${s.img}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:12px;" onerror="this.style.display='none';">
     <div style="font-size:12px;color:#666;margin-bottom:12px;">${s.brand} · ${s.spec} · 实付 ¥${s.price}</div>
-    <div style="display:flex;justify-content:space-around;background:#f9fafb;border-radius:10px;padding:10px;margin-bottom:12px;text-align:center;">
-      <div><div style="font-size:18px;font-weight:800;color:#f97316;">${overall}</div><div style="font-size:10px;color:#999;">综合分</div></div>
+    <div style="display:flex;justify-content:space-around;background:#f9fafb;border-radius:10px;padding:12px;margin-bottom:12px;text-align:center;">
+      <div><div style="font-size:22px;font-weight:800;color:#f97316;">${overall}</div><div style="font-size:10px;color:#999;">综合分</div></div>
       <div><div style="font-size:16px;font-weight:700;">${s.scores.nutrition}</div><div style="font-size:10px;color:#999;">营养</div></div>
       <div><div style="font-size:16px;font-weight:700;">${s.scores.value}</div><div style="font-size:10px;color:#999;">性价比</div></div>
       <div><div style="font-size:16px;font-weight:700;">${taste>0?taste/2+"星":"未评"}</div><div style="font-size:10px;color:#999;">口味</div></div>
     </div>
-    <div style="font-size:12px;color:#333;margin-bottom:12px;line-height:1.8;">
-      每100g：${p.cal}kcal · 蛋白${p.p}g · 碳水${p.c}g · 脂肪${p.f}g<br>
-      建议一份：${s.serving}g ≈ ${Math.round(p.cal*s.serving/100)}kcal
+    <div style="font-size:13px;color:#333;margin-bottom:14px;line-height:1.8;">
+      <b>每 100g 营养</b><br>
+      热量 ${p.cal} kcal · 蛋白 ${p.p}g · 碳水 ${p.c}g · 脂肪 ${p.f}g<br><br>
+      <b>建议一份 ${s.serving}g</b><br>
+      ≈ ${Math.round(p.cal*s.serving/100)} kcal · 蛋白 ${(p.p*s.serving/100).toFixed(1)}g
     </div>
-    <div style="margin-bottom:12px;">
-      <div style="font-size:12px;color:#666;margin-bottom:6px;">口味打分（点星星）</div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:13px;color:#666;margin-bottom:6px;">口味打分（点星星）</div>
       <div>${starBtns}</div>
     </div>
-    <div style="margin-bottom:12px;">
-      <div style="font-size:12px;color:#666;margin-bottom:6px;">我的备注</div>
-      <textarea id="snackNoteInput" style="width:100%;height:60px;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:13px;resize:none;" placeholder="比如：太咸/适合夜宵/回购">${note}</textarea>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:13px;color:#666;margin-bottom:6px;">我的备注</div>
+      <textarea id="snackNoteInput" style="width:100%;height:70px;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:13px;resize:none;" placeholder="比如：太咸/适合夜宵/回购">${note}</textarea>
     </div>
-    <a href="${pddUrl}" target="_blank" style="display:block;text-align:center;background:#e03239;color:#fff;padding:10px;border-radius:8px;font-size:14px;text-decoration:none;margin-bottom:8px;">拼多多搜「${s.pdd}」</a>
-    <button onclick="saveSnackNote('${id}')" style="width:100%;background:#f97316;color:#fff;border:none;padding:10px;border-radius:8px;font-size:14px;cursor:pointer;">保存备注</button>
-  </div>`;
-  ov.style.display="flex";
+    <a href="${pddUrl}" target="_blank" style="display:block;text-align:center;background:#e03239;color:#fff;padding:12px;border-radius:8px;font-size:14px;text-decoration:none;margin-bottom:8px;">拼多多搜「${s.pdd}」</a>
+    <button onclick="saveSnackNote('${id}')" style="width:100%;background:#f97316;color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;cursor:pointer;">保存备注</button>
+  `;
+  switchTab("snack-detail");
+}
+function backToSnacks(){
+  switchTab("snacks");
+  renderSnacks();
 }
 function setTasteFromDetail(id, stars){
   setTasteScore(id, stars*2);
@@ -1351,22 +1358,20 @@ function setTasteFromDetail(id, stars){
 function saveSnackNote(id){
   const v = document.getElementById("snackNoteInput").value;
   setSnackNote(id, v);
-  closeSnackDetail();
+  backToSnacks();
 }
-function closeSnackDetail(){
-  const ov = document.getElementById("snackModal");
-  if(ov) ov.style.display="none";
-}
+function closeSnackDetail(){ backToSnacks(); }
 
 
 // ===== Tab切换 =====
 function switchTab(view) {
   document.querySelectorAll(".tabbar .tab").forEach(t=>t.classList.remove("active"));
-  document.querySelector(`.tabbar .tab[data-view="${view}"]`).classList.add("active");
+  const tabBtn = document.querySelector(`.tabbar .tab[data-view="${view}"]`);
+  if(tabBtn) tabBtn.classList.add("active");
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
-  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食"};
-  if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view];
+  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食", "snack-detail":"零食详情"};
+  if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view]||"";
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
   if(view==="sport") renderSportDay();
