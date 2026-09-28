@@ -545,9 +545,9 @@ canvas { width:100% !important; display:block; }
       <h3 style="font-size:15px;font-weight:700;">零食回购库</h3>
       <span id="snackCount" style="font-size:12px;color:var(--text3);"></span>
     </div>
-    <div id="snackGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;"></div>
-    <div style="margin-top:14px;font-size:11px;color:var(--text3);line-height:1.6;">
-      评分：营养健康 40% · 口味口感 35% · 性价比 25%（10分制）。综合分 9+ 强烈回购，7-8.9 可回购，5-6.9 偶尔解馋。
+    <div id="snackGrid" style="display:flex;flex-direction:column;gap:6px;"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6;">
+      营养/性价比由系统按成分和价格评分；口味点星星由你评（5星=10分，自动保存到本机）。综合分 9+ 强烈回购，7.5+ 可回购。
     </div>
   </div>
 </div>
@@ -1214,57 +1214,98 @@ function isSameWeek(ds, ref) {
 
 // ===== 零食库 =====
 const SNACK_LIBRARY = [
-  {
-    name:"水煮牛腱肉", brand:"袋鼠先生", spec:"30g/小袋，5袋/包",
-    emoji:"🥩", color:"#f97316",
-    per:{cal:153, p:29.7, c:0, f:3.7, sodium:380}, unit:"g", serving:30, price:5.0,
-    scores:{nutrition:9.5, taste:7.5, value:7.0},
-    note:"高蛋白近零碳，咸淡适中，追剧解馋无负担。"
-  },
-  {
-    name:"风干鸡肉条", brand:"光合力量", spec:"约15g/根",
-    emoji:"🍗", color:"#eab308",
-    per:{cal:312, p:52.8, c:16.8, f:3.3, sodium:600}, unit:"g", serving:30, price:3.0,
-    scores:{nutrition:7.5, taste:8.5, value:8.0},
-    note:"有嚼劲、越嚼越香；含碳水，碳水超标时要克制数量。"
-  }
+  {id:"zhenzero-yogurt", name:"0蔗糖酸奶", brand:"真零", spec:"720g×2桶",
+   emoji:"🥛", color:"#3b82f6",
+   per:{cal:60, p:4, c:5, f:2.5}, serving:150, price:39.87,
+   scores:{nutrition:8.5, value:7.0}},
+  {id:"ocuk-oat", name:"全麦脆燕麦片", brand:"欧扎克", spec:"1.05kg+400g",
+   emoji:"🥣", color:"#b45309",
+   per:{cal:370, p:12, c:65, f:5}, serving:40, price:49.4,
+   scores:{nutrition:6.5, value:7.5}},
+  {id:"yanjin-suro", name:"手撕素肉", brand:"盐津铺子", spec:"多口味混合",
+   emoji:"🌶️", color:"#dc2626",
+   per:{cal:180, p:15, c:10, f:9}, serving:30, price:17.9,
+   scores:{nutrition:6.5, value:7.5}},
+  {id:"yanjin-quail", name:"鹌鹑蛋(盐焗+酱卤)", brand:"盐津铺子", spec:"双味混搭",
+   emoji:"🥚", color:"#ca8a04",
+   per:{cal:160, p:13, c:3, f:11}, serving:40, price:27.3,
+   scores:{nutrition:6.0, value:6.5}},
+  {id:"shen-egg", name:"低脂鸡蛋干", brand:"沈师傅", spec:"100g×3袋",
+   emoji:"🧀", color:"#eab308",
+   per:{cal:140, p:16, c:4, f:6}, serving:50, price:20.67,
+   scores:{nutrition:8.0, value:6.0}},
+  {id:"kangaroo-beef", name:"水煮牛腱肉", brand:"袋鼠先生", spec:"150g/包",
+   emoji:"🥩", color:"#f97316",
+   per:{cal:153, p:29.7, c:0, f:3.7}, serving:30, price:44.89,
+   scores:{nutrition:9.5, value:5.5}},
+  {id:"growth-chicken", name:"风干鸡胸肉干条", brand:"光合力量", spec:"500g/罐 香辣",
+   emoji:"🍗", color:"#eab308",
+   per:{cal:312, p:52.8, c:16.8, f:3.3}, serving:30, price:27.35,
+   scores:{nutrition:7.5, value:8.5}},
+  {id:"rougandang-sausage", name:"玉米鸡胸肉肠", brand:"肉敢当", spec:"100g×3根",
+   emoji:"🌽", color:"#16a34a",
+   per:{cal:110, p:12, c:3, f:5}, serving:100, price:19.9,
+   scores:{nutrition:7.5, value:7.5}},
+  {id:"uxing-balls", name:"口袋鸡胸肉弹弹丸", brand:"优形", spec:"10袋组合",
+   emoji:"🟢", color:"#22c55e",
+   per:{cal:110, p:15, c:2, f:4}, serving:48, price:29.9,
+   scores:{nutrition:8.5, value:7.0}},
 ];
+function getTasteScore(id){
+  try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
+}
+function setTasteScore(id, v){
+  const all = JSON.parse(localStorage.getItem('snackTaste')||'{}');
+  all[id]=v; localStorage.setItem('snackTaste', JSON.stringify(all));
+}
 function snackGrade(s){
   if(s>=9) return {label:"强烈回购", color:"#22c55e"};
-  if(s>=7) return {label:"可回购", color:"#f59e0b"};
-  if(s>=5) return {label:"偶尔解馋", color:"#94a3b8"};
+  if(s>=7.5) return {label:"可回购", color:"#f59e0b"};
+  if(s>=6) return {label:"偶尔解馋", color:"#94a3b8"};
   return {label:"不推荐", color:"#ef4444"};
 }
 function renderSnacks(){
   const grid = document.getElementById("snackGrid");
   const list = SNACK_LIBRARY.map(s=>{
-    const overall = Math.round((s.scores.nutrition*0.4 + s.scores.taste*0.35 + s.scores.value*0.25)*10)/10;
-    return {...s, overall};
+    const taste = getTasteScore(s.id);
+    let overall;
+    if(taste>0){
+      overall = Math.round((s.scores.nutrition*0.4 + taste*2*0.35 + s.scores.value*0.25)*10)/10;
+    } else {
+      overall = Math.round((s.scores.nutrition*0.65 + s.scores.value*0.35)*10)/10;
+    }
+    return {...s, taste, overall};
   }).sort((a,b)=>b.overall-a.overall);
   document.getElementById("snackCount").textContent = "已收录 "+SNACK_LIBRARY.length+" 款";
   grid.innerHTML = list.map(s=>{
-    const overall = Math.round((s.scores.nutrition*0.4 + s.scores.taste*0.35 + s.scores.value*0.25)*10)/10;
-    const g = snackGrade(overall);
+    const g = snackGrade(s.overall);
     const p = s.per;
     const cal = Math.round(p.cal*s.serving/100);
     const pr = (p.p*s.serving/100).toFixed(1);
     const ca = (p.c*s.serving/100).toFixed(1);
     const fa = (p.f*s.serving/100).toFixed(1);
-    return `<div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-      <div style="width:100%;aspect-ratio:1.3;border-radius:8px;background:${s.color}18;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:8px;">${s.emoji}</div>
-      <div style="font-size:13px;font-weight:700;color:#222;line-height:1.3;">${s.name}</div>
-      <div style="font-size:10px;color:var(--text3);margin:2px 0 6px;">${s.brand} · ${s.spec}</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:20px;font-weight:800;color:${s.color};">${overall}<span style="font-size:10px;color:var(--text3);font-weight:400;"> /10</span></span>
-        <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:${g.color}18;color:${g.color};">${g.label}</span>
+    const stars = [1,2,3,4,5].map(n=>
+      `<span onclick="rateTaste('${s.id}',${n})" style="cursor:pointer;color:${n<=s.taste?'#f59e0b':'#e5e7eb'};font-size:14px;padding:0 1px;">★</span>`
+    ).join("");
+    return `<div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+      <div style="width:40px;height:40px;border-radius:8px;background:${s.color}18;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${s.emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:#222;line-height:1.2;">${s.name} <span style="font-size:10px;color:var(--text3);font-weight:400;">${s.brand}</span></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.spec} · ${s.serving}g≈${cal}kcal 蛋${pr}g</div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:2px;">营养${s.scores.nutrition} · 性价比${s.scores.value} ${s.taste===0?'· 点星星评口味':''}</div>
       </div>
-      <div style="font-size:10px;color:var(--text3);line-height:1.6;">
-        营养 ${s.scores.nutrition} · 口味 ${s.scores.taste} · 性价比 ${s.scores.value}<br>
-        ${s.serving}g：${cal}kcal 蛋白${pr}g 碳${ca}g 脂${fa}g
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:16px;font-weight:800;color:${s.color};">${s.overall}<span style="font-size:9px;color:var(--text3);font-weight:400;">/10</span></div>
+        <div>${stars}</div>
+        <div style="font-size:9px;padding:1px 6px;border-radius:8px;background:${g.color}18;color:${g.color};display:inline-block;margin-top:1px;">${g.label}</div>
       </div>
-      <div style="font-size:10px;color:#888;margin-top:6px;line-height:1.5;">${s.note}</div>
     </div>`;
   }).join("");
+}
+function rateTaste(id, stars){
+  // 点满5星=10分；5星制映射到10分制
+  setTasteScore(id, stars*2);
+  renderSnacks();
 }
 
 
