@@ -7,25 +7,76 @@
     "image": "assets/tomato-beef.jpg",
     "ingredientImage": null,
     "servings": 4,
-    "perServing": {"cal": 240, "p": 10, "c": 12.5, "f": 15},
-    "tags": ["高蛋白", "下饭", "家宴"],
+    "perServing": {
+      "cal": 240,
+      "p": 10,
+      "c": 12.5,
+      "f": 15
+    },
+    "tags": [
+      "高蛋白",
+      "下饭",
+      "家宴"
+    ],
     "ingredients": [
-      {"name": "牛腩", "amount": "500g"},
-      {"name": "番茄", "amount": "4个"},
-      {"name": "土豆", "amount": "2个"},
-      {"name": "洋葱", "amount": "半个"},
-      {"name": "姜片", "amount": "3片"},
-      {"name": "番茄酱", "amount": "2勺"},
-      {"name": "盐/糖/油", "amount": "适量"}
+      {
+        "name": "牛腩",
+        "amount": "500g"
+      },
+      {
+        "name": "番茄",
+        "amount": "4个"
+      },
+      {
+        "name": "土豆",
+        "amount": "2个"
+      },
+      {
+        "name": "洋葱",
+        "amount": "半个"
+      },
+      {
+        "name": "姜片",
+        "amount": "3片"
+      },
+      {
+        "name": "番茄酱",
+        "amount": "2勺"
+      },
+      {
+        "name": "盐/糖/油",
+        "amount": "适量"
+      }
     ],
     "steps": [
-      {"text": "牛腩切块冷水下锅焯水，撇沫捞出", "img": "assets/tb-step1.jpg"},
-      {"text": "番茄土豆切块，洋葱切丝", "img": "assets/tb-step2.jpg"},
-      {"text": "热油炒香洋葱姜片，下牛腩煎至微黄", "img": "assets/tb-step3.jpg"},
-      {"text": "加番茄块炒出红汁，放2勺番茄酱", "img": "assets/tb-step4.jpg"},
-      {"text": "加热水没过，大火烧开转小火炖1小时", "img": "assets/tb-step5.jpg"},
-      {"text": "加土豆块继续炖20分钟至软烂", "img": "assets/tb-step6.jpg"},
-      {"text": "加盐糖调味，大火收汁撒葱花", "img": "assets/tb-step7.jpg"}
+      {
+        "text": "牛腩切块冷水下锅焯水，撇沫捞出",
+        "img": "assets/tb-step1.jpg"
+      },
+      {
+        "text": "番茄土豆切块，洋葱切丝",
+        "img": "assets/tb-step2.jpg"
+      },
+      {
+        "text": "热油炒香洋葱姜片，下牛腩煎至微黄",
+        "img": "assets/tb-step3.jpg"
+      },
+      {
+        "text": "加番茄块炒出红汁，放2勺番茄酱",
+        "img": "assets/tb-step4.jpg"
+      },
+      {
+        "text": "加热水没过，大火烧开转小火炖1小时",
+        "img": "assets/tb-step5.jpg"
+      },
+      {
+        "text": "加土豆块继续炖20分钟至软烂",
+        "img": "assets/tb-step6.jpg"
+      },
+      {
+        "text": "加盐糖调味，大火收汁撒葱花",
+        "img": "assets/tb-step7.jpg"
+      }
     ],
     "note": "一次做4份分装冷冻，吃时配一碗米饭，营养均衡。"
   },
@@ -37,23 +88,219 @@
     "image": "assets/chicken-congee.jpg",
     "ingredientImage": null,
     "servings": 3,
-    "perServing": {"cal": 280, "p": 26, "c": 34, "f": 3.5},
-    "tags": ["高蛋白", "早餐", "养胃"],
+    "perServing": {
+      "cal": 280,
+      "p": 26,
+      "c": 34,
+      "f": 3.5
+    },
+    "tags": [
+      "高蛋白",
+      "早餐",
+      "养胃"
+    ],
     "ingredients": [
-      {"name": "鸡小胸", "amount": "200g"},
-      {"name": "大米", "amount": "100g"},
-      {"name": "干香菇", "amount": "6朵"},
-      {"name": "生菜", "amount": "100g"},
-      {"name": "姜丝", "amount": "5g"},
-      {"name": "盐/香油", "amount": "适量"}
+      {
+        "name": "鸡小胸",
+        "amount": "200g"
+      },
+      {
+        "name": "大米",
+        "amount": "100g"
+      },
+      {
+        "name": "干香菇",
+        "amount": "6朵"
+      },
+      {
+        "name": "生菜",
+        "amount": "100g"
+      },
+      {
+        "name": "姜丝",
+        "amount": "5g"
+      },
+      {
+        "name": "盐/香油",
+        "amount": "适量"
+      }
     ],
     "steps": [
-      {"text": "大米淘洗后加水煮成粥底约40分钟", "img": null},
-      {"text": "鸡小胸切丁，用盐和姜丝腌制10分钟", "img": null},
-      {"text": "干香菇泡发后切小丁", "img": null},
-      {"text": "粥底煮稠后下鸡丁香菇丁煮5分钟", "img": null},
-      {"text": "最后下生菜丝，加盐和香油调味", "img": null}
+      {
+        "text": "大米淘洗后加水煮成粥底约40分钟",
+        "img": null
+      },
+      {
+        "text": "鸡小胸切丁，用盐和姜丝腌制10分钟",
+        "img": null
+      },
+      {
+        "text": "干香菇泡发后切小丁",
+        "img": null
+      },
+      {
+        "text": "粥底煮稠后下鸡丁香菇丁煮5分钟",
+        "img": null
+      },
+      {
+        "text": "最后下生菜丝，加盐和香油调味",
+        "img": null
+      }
     ],
     "note": "三人份。鸡胸肉嫩不柴，生菜最后放保持翠绿。"
+  },
+  {
+    "id": "tomato-basa",
+    "name": "番茄巴沙鱼",
+    "emoji": "🐟",
+    "color": "#0ea5e9",
+    "servings": 4,
+    "perServing": {
+      "cal": 195,
+      "p": 22,
+      "c": 12,
+      "f": 4.5
+    },
+    "tags": [
+      "晚餐",
+      "高蛋白",
+      "低脂",
+      "无刺",
+      "老人小孩友好",
+      "感冒恢复期"
+    ],
+    "ingredients": [
+      {
+        "name": "巴沙鱼柳",
+        "amount": "600g"
+      },
+      {
+        "name": "冠农番茄小丁(200g/袋)",
+        "amount": "1袋"
+      },
+      {
+        "name": "新鲜番茄",
+        "amount": "200g(约2个中等)"
+      },
+      {
+        "name": "姜片",
+        "amount": "3片"
+      },
+      {
+        "name": "食用油",
+        "amount": "10g"
+      },
+      {
+        "name": "白糖",
+        "amount": "少许(按需)"
+      },
+      {
+        "name": "盐",
+        "amount": "适量"
+      }
+    ],
+    "steps": [
+      "巴沙鱼解冻切大块，厨房纸吸干水分，少许盐腌10分钟",
+      "新鲜番茄切块；冠农番茄小丁开袋备用",
+      "锅中倒油，姜片爆香，倒入新鲜番茄中小火炒软出沙",
+      "倒入整袋冠农番茄小丁翻炒1分钟，加热水煮开，少许糖微调酸甜",
+      "放入巴沙鱼块，中火煮5-8分钟至鱼肉变白，别久煮",
+      "尝味补盐，撒葱花出锅"
+    ],
+    "note": "冠农番茄小丁免洗免切，番茄风味浓，可省番茄酱；无新鲜番茄就用2袋(400g)替代。巴沙鱼无刺，老人小孩都能吃。"
+  },
+  {
+    "id": "airfryer-potato-pancake",
+    "name": "空气炸锅土豆丝蛋饼",
+    "emoji": "🥔",
+    "color": "#eab308",
+    "servings": 4,
+    "perServing": {
+      "cal": 140,
+      "p": 4,
+      "c": 20,
+      "f": 4
+    },
+    "tags": [
+      "空气炸锅",
+      "主食",
+      "小孩友好",
+      "晚餐"
+    ],
+    "ingredients": [
+      {
+        "name": "土豆",
+        "amount": "250g"
+      },
+      {
+        "name": "鸡蛋",
+        "amount": "2个(约100g)"
+      },
+      {
+        "name": "面粉",
+        "amount": "1大勺(约20g)"
+      },
+      {
+        "name": "盐/黑胡椒",
+        "amount": "适量"
+      },
+      {
+        "name": "油",
+        "amount": "刷薄层约5g"
+      }
+    ],
+    "steps": [
+      "土豆切细丝，清水泡2分钟后彻底挤干水分",
+      "土豆丝加鸡蛋、面粉、盐、黑胡椒搅匀",
+      "炸篮铺烘焙纸刷薄油，混合物平铺成1cm厚一层",
+      "空气炸锅180°C烤15分钟，第8分钟翻面一次",
+      "表面刷薄油，烤到边缘金黄、筷子能戳透即可"
+    ],
+    "note": "土豆丝一定要挤干水，不然烤不熟。蛋融在饼里，小孩能吃。"
+  },
+  {
+    "id": "blanched-greens",
+    "name": "白灼娃娃菜",
+    "emoji": "🥬",
+    "color": "#22c55e",
+    "servings": 4,
+    "perServing": {
+      "cal": 25,
+      "p": 1.5,
+      "c": 3,
+      "f": 1
+    },
+    "tags": [
+      "低脂",
+      "素菜",
+      "快手",
+      "晚餐"
+    ],
+    "ingredients": [
+      {
+        "name": "娃娃菜",
+        "amount": "3棵(约400g)"
+      },
+      {
+        "name": "蒜末",
+        "amount": "3瓣"
+      },
+      {
+        "name": "生抽",
+        "amount": "1.5勺"
+      },
+      {
+        "name": "香油",
+        "amount": "几滴"
+      }
+    ],
+    "steps": [
+      "娃娃菜剥开洗净，大的对半切",
+      "烧一锅水，开了加几滴油和少许盐",
+      "放入娃娃菜烫1.5-2分钟捞出摆盘",
+      "蒜末铺菜上，淋生抽",
+      "烧热一小勺油浇在蒜末上激香，滴香油"
+    ],
+    "note": "3分钟搞定。补充纤维和维生素。"
   }
 ]
