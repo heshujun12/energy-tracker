@@ -1182,44 +1182,32 @@ const SPORT_PLAN = {
       {name:"抗阻训练", tag:"增肌保代谢", tagClass:"tag-muscle",
        tip:"新手先做一半量，能轻松完成再加。运动后30分钟内补充蛋白质。",
        keepUrl:"https://www.bilibili.com/video/BV1kyvYeyET9/",
-       items:[
-         {id:"r1", name:"哑铃深蹲", desc:"双手持哑铃放肩上，下蹲到大腿平行地面，站起。", meta:"3组 × 12次 · 练腿+核心"},
-         {id:"r2", name:"俯卧撑（跪姿也行）", desc:"身体一条线，下降到胸接近地面，推起。", meta:"3组 × 10~12次 · 练胸肩三头"},
-         {id:"r3", name:"哑铃划船", desc:"一手扶凳，另一手拉哑铃到腰侧，感受背部收缩。", meta:"3组 × 12次/侧 · 练背"},
-         {id:"r4", name:"哑铃推举", desc:"坐姿，哑铃从肩推到头顶，缓慢放下。", meta:"3组 × 12次 · 练肩"},
-         {id:"r5", name:"臀桥", desc:"仰卧屈膝，臀部发力顶起，顶端夹紧2秒。", meta:"3组 × 15次 · 练臀后链"},
-       ]},
+       videoTitle:"纯徒手·无器械 20分钟新手跟练",
+       videoDesc:"每个动作30秒+休息15秒，节奏慢，有分解。适合零基础。",
+       items:[]},
       {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
        tip:"日常看手机举到视线水平，每低头30分钟做一次收下巴。",
        keepUrl:"https://www.bilibili.com/video/BV135Tx65E4P/",
-       items:[
-         {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
-         {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
-         {id:"n3", name:"舌头抵上颚", desc:"舌头顶住上颚，张嘴向下拉形成对抗力。", meta:"保持15秒 × 5次"},
-         {id:"n4", name:"颈部转动", desc:"缓慢顺时针转一圈，再逆时针转一圈，动作要慢。", meta:"各方向 × 5圈"},
-       ]}
+       videoTitle:"8min瘦脸挑战·消灭双下巴·天鹅颈",
+       videoDesc:"全程中文讲解，8分钟跟练，低头党每天做一次。",
+       items:[]}
     ]
   },
   2: {
     title: "HIIT + 颈部训练",
     sections: [
       {name:"HIIT 减内脏脂肪", tag:"针对性", tagClass:"tag-visceral",
-       tip:"HIIT比中低强度有氧多减28.5%内脏脂肪。新手从4组开始，逐步加到8组。",
+       tip:"HIIT比中低强度有氧多减内脏脂肪。新手从半量开始。",
        keepUrl:"https://www.bilibili.com/video/BV1mg7Q6uESH/",
-       items:[
-         {id:"h1", name:"热身", desc:"快走/慢跑，身体微微出汗。", meta:"5分钟"},
-         {id:"h2", name:"HIIT循环", desc:"30秒全力（冲刺跑/跳绳/高抬腿）+ 60秒慢走恢复，重复8组。", meta:"8组 × 1.5分钟"},
-         {id:"h3", name:"冷身拉伸", desc:"拉伸大腿、小腿、臀部，深呼吸放松。", meta:"5分钟"},
-       ]},
+       videoTitle:"韩小四12min全身HIIT·无跑跳",
+       videoDesc:"大基数友好，膝盖零负担，12分钟暴汗。",
+       items:[]},
       {name:"颈部/下颌训练", tag:"改善双下巴", tagClass:"tag-jaw",
        tip:"每天5分钟，坚持才有效果。",
        keepUrl:"https://www.bilibili.com/video/BV135Tx65E4P/",
-       items:[
-         {id:"n1", name:"收下巴（Chin Tuck）", desc:"坐直，头水平向后收，做出双下巴，感觉后颈拉伸。", meta:"保持5秒 × 15次"},
-         {id:"n2", name:"仰头拉伸", desc:"抬头看天花板，下巴尽量向上顶，感觉颈前侧拉伸。", meta:"保持15秒 × 5次"},
-         {id:"n3", name:"舌头抵上颚", desc:"舌头顶住上颚，张嘴向下拉形成对抗力。", meta:"保持15秒 × 5次"},
-         {id:"n4", name:"颈部转动", desc:"缓慢顺时针转一圈，再逆时针转一圈，动作要慢。", meta:"各方向 × 5圈"},
-       ]}
+       videoTitle:"8min瘦脸挑战·消灭双下巴·天鹅颈",
+       videoDesc:"全程中文讲解，8分钟跟练。",
+       items:[]}
     ]
   },
   3: { title:"休息日", rest:true, restText:"今天休息，让肌肉恢复。可以散步20~30分钟，保持活动量。" },
@@ -1327,17 +1315,28 @@ function renderSportDay() {
     plan.sections.forEach(sec => {
       html += `<div class="sport-section">
         <h4>${sec.name} <span class="tag ${sec.tagClass}">${sec.tag}</span></h4>`;
-      sec.items.forEach(item => {
-        const done = checkins.includes(item.id);
-        html += `<div class="check-item ${done?'done':''}" onclick="toggleSportCheckin('${item.id}')">
+      if(sec.videoTitle) {
+        const done = checkins.includes(sec.name);
+        html += `<div class="check-item ${done?'done':''}" onclick="toggleSportCheckin('${sec.name}')">
           <div class="check-box">${done?'✓':''}</div>
           <div class="ex-content">
-            <div class="ex-name">${item.name}</div>
-            <div class="ex-desc">${item.desc}</div>
-            <div class="ex-meta">${item.meta}</div>
+            <div class="ex-name">${sec.videoTitle}</div>
+            <div class="ex-desc">${sec.videoDesc||''}</div>
           </div>
         </div>`;
-      });
+      } else {
+        sec.items.forEach(item => {
+          const done = checkins.includes(item.id);
+          html += `<div class="check-item ${done?'done':''}" onclick="toggleSportCheckin('${item.id}')">
+            <div class="check-box">${done?'✓':''}</div>
+            <div class="ex-content">
+              <div class="ex-name">${item.name}</div>
+              <div class="ex-desc">${item.desc}</div>
+              <div class="ex-meta">${item.meta}</div>
+            </div>
+          </div>`;
+        });
+      }
       if(sec.tip) html += `<div class="sport-tip">💡 ${sec.tip}</div>`;
       if(sec.keepUrl) html += `<a class="keep-btn" href="${sec.keepUrl}" target="_blank" rel="noopener">▶ B站跟练</a>`;
       html += `</div>`;
