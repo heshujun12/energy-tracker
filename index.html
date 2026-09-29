@@ -660,6 +660,10 @@ const DATA = {
         {time:"08:30", meal:"早餐", foodName:"真零风味发酵乳(1碗150g)", weight:150, cal:125, p:6.0, c:8.4, f:7.5},
         {time:"08:30", meal:"早餐", foodName:"腰果(4颗)+杏仁(9颗)", weight:18, cal:101, p:3.5, c:4.4, f:8.4},
         {time:"12:00", meal:"午餐", foodName:"酸菜肉末米粉(1份,无蛋)", weight:300, cal:390, p:12.8, c:50.5, f:14.2},
+        {time:"18:00", meal:"晚餐", foodName:"萝卜炖排骨(1/5锅)", weight:300, cal:256, p:11.4, c:10.0, f:18.2},
+        {time:"18:00", meal:"晚餐", foodName:"杏鲍菇焖鸡胸(1/4锅)", weight:140, cal:125, p:18.4, c:3.8, f:2.8},
+        {time:"18:00", meal:"晚餐", foodName:"南瓜蛋糕(1/4个,估100g)", weight:100, cal:280, p:5.0, c:35.0, f:12.0},
+        {time:"18:00", meal:"晚餐", foodName:"米饭(一小碗)", weight:150, cal:186, p:3.9, c:40.0, f:0.3},
       ],
       water: 0, exercise: 0, steps: 0, workoutMin: 0, activityCount: 0, weight: 80.09
     },
@@ -1824,15 +1828,6 @@ function renderRecipeList() {
   list.innerHTML = html;
 }
 
-function getRecipeNote(id){
-  try{ return JSON.parse(localStorage.getItem('recipeNotes')||'{}')[id] || ""; }catch(e){ return ""; }
-}
-function saveRecipeNote(id){
-  const v = document.getElementById("recipeNoteInput").value;
-  const all = JSON.parse(localStorage.getItem('recipeNotes')||'{}');
-  all[id]=v; localStorage.setItem('recipeNotes', JSON.stringify(all));
-  alert("备注已保存");
-}
 function showRecipeDetail(id) {
   const r = RECIPES.find(x => x.id === id);
   if(!r) return;
@@ -1913,15 +1908,6 @@ function showRecipeDetail(id) {
     
     <div style="font-size:12px;color:#9a8f86;background:#faf7f4;padding:9px 12px;border-radius:9px;line-height:1.5;">
       <b style="color:${r.color};">小贴士　</b>${r.note}
-    </div>
-    
-    <div style="margin-top:14px;">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:9px;">
-        <div style="width:3px;height:13px;background:#f97316;border-radius:2px;"></div>
-        <span style="font-size:13px;font-weight:700;color:#333;">我的备注</span>
-      </div>
-      <textarea id="recipeNoteInput" style="width:100%;height:70px;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;resize:none;box-sizing:border-box;" placeholder="写点自己的经验，比如放盐量、娃爱不爱吃...">${getRecipeNote(id)}</textarea>
-      <button onclick="saveRecipeNote('${id}')" style="width:100%;margin-top:8px;background:#f97316;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">保存备注</button>
     </div>
   `;
   detail.style.display = "";
