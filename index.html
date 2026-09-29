@@ -1424,22 +1424,32 @@ function switchTab(view) {
 }
 
 // ===== 今日能量（运动消耗 + 能量缺口） =====
-function getLatestBmr() {
-  const tk = todayKey();
+let energyCardDate = ""; // 空=今天，可切换回看历史
+function getLatestBmr(forDate) {
   let bmr = 0;
   DATA.weightHistory.forEach(w => {
-    if(w.date <= tk) bmr = w.bmr;
+    if(w.date <= forDate) bmr = w.bmr;
   });
   return bmr;
+}
+function shiftEnergyDate(delta) {
+  const base = energyCardDate || todayKey();
+  const d = new Date(base + "T12:00:00");
+  d.setDate(d.getDate() + delta);
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), dd = String(d.getDate()).padStart(2,"0");
+  const nk = y+"-"+m+"-"+dd;
+  if(nk > todayKey()) return; // 不允许到未来
+  energyCardDate = nk;
+  renderSportEnergy();
 }
 function renderSportEnergy() {
   const el = document.getElementById("sportEnergyCard");
   if(!el) return;
   const body = document.getElementById("sportEnergyBody");
   const dateEl = document.getElementById("sportEnergyDate");
-  const tk = todayKey();
+  const tk = energyCardDate || todayKey();
   const t = dayTotal(tk);
-  const bmr = getLatestBmr();
+  const bmr = getLatestBmr(tk);
   const exercise = t.exercise || 0;
   const total = bmr + exercise;
   const intake = t.cal || 0;
@@ -1447,19 +1457,22 @@ function renderSportEnergy() {
   const gapAbs = Math.abs(gap);
   const isDeficit = gap >= 0;
   const fatEst = Math.round(gapAbs / 7700 * 1000); // 按1kg脂肪≈7700kcal估算
-  const d = new Date();
+  const d = new Date(tk + "T12:00:00");
   const week = "日一二三四五六"[d.getDay()];
-  dateEl.textContent = `${d.getMonth()+1}月${d.getDate()}日 周${week}`;
+  const isToday = tk === todayKey();
+  dateEl.innerHTML = `<button onclick="shiftEnergyDate(-1)" style="border:none;background:var(--bg);border-radius:8px;width:26px;height:26px;font-size:14px;color:var(--primary);cursor:pointer;line-height:1;">‹</button>
+    <span style="margin:0 6px;">${d.getMonth()+1}月${d.getDate()}日 周${week}${isToday?' · 今日':''}</span>
+    <button onclick="shiftEnergyDate(1)" style="border:none;background:var(--bg);border-radius:8px;width:26px;height:26px;font-size:14px;color:var(--primary);cursor:pointer;line-height:1;${tk>=todayKey()?'opacity:.3;':''}">›</button>`;
 
   let html = `
     <div style="display:flex;gap:10px;margin-bottom:12px;">
       <div style="flex:1;background:var(--primary-light);border-radius:12px;padding:12px 10px;text-align:center;">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">今日运动消耗</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">当日运动消耗</div>
         <div style="font-size:26px;font-weight:800;color:var(--primary);line-height:1.1;">${exercise}<span style="font-size:12px;font-weight:400;color:var(--text3);"> kcal</span></div>
         <div style="font-size:10px;color:var(--text3);margin-top:4px;">步数 ${t.steps} · 锻炼 ${t.workoutMin}min · 活动 ${t.activityCount}次</div>
       </div>
       <div style="flex:1;background:${isDeficit?'var(--green-light)':'#fef2f2'};border-radius:12px;padding:12px 10px;text-align:center;">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">今日能量缺口</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">当日能量缺口</div>
         <div style="font-size:26px;font-weight:800;color:${isDeficit?'var(--green)':'#dc2626'};line-height:1.1;">${gap>0?'+':''}${gapAbs}<span style="font-size:12px;font-weight:400;color:var(--text3);"> kcal</span></div>
         <div style="font-size:10px;color:var(--text3);margin-top:4px;">${isDeficit?'约减脂'+fatEst+'g':'热量盈余'+fatEst+'g'}</div>
       </div>
@@ -1470,9 +1483,9 @@ function renderSportEnergy() {
     <div style="font-size:11px;color:var(--text3);line-height:1.6;margin-top:6px;padding-top:8px;border-top:1px dashed var(--border);">
       ${isDeficit
         ? (gap > 500
-          ? `缺口 ${gap} kcal：今天热量额度还比较充足，正常吃够蛋白质即可，不用硬塞或过度节食。`
-          : `缺口 ${gap} kcal：今天在安全减脂区间（300~500 最理想）。继续控制晚餐主食，缺口会更稳。`)
-        : `已摄入超过消耗 ${gapAbs} kcal：今天热量盈余，明天稍微减一餐主食就能拉平。`}
+          ? `缺口 ${gap} kcal：当日热量额度充足，正常吃够蛋白质即可，不用硬塞或过度节食。`
+          : `缺口 ${gap} kcal：在安全减脂区间（300~500 最理想）。继续控制晚餐主食，缺口会更稳。`)
+        : `已摄入超过消耗 ${gapAbs} kcal：当日热量盈余，次日稍微减一餐主食就能拉平。`}
     </div>`;
   body.innerHTML = html;
 }
@@ -1532,16 +1545,48 @@ const SPORT_PLAN = {
 
 let currentSportDay = 1;
 
+// 打卡按具体日期存储，key 形如 "2026-09-28"，跨周天然隔离
 function getWeekKey() {
-  const now = new Date();
-  const onejan = new Date(now.getFullYear(),0,1);
-  const week = Math.ceil((((now - onejan)/86400000) + onejan.getDay()+1)/7);
-  return now.getFullYear()+"-W"+week;
+  return "date";
 }
-
+function fmtDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+day;
+}
+function getDayDateKey(day) {
+  const now = new Date();
+  const dow = now.getDay(); // 0=周日
+  const mondayOffset = (dow + 6) % 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - mondayOffset);
+  const target = new Date(monday);
+  if(day === 0) target.setDate(monday.getDate() + 6);
+  else target.setDate(monday.getDate() + day - 1);
+  return fmtDate(target);
+}
 function getCheckinData() {
   try {
-    return JSON.parse(localStorage.getItem("sport_checkin") || "{}");
+    const raw = JSON.parse(localStorage.getItem("sport_checkin") || "{}");
+    // 迁移旧版周号格式（2026-W40-1 这类）：周一~周五可靠迁移到本周日期，周六/周日边界易错直接清理
+    let changed = false;
+    Object.keys(raw).forEach(k => {
+      const m = k.match(/^(\d{4})-W\d+-(\d)$/);
+      if(!m) return;
+      const day = +m[2];
+      if(day >= 1 && day <= 5) {
+        const nk = getDayDateKey(day);
+        if(nk && nk <= todayKey()) {
+          if(!raw[nk]) raw[nk] = [];
+          (raw[k]||[]).forEach(it => { if(raw[nk].indexOf(it) < 0) raw[nk].push(it); });
+        }
+      }
+      delete raw[k];
+      changed = true;
+    });
+    if(changed) saveCheckinData(raw);
+    return raw;
   } catch(e) { return {}; }
 }
 function saveCheckinData(data) {
@@ -1549,12 +1594,11 @@ function saveCheckinData(data) {
 }
 function getDayCheckins(day) {
   const all = getCheckinData();
-  const key = getWeekKey()+"-"+day;
-  return all[key] || [];
+  return all[getDayDateKey(day)] || [];
 }
 function toggleSportCheckin(itemId) {
   const all = getCheckinData();
-  const key = getWeekKey()+"-"+currentSportDay;
+  const key = getDayDateKey(currentSportDay);
   if(!all[key]) all[key] = [];
   const idx = all[key].indexOf(itemId);
   if(idx >= 0) all[key].splice(idx,1);
@@ -1574,7 +1618,10 @@ function getDayTotalItems(day) {
   const plan = getDayPlan(day);
   if(plan.rest) return 0;
   let total = 0;
-  plan.sections.forEach(s => total += s.items.length);
+  plan.sections.forEach(s => {
+    if(s.videoTitle) total += 1;   // 视频跟练类：整组算1个打卡项
+    else total += s.items.length;
+  });
   return total;
 }
 
