@@ -650,6 +650,46 @@
       "water": 0,
       "exercise": 0,
       "weight": 81.52
+    },
+    "2026-09-30": {
+      "records": [
+        {
+          "time": "08:30",
+          "meal": "早餐",
+          "foodName": "0蔗糖酸奶(1碗150g)",
+          "weight": 150,
+          "cal": 90,
+          "p": 6.0,
+          "c": 7.5,
+          "f": 3.75
+        },
+        {
+          "time": "08:30",
+          "meal": "早餐",
+          "foodName": "欧扎克全麦脆麦片(2块约20g)",
+          "weight": 20,
+          "cal": 76,
+          "p": 2.9,
+          "c": 13.3,
+          "f": 0.6
+        },
+        {
+          "time": "08:30",
+          "meal": "早餐",
+          "foodName": "水煮蛋(2个)",
+          "weight": 100,
+          "cal": 140,
+          "p": 12.0,
+          "c": 1.0,
+          "f": 10.0
+        }
+      ],
+      "water": 0,
+      "exercise": 0,
+      "steps": 0,
+      "workoutMin": 0,
+      "activityCount": 0,
+      "weight": null
     }
   },
   "weightHistory": [
