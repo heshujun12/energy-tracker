@@ -785,10 +785,10 @@
         }
       ],
       "water": 0,
-      "exercise": 0,
-      "steps": 0,
-      "workoutMin": 0,
-      "activityCount": 0,
+      "exercise": 322,
+      "steps": 3768,
+      "workoutMin": 5,
+      "activityCount": 8,
       "weight": null
     }
   },
