@@ -66,6 +66,17 @@ body > button[style*="fixed"] {
 
 .view { display:none; padding:0 16px; }
 .view.active { display:block; }
+.home-datebar {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--bg); border:1px solid rgba(0,0,0,.06); border-radius:12px;
+  padding:4px 6px; margin:2px 0 10px; font-size:13px; color:var(--text2);
+}
+.hdb-btn {
+  border:none; background:transparent; color:var(--primary);
+  width:32px; height:28px; font-size:18px; line-height:1; cursor:pointer; border-radius:8px;
+}
+.hdb-btn:hover { background:var(--primary-light); }
+.hdb-btn:disabled { opacity:.25; cursor:default; }
 
 /* 模块容器 */
 .module { position:relative; margin-bottom:12px; transition: opacity .2s; }
@@ -391,8 +402,13 @@ canvas { width:100% !important; display:block; }
 </head>
 <body>
 
-<!-- ===== 今日 ===== -->
+<!-- ===== 首页 ===== -->
 <div class="view active" id="view-today">
+  <div class="home-datebar">
+    <button class="hdb-btn" onclick="shiftHomeDate(-1)">‹</button>
+    <span id="homeDateText">今天</span>
+    <button class="hdb-btn" id="homeDateNext" onclick="shiftHomeDate(1)">›</button>
+  </div>
   <div class="module" data-mid="m-ring" data-view="today">
     <div class="ring-card">
       <div class="ring-wrap">
@@ -567,7 +583,7 @@ canvas { width:100% !important; display:block; }
 <div class="tabbar">
   <div class="tab active" data-view="today" onclick="switchTab('today')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span>今日</span>
+    <span>首页</span>
   </div>
   <div class="tab" data-view="trend" onclick="switchTab('trend')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
@@ -640,10 +656,45 @@ function dayTotal(key) {
   return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), records:d.records, water:d.water, exercise:d.exercise, steps:d.steps||0, workoutMin:d.workoutMin||0, activityCount:d.activityCount||0, weight:d.weight};
 }
 
-// ===== 今日 =====
+// ===== 首页 =====
+let homeDate = ""; // 空=今天，可切回看历史
+function shiftHomeDate(delta) {
+  const base = homeDate || todayKey();
+  const d = new Date(base + "T12:00:00");
+  d.setDate(d.getDate() + delta);
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), dd = String(d.getDate()).padStart(2,"0");
+  const nk = y+"-"+m+"-"+dd;
+  if(nk > todayKey()) return; // 不允许到未来
+  homeDate = nk;
+  renderToday();
+}
+function renderHomeDateBar(tk) {
+  const el = document.getElementById("homeDateText");
+  if(!el) return;
+  const d = new Date(tk + "T12:00:00");
+  const week = "日一二三四五六"[d.getDay()];
+  const isToday = tk === todayKey();
+  const isYesterday = tk === shiftKey(-1);
+  const isDayBefore = tk === shiftKey(-2);
+  let label = "";
+  if(isToday) label = "今天";
+  else if(isYesterday) label = "昨天";
+  else if(isDayBefore) label = "前天";
+  el.innerHTML = `${d.getMonth()+1}月${d.getDate()}日 周${week}${label?' · '+label:''}`;
+  const nextBtn = document.getElementById("homeDateNext");
+  if(nextBtn) nextBtn.disabled = tk >= todayKey();
+}
+function shiftKey(delta) {
+  const d = new Date();
+  d.setDate(d.getDate() + delta);
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), dd = String(d.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+dd;
+}
 function renderToday() {
-  const tk = todayKey();
+  const tk = homeDate || todayKey();
   const t = dayTotal(tk);
+  renderHomeDateBar(tk);
+  const isToday = tk === todayKey();
   const pct = Math.min(1, t.cal / DATA.targets.cal);
   const circumference = 2 * Math.PI * 65;
   document.getElementById("ringFg").style.strokeDashoffset = circumference * (1 - pct);
@@ -664,8 +715,8 @@ function renderToday() {
   document.getElementById("pBar").style.width = Math.min(100, t.p/DATA.targets.p*100)+"%";
   document.getElementById("cBar").style.width = Math.min(100, t.c/DATA.targets.c*100)+"%";
   document.getElementById("fBar").style.width = Math.min(100, t.f/DATA.targets.f*100)+"%";
-  renderAITip(t);
-  renderSnackRec(t);
+  renderAITip(t, isToday);
+  renderSnackRec(t, isToday);
 
   const mealOrder = ["早餐","午餐","晚餐","加餐"];
   let html = "", hasAny = false;
@@ -683,7 +734,7 @@ function renderToday() {
     });
     html += `</div>`;
   });
-  if(!hasAny) html = `<div class="meal-group"><div class="empty-tip">还没有记录，在豆包对话里说你吃了什么吧</div></div>`;
+  if(!hasAny) html = `<div class="meal-group"><div class="empty-tip">${isToday ? '还没有记录，在豆包对话里说你吃了什么吧' : '当天没有饮食记录'}</div></div>`;
   document.getElementById("mealList").innerHTML = html;
 }
 
@@ -701,12 +752,17 @@ const SNACKS = [
   {name:"全麦脆", cal:370, p:12, c:65, f:5, unit:"g", portion:30},
 ];
 
-function renderSnackRec(t) {
+function renderSnackRec(t, isToday) {
   const remainCal = DATA.targets.cal - t.cal;
   const remainP = DATA.targets.p - t.p;
   const remainF = DATA.targets.f - t.f;
   const remainC = DATA.targets.c - t.c;
   const el = document.getElementById("snackRecList");
+
+  if(isToday === false) {
+    el.innerHTML = `<div class="sr-empty">历史回顾 · 回到今天可获取实时加餐建议</div>`;
+    return;
+  }
 
   if(remainCal < 50) {
     el.innerHTML = `<div class="sr-empty">今天热量够了，别再吃了</div>`;
@@ -872,7 +928,13 @@ function buildAITips(t) {
   return list;
 }
 
-function renderAITip(t) {
+function renderAITip(t, isToday) {
+  if(isToday === false) {
+    document.getElementById("aiTag").textContent = "当日回顾";
+    document.getElementById("aiContent").textContent =
+      `当天摄入 ${t.cal} kcal｜蛋白 ${t.p}g｜碳水 ${t.c}g｜脂肪 ${t.f}g。运动消耗 ${t.exercise} kcal，步数 ${t.steps}。`;
+    return;
+  }
   aiTips = buildAITips(t);
   aiTipIndex = 0;
   showAITip();
@@ -1337,7 +1399,7 @@ function switchTab(view) {
   if(tabBtn) tabBtn.classList.add("active");
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
-  const titles = {today:"今日", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食"};
+  const titles = {today:"首页", trend:"趋势", cal:"日历", sport:"运动", recipe:"食谱", snacks:"零食"};
   if(document.getElementById("topTitle")) document.getElementById("topTitle").textContent = titles[view]||"";
   if(view==="trend") renderTrend();
   if(view==="cal") renderCal();
