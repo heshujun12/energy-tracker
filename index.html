@@ -985,7 +985,7 @@ function renderBodyComposition() {
   if(!c) return;
   const ctx = c.getContext("2d");
   const dpr = window.devicePixelRatio||1;
-  const w = c.parentElement.clientWidth - 32, h = 240;
+  const w = c.parentElement.clientWidth - 32, h = 258;
   c.width = w*dpr; c.height = h*dpr; c.style.width = w+"px"; c.style.height = h+"px";
   ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
 
@@ -1000,36 +1000,55 @@ function renderBodyComposition() {
     {key:"protein", label:"蛋白质率", color:"#3b82f6"},
     {key:"muscle", label:"肌肉率", color:"#22c55e"}
   ];
-  const padL = 52, padR = 18, panelH = 68, gap = 12, titleH = 16;
+  const padL = 58, padR = 18, panelH = 72, gap = 14, titleH = 18;
   const cw = w - padL - padR;
   const latest = wh[wh.length-1];
 
+  // x轴刻度索引：首/中/尾
+  const n = wh.length;
+  const xIdx = n >= 6 ? [0, Math.floor((n-1)/2), n-1] : [0, n-1];
+
   series.forEach((s, si) => {
     const top = si*(panelH+gap);
-    // 标题行：色点 + 名称 + 最新值
-    ctx.fillStyle = s.color; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "left";
-    ctx.fillText("●", padL-30, top+11);
-    ctx.fillText(s.label, padL-23, top+11);
-    ctx.fillStyle = "#555"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "right";
-    ctx.fillText(latest[s.key].toFixed(1)+"%", w-padR, top+11);
+    // 标题行：色点 + 名称（留间距） + 单位 + 最新值
+    ctx.fillStyle = s.color; ctx.font = "bold 13px sans-serif"; ctx.textAlign = "left";
+    ctx.fillText("●", padL-44, top+13);
+    ctx.fillText(s.label, padL-30, top+13);
+    ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif";
+    ctx.fillText("(%)", padL-30 + ctx.measureText(s.label).width + 3, top+12);
+    ctx.fillStyle = "#333"; ctx.font = "bold 13px sans-serif"; ctx.textAlign = "right";
+    ctx.fillText(latest[s.key].toFixed(1)+"%", w-padR, top+13);
 
     // 值域（独立刻度，各留0.4缓冲）
     const values = wh.map(v=>v[s.key]);
     const lo = Math.min.apply(null, values) - 0.4, hi = Math.max.apply(null, values) + 0.4;
-    const ch = panelH - titleH - 8;
+    const ch = panelH - titleH - 10;
     const plotTop = top + titleH;
+    const yIdx = [0,1,2];
+    const yVals = [hi, (lo+hi)/2, lo];
 
-    // 底网格线
-    ctx.strokeStyle = "#f0eee9"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(padL, plotTop+ch); ctx.lineTo(w-padR, plotTop+ch); ctx.stroke();
-    ctx.fillStyle = "#bbb"; ctx.font = "9px sans-serif"; ctx.textAlign = "right";
-    ctx.fillText(hi.toFixed(1), padL-4, plotTop+9);
-    ctx.fillText(lo.toFixed(1), padL-4, plotTop+ch+1);
+    // 背景点阵网格：水平线（3条）+ 垂直线（x刻度）
+    ctx.strokeStyle = "#f0eeea"; ctx.lineWidth = 1;
+    yIdx.forEach(i => {
+      const y = plotTop + ch - (yVals[i]-lo)/(hi-lo)*ch;
+      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    });
+    xIdx.forEach(idx => {
+      const x = padL + cw*idx/(n-1);
+      ctx.beginPath(); ctx.moveTo(x, plotTop); ctx.lineTo(x, plotTop+ch); ctx.stroke();
+    });
+
+    // Y轴刻度值
+    ctx.fillStyle = "#aaa"; ctx.font = "9px sans-serif"; ctx.textAlign = "right";
+    yIdx.forEach(i => {
+      const y = plotTop + ch - (yVals[i]-lo)/(hi-lo)*ch;
+      ctx.fillText(yVals[i].toFixed(1), padL-4, y+3);
+    });
 
     // 折线
     ctx.strokeStyle = s.color; ctx.lineWidth = 1.8; ctx.beginPath();
     wh.forEach((v,i) => {
-      const x = padL + cw*i/(wh.length-1);
+      const x = padL + cw*i/(n-1);
       const y = plotTop + ch - ((v[s.key]-lo)/(hi-lo))*ch;
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     });
@@ -1037,24 +1056,29 @@ function renderBodyComposition() {
 
     // 数据点
     wh.forEach((v,i) => {
-      const x = padL + cw*i/(wh.length-1);
+      const x = padL + cw*i/(n-1);
       const y = plotTop + ch - ((v[s.key]-lo)/(hi-lo))*ch;
       ctx.fillStyle = s.color; ctx.beginPath(); ctx.arc(x,y,2.6,0,Math.PI*2); ctx.fill();
     });
 
-    // 日期标签：首尾
-    ctx.fillStyle = "#bbb"; ctx.font = "9px sans-serif"; ctx.textAlign = "left";
-    ctx.fillText(wh[0].date.slice(5).replace("-","/"), padL, plotTop+ch+11);
-    ctx.textAlign = "right";
-    ctx.fillText(wh[wh.length-1].date.slice(5).replace("-","/"), w-padR, plotTop+ch+11);
+    // X轴日期刻度
+    ctx.fillStyle = "#aaa"; ctx.font = "9px sans-serif"; ctx.textAlign = "center";
+    xIdx.forEach(idx => {
+      const x = padL + cw*idx/(n-1);
+      ctx.fillText(wh[idx].date.slice(5).replace("-","/"), x, plotTop+ch+11);
+    });
   });
+
+  // X轴名
+  ctx.fillStyle = "#999"; ctx.font = "10px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("日期", w/2, h-2);
 }
 
 function renderWeightTrend() {
   const c = document.getElementById("weightTrendChart");
   const ctx = c.getContext("2d");
   const dpr = window.devicePixelRatio||1;
-  const w = c.parentElement.clientWidth - 32, h = 200;
+  const w = c.parentElement.clientWidth - 32, h = 210;
   c.width = w*dpr; c.height = h*dpr; c.style.width = w+"px"; c.style.height = h+"px";
   ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
 
@@ -1064,85 +1088,96 @@ function renderWeightTrend() {
     ctx.fillText("暂无数据", w/2, h/2); return;
   }
 
-  const padL=38, padR=15, padT=20, padB=25;
+  const padL=42, padR=16, padT=24, padB=30;
   const cw = w-padL-padR, ch = h-padT-padB;
 
-  // 期望曲线：一年（365天）从起点线性降到目标
+  // x轴：从第一条体重记录起，到最新一条止（不前置空段）
   const startDate = new Date(wh[0].date);
+  const endDate = new Date(wh[wh.length-1].date);
+  const chartRange = Math.max(1, (endDate - startDate) / 86400000);
   const startW = wh[0].weight;
   const targetW = DATA.goalWeight;
-  const totalDays = 365;
-  const planEnd = new Date(startDate.getTime() + totalDays*86400000);
-  // x轴窗口：最近30天
-  const now = new Date();
-  const chartEnd = now;
-  const chartStart = new Date(now.getTime() - 30*86400000);
-  const chartRange = chartEnd - chartStart;
 
-  const minW = targetW - 1, maxW = startW + 1;
+  // y轴范围：覆盖数据与目标线
+  const weights = wh.map(v=>v.weight);
+  const minW = Math.min(targetW, Math.min.apply(null, weights)) - 0.8;
+  const maxW = Math.max(startW, Math.max.apply(null, weights)) + 0.8;
 
-  // 网格
-  ctx.strokeStyle = "#f0eee9"; ctx.lineWidth = 1;
-  for(let i=0;i<=3;i++) {
-    const y = padT + ch*i/3;
-    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
-    ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "right";
-    ctx.fillText((maxW-(maxW-minW)*i/3).toFixed(1), padL-5, y+3);
-  }
-
-  // 目标体重线
-  const ty = padT + ch - ((targetW-minW)/(maxW-minW))*ch;
-  ctx.strokeStyle = "#ccc"; ctx.setLineDash([3,3]);
-  ctx.beginPath(); ctx.moveTo(padL,ty); ctx.lineTo(w-padR,ty); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "left";
-  ctx.fillText("目标 "+targetW, padL+2, ty-3);
-
-  // 蓝线：期望曲线（在30天窗口内的部分）
+  // 期望曲线：365天从起点线性降到目标
   function expectedW(dt) {
     const days = (dt - startDate) / 86400000;
     return startW - (startW - targetW) * days / 365;
   }
+
+  // ---- 背景点阵网格：Y轴5档 + X轴按数据日期 ----
+  ctx.strokeStyle = "#f2f0ec"; ctx.lineWidth = 1;
+  // 横向网格
+  for(let i=0;i<=4;i++) {
+    const y = padT + ch*i/4;
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+  }
+  // 纵向网格：每条数据日期画一条
+  const xDates = wh.map(v=>new Date(v.date));
+  xDates.forEach(dt => {
+    const x = padL + cw * (dt - startDate) / (chartRange*86400000);
+    ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+ch); ctx.stroke();
+  });
+
+  // ---- Y轴刻度（5档 + 单位） ----
+  ctx.fillStyle = "#999"; ctx.font = "9.5px sans-serif"; ctx.textAlign = "right";
+  for(let i=0;i<=4;i++) {
+    const val = maxW - (maxW-minW)*i/4;
+    const y = padT + ch*i/4;
+    ctx.fillText(val.toFixed(1), padL-5, y+3);
+  }
+  ctx.fillStyle = "#aaa"; ctx.font = "9.5px sans-serif"; ctx.textAlign = "left";
+  ctx.fillText("体重(kg)", padL+4, padT-8);
+
+  // ---- X轴日期刻度（首/中/尾 + 中间2条，避免挤） ----
+  ctx.fillStyle = "#999"; ctx.font = "9.5px sans-serif"; ctx.textAlign = "center";
+  const tickCount = 5;
+  for(let i=0;i<tickCount;i++) {
+    const frac = i/(tickCount-1);
+    const dt = new Date(startDate.getTime() + chartRange*86400000*frac);
+    const x = padL + cw*frac;
+    ctx.fillText((dt.getMonth()+1)+"/"+dt.getDate(), x, h-10);
+  }
+  ctx.fillStyle = "#aaa"; ctx.font = "9.5px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("日期", padL + cw/2, h-0);
+
+  // ---- 目标体重线 ----
+  const ty = padT + ch - ((targetW-minW)/(maxW-minW))*ch;
+  ctx.strokeStyle = "#ccc"; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(padL,ty); ctx.lineTo(w-padR,ty); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#999"; ctx.font = "10px sans-serif"; ctx.textAlign = "left";
+  ctx.fillText("目标 "+targetW, padL+2, ty-3);
+
+  // ---- 期望曲线（数据区间内的部分） ----
   ctx.strokeStyle = "#6b9ec4"; ctx.lineWidth = 2; ctx.beginPath();
   const ex = padL;
-  const ey = padT + ch - ((expectedW(chartStart)-minW)/(maxW-minW))*ch;
+  const ey = padT + ch - ((expectedW(startDate)-minW)/(maxW-minW))*ch;
   const ex2 = padL + cw;
-  const ey2 = padT + ch - ((expectedW(chartEnd)-minW)/(maxW-minW))*ch;
+  const ey2 = padT + ch - ((expectedW(endDate)-minW)/(maxW-minW))*ch;
   ctx.moveTo(ex, ey); ctx.lineTo(ex2, ey2); ctx.stroke();
 
-  // 红线：实际数据
+  // ---- 实际数据折线 + 点 ----
   ctx.strokeStyle = "#d4604e"; ctx.lineWidth = 2.5; ctx.beginPath();
-  let hasPoint = false;
   wh.forEach((d,i) => {
-    const dt = new Date(d.date);
-    if(dt < chartStart) return;
-    const x = padL + cw * (dt - chartStart) / chartRange;
+    const x = padL + cw * (new Date(d.date) - startDate) / (chartRange*86400000);
     const y = padT + ch - ((d.weight-minW)/(maxW-minW))*ch;
-    if(!hasPoint) { ctx.moveTo(x,y); hasPoint = true; } else ctx.lineTo(x,y);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
   ctx.stroke();
-
-  // 实际数据点
   ctx.fillStyle = "#d4604e";
   wh.forEach((d,i) => {
-    const dt = new Date(d.date);
-    if(dt < chartStart) return;
-    const x = padL + cw * (dt - chartStart) / chartRange;
+    const x = padL + cw * (new Date(d.date) - startDate) / (chartRange*86400000);
     const y = padT + ch - ((d.weight-minW)/(maxW-minW))*ch;
     ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
   });
 
-  // x轴标签：每5天
-  ctx.fillStyle = "#bbb"; ctx.font = "10px sans-serif"; ctx.textAlign = "center";
-  for(let day=0; day<=30; day+=5) {
-    const dt = new Date(chartStart.getTime() + day*86400000);
-    const x = padL + cw * day / 30;
-    ctx.fillText((dt.getMonth()+1)+"/"+dt.getDate(), x, h-8);
-  }
-
-  // 图例（左上角，避免和数据点重叠）
-  ctx.font = "11px sans-serif";
-  ctx.textAlign = "left";
+  // ---- 图例 ----
+  ctx.font = "11px sans-serif"; ctx.textAlign = "left";
   ctx.fillStyle = "#6b9ec4";
   ctx.fillText("—— 目标", padL, padT-4);
   ctx.fillStyle = "#d4604e";
