@@ -1089,6 +1089,10 @@
       "exercise": 325,
       "workoutMin": 1,
       "activityCount": 9
+    },
+    "2026-10-03": {
+      "weight": 80.18,
+      "records": []
     }
   },
   "weightHistory": [
@@ -1193,6 +1197,23 @@
       "bodyScore": 83,
       "fatMass": 16.27,
       "leanMass": 64.68
+    },
+    {
+      "date": "2026-10-03",
+      "weight": 80.18,
+      "bmi": 25.5,
+      "bodyFat": 19.7,
+      "muscle": 41.6,
+      "water": 56.7,
+      "bone": 3.03,
+      "subFat": 19.4,
+      "bmr": 1703,
+      "visceral": 8,
+      "protein": 14.0,
+      "bodyAge": 30,
+      "bodyScore": 84,
+      "fatMass": 15.8,
+      "leanMass": 64.39
     }
   ],
   "chatHistory": [
