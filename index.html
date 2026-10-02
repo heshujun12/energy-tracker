@@ -484,6 +484,7 @@ canvas { width:100% !important; display:block; }
     <div class="stat-card">
       <h3>身体数据 <span class="sub" id="bodyDataDate"></span></h3>
       <div class="body-grid" id="bodyDataGrid"></div>
+      <canvas id="bodyCompositionChart" height="240" style="margin-top:12px;width:100%;"></canvas>
     </div>
   </div>
 
@@ -956,6 +957,7 @@ function nextAITip() {
 // ===== 趋势 =====
 function renderTrend() {
   renderBodyData();
+  renderBodyComposition();
   renderWeightTrend();
 }
 
@@ -976,6 +978,76 @@ function renderBodyData() {
   document.getElementById("bodyDataGrid").innerHTML = items.map(it =>
     `<div class="body-cell${it.warn?' warn':''}"><div class="bc-val">${it.val}</div><div class="bc-name">${it.name}</div>${it.status?`<div class="bc-ref"><span class="bc-status">${it.status}</span> · 参考${it.ref}</div>`:""}</div>`
   ).join("");
+}
+
+function renderBodyComposition() {
+  const c = document.getElementById("bodyCompositionChart");
+  if(!c) return;
+  const ctx = c.getContext("2d");
+  const dpr = window.devicePixelRatio||1;
+  const w = c.parentElement.clientWidth - 32, h = 240;
+  c.width = w*dpr; c.height = h*dpr; c.style.width = w+"px"; c.style.height = h+"px";
+  ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
+
+  const wh = DATA.weightHistory;
+  if(wh.length < 2) {
+    ctx.fillStyle = "#bbb"; ctx.font = "13px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("需至少2条体重记录", w/2, h/2); return;
+  }
+
+  const series = [
+    {key:"bodyFat", label:"体脂率", color:"#ef4444"},
+    {key:"protein", label:"蛋白质率", color:"#3b82f6"},
+    {key:"muscle", label:"肌肉率", color:"#22c55e"}
+  ];
+  const padL = 52, padR = 18, panelH = 68, gap = 12, titleH = 16;
+  const cw = w - padL - padR;
+  const latest = wh[wh.length-1];
+
+  series.forEach((s, si) => {
+    const top = si*(panelH+gap);
+    // 标题行：色点 + 名称 + 最新值
+    ctx.fillStyle = s.color; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "left";
+    ctx.fillText("●", padL-30, top+11);
+    ctx.fillText(s.label, padL-23, top+11);
+    ctx.fillStyle = "#555"; ctx.font = "bold 12px sans-serif"; ctx.textAlign = "right";
+    ctx.fillText(latest[s.key].toFixed(1)+"%", w-padR, top+11);
+
+    // 值域（独立刻度，各留0.4缓冲）
+    const values = wh.map(v=>v[s.key]);
+    const lo = Math.min.apply(null, values) - 0.4, hi = Math.max.apply(null, values) + 0.4;
+    const ch = panelH - titleH - 8;
+    const plotTop = top + titleH;
+
+    // 底网格线
+    ctx.strokeStyle = "#f0eee9"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, plotTop+ch); ctx.lineTo(w-padR, plotTop+ch); ctx.stroke();
+    ctx.fillStyle = "#bbb"; ctx.font = "9px sans-serif"; ctx.textAlign = "right";
+    ctx.fillText(hi.toFixed(1), padL-4, plotTop+9);
+    ctx.fillText(lo.toFixed(1), padL-4, plotTop+ch+1);
+
+    // 折线
+    ctx.strokeStyle = s.color; ctx.lineWidth = 1.8; ctx.beginPath();
+    wh.forEach((v,i) => {
+      const x = padL + cw*i/(wh.length-1);
+      const y = plotTop + ch - ((v[s.key]-lo)/(hi-lo))*ch;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    // 数据点
+    wh.forEach((v,i) => {
+      const x = padL + cw*i/(wh.length-1);
+      const y = plotTop + ch - ((v[s.key]-lo)/(hi-lo))*ch;
+      ctx.fillStyle = s.color; ctx.beginPath(); ctx.arc(x,y,2.6,0,Math.PI*2); ctx.fill();
+    });
+
+    // 日期标签：首尾
+    ctx.fillStyle = "#bbb"; ctx.font = "9px sans-serif"; ctx.textAlign = "left";
+    ctx.fillText(wh[0].date.slice(5).replace("-","/"), padL, plotTop+ch+11);
+    ctx.textAlign = "right";
+    ctx.fillText(wh[wh.length-1].date.slice(5).replace("-","/"), w-padR, plotTop+ch+11);
+  });
 }
 
 function renderWeightTrend() {
