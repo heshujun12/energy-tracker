@@ -1307,7 +1307,11 @@
     "p": 87.4,
     "c": 124.4,
     "f": 54.8
-   }
+   },
+   "steps": 5833,
+   "exercise": 461,
+   "workoutMin": 4,
+   "activityCount": 17
   }
  },
  "weightHistory": [
