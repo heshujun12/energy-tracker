@@ -1312,6 +1312,36 @@
    "exercise": 461,
    "workoutMin": 4,
    "activityCount": 17
+  },
+  "2026-10-04": {
+   "totals": {
+    "cal": 525.0,
+    "p": 29.0,
+    "c": 53.0,
+    "f": 21.0
+   },
+   "records": [
+    {
+     "time": "08:40",
+     "meal": "早餐",
+     "foodName": "KFC芝士猪柳蛋帕尼尼(不加酱)",
+     "weight": 170,
+     "cal": 400,
+     "p": 24,
+     "c": 35,
+     "f": 18
+    },
+    {
+     "time": "08:40",
+     "meal": "早餐",
+     "foodName": "KFC热醇豆浆(240ml)",
+     "weight": 240,
+     "cal": 125,
+     "p": 5,
+     "c": 18,
+     "f": 3
+    }
+   ]
   }
  },
  "weightHistory": [
