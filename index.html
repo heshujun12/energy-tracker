@@ -195,6 +195,8 @@ body.editing .edit-bar { display:flex; }
 .meal-header { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
 .meal-header .meal-name { font-size:13px; font-weight:600; }
 .meal-header .meal-cal { font-size:12px; color:var(--text2); }
+.meal-cal-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.macro-sub { font-size:10px; color:var(--text3); font-weight:400; }
 .food-item { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f5f4f0; }
 .food-item:last-child { border-bottom:none; }
 .food-info .fname { font-size:14px; }
@@ -299,6 +301,7 @@ canvas { width:100% !important; display:block; }
 .cd-meal:last-child { margin-bottom:0; }
 .cd-meal-title { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px; display:flex; justify-content:space-between; }
 .cd-meal-title .mc { color:var(--primary); font-weight:700; }
+.mc-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
 .cd-food {
   display:flex; justify-content:space-between; align-items:center;
   padding:6px 0; font-size:12px; border-bottom:1px solid #f5f4f0;
@@ -726,7 +729,10 @@ function renderToday() {
     if(items.length === 0) return;
     hasAny = true;
     const mealCal = items.reduce((s,i)=>s+i.cal,0);
-    html += `<div class="meal-group"><div class="meal-header"><span class="meal-name">${m}</span><span class="meal-cal">${Math.round(mealCal)} kcal</span></div>`;
+    const mealP = items.reduce((s,i)=>s+(i.p||0),0);
+    const mealC = items.reduce((s,i)=>s+(i.c||0),0);
+    const mealF = items.reduce((s,i)=>s+(i.f||0),0);
+    html += `<div class="meal-group"><div class="meal-header"><span class="meal-name">${m}</span><span class="meal-cal-wrap"><span class="meal-cal">${Math.round(mealCal)} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g</span></span></div>`;
     items.forEach(item => {
       html += `<div class="food-item">
         <div class="food-info"><div class="fname">${item.foodName} <span style="color:var(--text3);font-size:11px;">${item.weight}g</span></div>
@@ -1240,8 +1246,11 @@ function showCalDay(key) {
     ["早餐","午餐","晚餐","加餐"].forEach(meal => {
       if(meals[meal]) {
         const mealCal = meals[meal].reduce((s,r)=>s+r.cal,0);
+        const mealP = meals[meal].reduce((s,r)=>s+(r.p||0),0);
+        const mealC = meals[meal].reduce((s,r)=>s+(r.c||0),0);
+        const mealF = meals[meal].reduce((s,r)=>s+(r.f||0),0);
         html += `<div class="cd-meal">
-          <div class="cd-meal-title"><span>${meal}</span><span class="mc">${mealCal} kcal</span></div>`;
+          <div class="cd-meal-title"><span>${meal}</span><span class="mc-wrap"><span class="mc">${mealCal} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g</span></span></div>`;
         meals[meal].forEach(r => {
           html += `<div class="cd-food"><span class="fname">${r.foodName} ${r.weight}g</span><span class="fcal">${r.cal} kcal</span></div>`;
         });
