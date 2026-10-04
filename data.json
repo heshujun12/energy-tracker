@@ -1451,7 +1451,11 @@
      "c": 0,
      "f": 0.6
     }
-   ]
+   ],
+   "steps": 3902,
+   "exercise": 301,
+   "workoutMin": 5,
+   "activityCount": 10
   }
  },
  "weightHistory": [
