@@ -195,7 +195,7 @@ body.editing .edit-bar { display:flex; }
 .meal-header { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
 .meal-header .meal-name { font-size:13px; font-weight:600; }
 .meal-header .meal-cal { font-size:12px; color:var(--text2); }
-.meal-cal-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.meal-cal-wrap { display:flex; flex-direction:row; align-items:baseline; gap:6px; }
 .macro-sub { font-size:10px; color:var(--text3); font-weight:400; }
 .food-item { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f5f4f0; }
 .food-item:last-child { border-bottom:none; }
@@ -301,7 +301,7 @@ canvas { width:100% !important; display:block; }
 .cd-meal:last-child { margin-bottom:0; }
 .cd-meal-title { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:4px; display:flex; justify-content:space-between; }
 .cd-meal-title .mc { color:var(--primary); font-weight:700; }
-.mc-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
+.mc-wrap { display:flex; flex-direction:row; align-items:baseline; gap:6px; }
 .cd-food {
   display:flex; justify-content:space-between; align-items:center;
   padding:6px 0; font-size:12px; border-bottom:1px solid #f5f4f0;
@@ -1182,12 +1182,15 @@ function renderWeightTrend() {
     ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
   });
 
-  // ---- 图例 ----
+  // ---- 图例（右上角，避开左侧Y轴名） ----
   ctx.font = "11px sans-serif"; ctx.textAlign = "left";
-  ctx.fillStyle = "#6b9ec4";
-  ctx.fillText("—— 目标", padL, padT-4);
+  const lg1 = "—— 目标", lg2 = "—— 实际";
+  const lgW1 = ctx.measureText(lg1).width, lgW2 = ctx.measureText(lg2).width;
+  const lgGap = 8;
   ctx.fillStyle = "#d4604e";
-  ctx.fillText("—— 实际", padL+55, padT-4);
+  ctx.fillText(lg2, w-padR-lgW2, padT-6);
+  ctx.fillStyle = "#6b9ec4";
+  ctx.fillText(lg1, w-padR-lgW2-lgGap-lgW1, padT-6);
 }
 
 // ===== 日历 =====
