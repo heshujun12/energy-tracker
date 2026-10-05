@@ -757,6 +757,7 @@ const SNACKS = [
   {name:"手撕素肉", cal:180, p:15, c:10, f:9, unit:"g", portion:30},
   {name:"0蔗糖酸奶", cal:60, p:4, c:5, f:2.5, unit:"g", portion:150},
   {name:"全麦脆", cal:370, p:12, c:65, f:5, unit:"g", portion:30},
+  {name:"荞麦脆脆面", cal:333, p:16.4, c:61.6, f:0, unit:"g", portion:20},
 ];
 
 function renderSnackRec(t, isToday) {
@@ -1367,6 +1368,9 @@ const SNACK_LIBRARY = [
   {id:"uxing-balls", name:"鸡胸肉弹弹丸(原味赠品)", brand:"优形", spec:"48g/袋", price:29.9,
    img:"assets/snacks/uxing-balls.jpg", imgPos:"center 50%", pdd:"优形弹弹鸡胸肉丸48g",
    per:{cal:101, p:16.3, c:0, f:2.5}, serving:48, scores:{nutrition:4.3, value:3.5}},
+  {id:"fitness-buckwheat", name:"荞麦脆脆面(火鸡味)", brand:"健身主义", spec:"20g/袋", price:0,
+   img:"assets/snacks/fitness-buckwheat.jpg", imgPos:"center 45%", pdd:"健身主义荞麦脆脆面",
+   per:{cal:333, p:16.4, c:61.6, f:0}, serving:20, scores:{nutrition:4.0, value:3.0}},
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
