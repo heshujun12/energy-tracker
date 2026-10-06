@@ -189,18 +189,22 @@ body.editing .edit-bar { display:flex; }
 .macro-item .m-name { font-size:11px; color:var(--text2); margin-top:2px; }
 .macro-bar { width:44px; height:4px; background:#f0eee9; border-radius:2px; margin:5px auto 0; overflow:hidden; }
 .macro-fill { height:100%; border-radius:2px; transition: width .4s; }
+.fs-row { position:relative; }
+.fs-row .macro-item .m-val { font-size:15px; }
+.fs-row .macro-item .m-name { font-size:10px; }
+.fs-note { margin-top:10px; font-size:9.5px; color:var(--text3); text-align:center; }
 
 /* 记录列表 */
 .meal-group { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:10px; overflow:hidden; }
 .meal-header { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
 .meal-header .meal-name { font-size:13px; font-weight:600; }
 .meal-header .meal-cal { font-size:12px; color:var(--text2); }
-.meal-cal-wrap { display:flex; flex-direction:row; align-items:baseline; gap:6px; }
-.macro-sub { font-size:10px; color:var(--text3); font-weight:400; }
+.meal-cal-wrap { display:flex; flex-direction:row; align-items:baseline; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.macro-sub { font-size:9.5px; color:var(--text3); font-weight:400; text-align:right; }
 .food-item { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f5f4f0; }
 .food-item:last-child { border-bottom:none; }
 .food-info .fname { font-size:14px; }
-.food-info .fmeta { font-size:11px; color:var(--text2); margin-top:4px; display:flex; gap:10px; }
+.food-info .fmeta { font-size:10.5px; color:var(--text2); margin-top:4px; display:flex; gap:6px; flex-wrap:wrap; }
 .food-cal { font-size:14px; font-weight:600; color:var(--primary); }
 .empty-tip { text-align:center; padding:24px 0; color:var(--text3); font-size:13px; }
 
@@ -291,10 +295,10 @@ canvas { width:100% !important; display:block; }
 
 /* 详情汇总区 */
 .cd-summary {
-  display:flex; background:var(--bg); border-radius:12px; padding:12px 8px; margin-bottom:14px;
+  display:flex; flex-wrap:wrap; background:var(--bg); border-radius:12px; padding:12px 8px; margin-bottom:14px;
 }
-.cd-sum { flex:1; text-align:center; }
-.cd-sum .v { font-size:16px; font-weight:700; }
+.cd-sum { flex:1 1 33%; text-align:center; margin:4px 0; }
+.cd-sum .v { font-size:15px; font-weight:700; }
 .cd-sum .l { font-size:10px; color:var(--text3); margin-top:2px; }
 
 .cd-meal { margin-bottom:12px; }
@@ -309,6 +313,7 @@ canvas { width:100% !important; display:block; }
 .cd-food:last-child { border-bottom:none; }
 .cd-food .fname { color:var(--text); }
 .cd-food .fcal { font-weight:600; color:var(--primary); }
+.cd-fmeta { font-size:9.5px; color:var(--text3); margin-top:1px; }
 .cd-empty { text-align:center; color:var(--text3); font-size:13px; padding:24px 0; }
 .report-card { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
 .report-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-size:13px; border-bottom:1px solid #f5f4f0; }
@@ -443,6 +448,19 @@ canvas { width:100% !important; display:block; }
           <div class="macro-bar"><div class="macro-fill" id="fBar" style="width:0%;background:#eab308;"></div></div>
         </div>
       </div>
+      <div class="macro-row fs-row">
+        <div class="macro-item">
+          <div class="m-val"><span class="mv-now" id="fiberNow">0</span><span class="mv-target" id="fiberTarget">/25g</span></div>
+          <div class="m-name">膳食纤维</div>
+          <div class="macro-bar"><div class="macro-fill" id="fiberBar" style="width:0%;background:#16a34a;"></div></div>
+        </div>
+        <div class="macro-item">
+          <div class="m-val"><span class="mv-now" id="sodiumNow">0</span><span class="mv-target" id="sodiumTarget">/2000mg</span></div>
+          <div class="m-name">钠</div>
+          <div class="macro-bar"><div class="macro-fill" id="sodiumBar" style="width:0%;background:#0284c7;"></div></div>
+        </div>
+      </div>
+      <div class="fs-note">健康参考：膳食纤维 25-30g/天 · 钠 &lt;2000mg/天</div>
     </div>
   </div>
 
@@ -456,11 +474,8 @@ canvas { width:100% !important; display:block; }
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- 零食推荐 -->
-  <div class="module" data-mid="m-snack-rec" data-view="today">
-    <div class="snack-rec-card">
+    <!-- 零食推荐（与每日建议合并为一个模块） -->
+    <div class="snack-rec-card" style="margin-top:10px;">
       <div class="snack-rec-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>还能吃啥</span>
@@ -614,7 +629,7 @@ canvas { width:100% !important; display:block; }
 <script>
 // ===== 数据 =====
 const DATA = {
-  targets: {cal:1700, p:140, c:150, f:55},
+  targets: {cal:1700, p:140, c:150, f:55, fiber:25, sodium:2000},
   goalWeight: 72,
   today: "2026-09-26",
   days: {},
@@ -655,9 +670,9 @@ function getDay(key) {
 }
 function dayTotal(key) {
   const d = getDay(key);
-  let cal=0,p=0,c=0,f=0;
-  d.records.forEach(r => { cal+=r.cal; p+=r.p; c+=r.c; f+=r.f; });
-  return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), records:d.records, water:d.water, exercise:d.exercise, steps:d.steps||0, workoutMin:d.workoutMin||0, activityCount:d.activityCount||0, weight:d.weight};
+  let cal=0,p=0,c=0,f=0,fiber=0,sodium=0;
+  d.records.forEach(r => { cal+=r.cal; p+=r.p; c+=r.c; f+=r.f; fiber+=(r.fiber||0); sodium+=(r.sodium||0); });
+  return {cal:Math.round(cal), p:+p.toFixed(1), c:+c.toFixed(1), f:+f.toFixed(1), fiber:+fiber.toFixed(1), sodium:Math.round(sodium), records:d.records, water:d.water, exercise:d.exercise, steps:d.steps||0, workoutMin:d.workoutMin||0, activityCount:d.activityCount||0, weight:d.weight};
 }
 
 // ===== 首页 =====
@@ -719,6 +734,12 @@ function renderToday() {
   document.getElementById("pBar").style.width = Math.min(100, t.p/DATA.targets.p*100)+"%";
   document.getElementById("cBar").style.width = Math.min(100, t.c/DATA.targets.c*100)+"%";
   document.getElementById("fBar").style.width = Math.min(100, t.f/DATA.targets.f*100)+"%";
+  document.getElementById("fiberNow").textContent = (t.records.length>0 && t.records.some(r=>r.fiber!=null)) ? Math.round(t.fiber) : "-";
+  document.getElementById("fiberTarget").textContent = "/"+DATA.targets.fiber+"g";
+  document.getElementById("sodiumNow").textContent = (t.records.length>0 && t.records.some(r=>r.sodium!=null)) ? Math.round(t.sodium) : "-";
+  document.getElementById("sodiumTarget").textContent = "/"+DATA.targets.sodium+"mg";
+  document.getElementById("fiberBar").style.width = (t.records.length>0 && t.records.some(r=>r.fiber!=null)) ? Math.min(100, t.fiber/DATA.targets.fiber*100)+"%" : "0%";
+  document.getElementById("sodiumBar").style.width = (t.records.length>0 && t.records.some(r=>r.sodium!=null)) ? Math.min(100, t.sodium/DATA.targets.sodium*100)+"%" : "0%";
   renderAITip(t, isToday);
   renderSnackRec(t, isToday);
 
@@ -732,11 +753,17 @@ function renderToday() {
     const mealP = items.reduce((s,i)=>s+(i.p||0),0);
     const mealC = items.reduce((s,i)=>s+(i.c||0),0);
     const mealF = items.reduce((s,i)=>s+(i.f||0),0);
-    html += `<div class="meal-group"><div class="meal-header"><span class="meal-name">${m}</span><span class="meal-cal-wrap"><span class="meal-cal">${Math.round(mealCal)} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g</span></span></div>`;
+    const mealFiber = items.reduce((s,i)=>s+(i.fiber||0),0);
+    const mealSodium = items.reduce((s,i)=>s+(i.sodium||0),0);
+    const hasFiber = items.some(i=>i.fiber!=null);
+    const hasSodium = items.some(i=>i.sodium!=null);
+    html += `<div class="meal-group"><div class="meal-header"><span class="meal-name">${m}</span><span class="meal-cal-wrap"><span class="meal-cal">${Math.round(mealCal)} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g${hasFiber?' · 纤维'+mealFiber.toFixed(1)+'g':' · 纤维-'}${hasSodium?' · 钠'+Math.round(mealSodium)+'mg':' · 钠-'}</span></span></div>`;
     items.forEach(item => {
+      const fb = (item.fiber!=null&&item.fiber!==undefined) ? item.fiber.toFixed(1) : "-";
+      const sd = (item.sodium!=null&&item.sodium!==undefined) ? Math.round(item.sodium) : "-";
       html += `<div class="food-item">
         <div class="food-info"><div class="fname">${item.foodName} <span style="color:var(--text3);font-size:11px;">${item.weight}g</span></div>
-        <div class="fmeta"><span>蛋白质 ${item.p}</span><span>碳水 ${item.c}</span><span>脂肪 ${item.f}</span></div></div>
+        <div class="fmeta"><span>蛋白质 ${item.p}</span><span>碳水 ${item.c}</span><span>脂肪 ${item.f}</span><span>纤维 ${fb}g</span><span>钠 ${sd}mg</span></div></div>
         <span class="food-cal">${item.cal}</span></div>`;
     });
     html += `</div>`;
@@ -747,17 +774,17 @@ function renderToday() {
 
 // 已购零食库（每100g营养）
 const SNACKS = [
-  {name:"水煮牛腱肉", cal:150, p:30, c:2, f:3, unit:"g", portion:50},
-  {name:"风干鸡胸肉干", cal:320, p:56, c:15, f:4, unit:"g", portion:20},
-  {name:"即食鸡胸肉", cal:127, p:23, c:6.6, f:0, unit:"g", portion:40},
-  {name:"鸡胸肉弹弹丸", cal:101, p:16.3, c:0, f:2.5, unit:"g", portion:48},
-  {name:"鸡蛋干", cal:140, p:16, c:4, f:6, unit:"g", portion:50},
-  {name:"鸡胸肉肠", cal:110, p:12, c:3, f:5, unit:"根", portion:1},
-  {name:"鹌鹑蛋", cal:160, p:13, c:3, f:11, unit:"个", portion:4},
-  {name:"手撕素肉", cal:180, p:15, c:10, f:9, unit:"g", portion:30},
-  {name:"0蔗糖酸奶", cal:60, p:4, c:5, f:2.5, unit:"g", portion:150},
-  {name:"全麦脆", cal:370, p:12, c:65, f:5, unit:"g", portion:30},
-  {name:"荞麦脆脆面", cal:333, p:16.4, c:61.6, f:0, unit:"g", portion:20},
+  {name:"水煮牛腱肉", cal:150, p:30, c:2, f:3, fiber:0, sodium:450, unit:"g", portion:50},
+  {name:"风干鸡胸肉干", cal:320, p:56, c:15, f:4, fiber:0, sodium:1600, unit:"g", portion:20},
+  {name:"即食鸡胸肉", cal:127, p:23, c:6.6, f:0, fiber:0, sodium:620, unit:"g", portion:40},
+  {name:"鸡胸肉弹弹丸", cal:101, p:16.3, c:0, f:2.5, fiber:0, sodium:560, unit:"g", portion:48},
+  {name:"鸡蛋干", cal:140, p:16, c:4, f:6, fiber:0, sodium:900, unit:"g", portion:50},
+  {name:"鸡胸肉肠", cal:110, p:12, c:3, f:5, fiber:0, sodium:700, unit:"根", portion:1},
+  {name:"鹌鹑蛋", cal:160, p:13, c:3, f:11, fiber:0, sodium:500, unit:"个", portion:4},
+  {name:"手撕素肉", cal:180, p:15, c:10, f:9, fiber:2, sodium:1000, unit:"g", portion:30},
+  {name:"0蔗糖酸奶", cal:60, p:4, c:5, f:2.5, fiber:0, sodium:60, unit:"g", portion:150},
+  {name:"全麦脆", cal:370, p:12, c:65, f:5, fiber:8, sodium:40, unit:"g", portion:30},
+  {name:"荞麦脆脆面", cal:333, p:16.4, c:61.6, f:0, fiber:8.3, sodium:1390, unit:"g", portion:20},
 ];
 
 function renderSnackRec(t, isToday) {
@@ -789,6 +816,8 @@ function renderSnackRec(t, isToday) {
       recG: actualG,
       recCal: Math.round(s.cal * factor),
       recP: (s.p * factor).toFixed(1),
+      recFiber: s.fiber ? (s.fiber * factor).toFixed(1) : 0,
+      recSodium: s.sodium ? Math.round(s.sodium * factor) : 0,
       score: s.p / (s.f + 1) * (remainP > 0 ? 2 : 0.3)
     };
   }).filter(s => s.recCal > 0 && s.recCal <= remainCal);
@@ -815,7 +844,7 @@ function renderSnackRec(t, isToday) {
       </div>
       <div class="sr-right">
         <div class="sr-cal">+${s.recCal} kcal</div>
-        <div class="sr-p">+${s.recP}g 蛋白</div>
+        <div class="sr-p">+${s.recP}g 蛋白${s.recFiber>0?' · 纤维'+s.recFiber+'g':''}${s.recSodium>0?' · 钠'+s.recSodium+'mg':''}</div>
       </div>
     </div>
   `).join("");
@@ -874,7 +903,29 @@ function buildAITips(t) {
     }
   }
 
-  // 5. 可以吃什么
+  // 5. 膳食纤维（目标 25-30g）
+  if(t.records.length > 0) {
+    const fiberRemain = DATA.targets.fiber - t.fiber;
+    if(t.fiber < DATA.targets.fiber) {
+      list.push({tag:"纤维不足", content:`今天膳食纤维 ${t.fiber}g，还差 ${Math.round(fiberRemain)}g。推荐：燕麦30g(3g)、猕猴桃1个(3g)、西兰花150g(3g)、裙带菜/菌菇一碗(3-5g)。`});
+    } else {
+      list.push({tag:"纤维达标", content:`今天膳食纤维 ${t.fiber}g，达标了！高纤维饮食有助于饱腹感和肠道健康，继续保持。`});
+    }
+  }
+
+  // 5.5. 钠（目标 <2000mg，约 5g 盐）
+  if(t.records.length > 0) {
+    const sodiumRemain = DATA.targets.sodium - t.sodium;
+    if(t.sodium > DATA.targets.sodium) {
+      list.push({tag:"钠偏高", content:`今天钠 ${Math.round(t.sodium)}mg，超过 2000mg 建议量。高钠会锁水，导致体重短暂上浮——多喝水、明天清淡些，少吃加工食品和腌制/酱料。`});
+    } else if(t.sodium > DATA.targets.sodium * 0.7) {
+      list.push({tag:"钠接近上限", content:`今天钠 ${Math.round(t.sodium)}mg，接近 2000mg 上限。晚餐尽量少放盐和酱油，酱料类控制分量。`});
+    } else {
+      list.push({tag:"钠控制良好", content:`今天钠 ${Math.round(t.sodium)}mg，控制得不错。继续少油少盐，外食时注意汤底和酱料。`});
+    }
+  }
+
+  // 6. 可以吃什么
   if(t.records.length > 0 && remain > 100) {
     const pRemain = targets.p - t.p;
     const cRemain = targets.c - t.c;
@@ -939,8 +990,10 @@ function buildAITips(t) {
 function renderAITip(t, isToday) {
   if(isToday === false) {
     document.getElementById("aiTag").textContent = "当日回顾";
+    const fb = (t.records.length>0 && t.records.some(r=>r.fiber!=null)) ? t.fiber+'g' : "-";
+    const sd = (t.records.length>0 && t.records.some(r=>r.sodium!=null)) ? t.sodium+'mg' : "-";
     document.getElementById("aiContent").textContent =
-      `当天摄入 ${t.cal} kcal｜蛋白 ${t.p}g｜碳水 ${t.c}g｜脂肪 ${t.f}g。运动消耗 ${t.exercise} kcal，步数 ${t.steps}。`;
+      `当天摄入 ${t.cal} kcal｜蛋白 ${t.p}g｜碳水 ${t.c}g｜脂肪 ${t.f}g｜纤维 ${fb}｜钠 ${sd}。运动消耗 ${t.exercise} kcal，步数 ${t.steps}。`;
     return;
   }
   aiTips = buildAITips(t);
@@ -1236,11 +1289,15 @@ function showCalDay(key) {
   if(t.records.length === 0) {
     html = `<div class="cd-empty">当天无记录</div>`;
   } else {
+    const hasFiberDay = t.records.some(r=>r.fiber!=null);
+    const hasSodiumDay = t.records.some(r=>r.sodium!=null);
     html = `<div class="cd-summary">
       <div class="cd-sum"><div class="v">${t.cal}</div><div class="l">总热量 kcal</div></div>
       <div class="cd-sum"><div class="v">${Math.round(t.p)}</div><div class="l">蛋白质 g</div></div>
-      <div class="cd-sum"><div class="v">${Math.round(t.f)}</div><div class="l">脂肪 g</div></div>
       <div class="cd-sum"><div class="v">${Math.round(t.c)}</div><div class="l">碳水 g</div></div>
+      <div class="cd-sum"><div class="v">${Math.round(t.f)}</div><div class="l">脂肪 g</div></div>
+      <div class="cd-sum"><div class="v">${hasFiberDay?t.fiber.toFixed(1):"-"}</div><div class="l">纤维 g</div></div>
+      <div class="cd-sum"><div class="v">${hasSodiumDay?Math.round(t.sodium):"-"}</div><div class="l">钠 mg</div></div>
     </div>`;
     const meals = {};
     t.records.forEach(r => {
@@ -1253,10 +1310,16 @@ function showCalDay(key) {
         const mealP = meals[meal].reduce((s,r)=>s+(r.p||0),0);
         const mealC = meals[meal].reduce((s,r)=>s+(r.c||0),0);
         const mealF = meals[meal].reduce((s,r)=>s+(r.f||0),0);
+        const mealFiber = meals[meal].reduce((s,r)=>s+(r.fiber||0),0);
+        const mealSodium = meals[meal].reduce((s,r)=>s+(r.sodium||0),0);
+        const hasFiber = meals[meal].some(r=>r.fiber!=null);
+        const hasSodium = meals[meal].some(r=>r.sodium!=null);
         html += `<div class="cd-meal">
-          <div class="cd-meal-title"><span>${meal}</span><span class="mc-wrap"><span class="mc">${mealCal} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g</span></span></div>`;
+          <div class="cd-meal-title"><span>${meal}</span><span class="mc-wrap"><span class="mc">${mealCal} kcal</span><span class="macro-sub">蛋白${Math.round(mealP)}g · 碳水${Math.round(mealC)}g · 脂肪${Math.round(mealF)}g${hasFiber?' · 纤维'+mealFiber.toFixed(1)+'g':' · 纤维-'}${hasSodium?' · 钠'+Math.round(mealSodium)+'mg':' · 钠-'}</span></span></div>`;
         meals[meal].forEach(r => {
-          html += `<div class="cd-food"><span class="fname">${r.foodName} ${r.weight}g</span><span class="fcal">${r.cal} kcal</span></div>`;
+          const fb = (r.fiber!=null&&r.fiber!==undefined) ? r.fiber.toFixed(1) : "-";
+          const sd = (r.sodium!=null&&r.sodium!==undefined) ? Math.round(r.sodium) : "-";
+          html += `<div class="cd-food"><div><span class="fname">${r.foodName} ${r.weight}g</span><div class="cd-fmeta">蛋白${r.p} · 碳水${r.c} · 脂肪${r.f} · 纤维${fb} · 钠${sd}mg</div></div><span class="fcal">${r.cal} kcal</span></div>`;
         });
         html += `</div>`;
       }
@@ -1291,7 +1354,7 @@ function renderWeekReport() {
   const titleEl = document.getElementById("weekReportTitle");
   if(titleEl) titleEl.textContent = rangeLabel + " 周概览";
 
-  let totalCal=0, daysLogged=0, totalP=0, totalC=0, totalF=0;
+  let totalCal=0, daysLogged=0, totalP=0, totalC=0, totalF=0, totalFiber=0, totalSodium=0, anyFiber=false, anySodium=false;
   let wStart = null, wEnd = null;
   const tk = todayKey();
   const focusIsThisWeek = !weekFocusDay || weekFocusDay === tk ||
@@ -1304,7 +1367,9 @@ function renderWeekReport() {
     const t = dayTotal(key);
     const mealCount = new Set(t.records.map(r=>r.meal)).size;
     if(t.cal > 0 && mealCount >= 2) {
-      daysLogged++; totalCal += t.cal; totalP += t.p; totalC += t.c; totalF += t.f;
+      daysLogged++; totalCal += t.cal; totalP += t.p; totalC += t.c; totalF += t.f; totalFiber += t.fiber; totalSodium += t.sodium;
+      if(t.records.some(r=>r.fiber!=null)) anyFiber = true;
+      if(t.records.some(r=>r.sodium!=null)) anySodium = true;
     }
     const wh = DATA.weightHistory.find(w => w.date === key);
     if(wh) { if(wStart===null) wStart = wh.weight; wEnd = wh.weight; }
@@ -1313,6 +1378,8 @@ function renderWeekReport() {
   const avgP = daysLogged ? Math.round(totalP/daysLogged) : 0;
   const avgC = daysLogged ? Math.round(totalC/daysLogged) : 0;
   const avgF = daysLogged ? Math.round(totalF/daysLogged) : 0;
+  const avgFiber = (daysLogged && anyFiber) ? Math.round(totalFiber/daysLogged*10)/10 : 0;
+  const avgSodium = (daysLogged && anySodium) ? Math.round(totalSodium/daysLogged) : 0;
   let wRow = "";
   if(wStart !== null && wEnd !== null) {
     const diff = wEnd - wStart;
@@ -1326,6 +1393,8 @@ function renderWeekReport() {
     <div class="report-row"><span>日均蛋白质</span><span class="val">${daysLogged?avgP+'<span class="sub">/'+DATA.targets.p+' g</span>':'-'}</span></div>
     <div class="report-row"><span>日均碳水</span><span class="val">${daysLogged?avgC+'<span class="sub">/'+DATA.targets.c+' g</span>':'-'}</span></div>
     <div class="report-row"><span>日均脂肪</span><span class="val">${daysLogged?avgF+'<span class="sub">/'+DATA.targets.f+' g</span>':'-'}</span></div>
+    <div class="report-row"><span>日均纤维</span><span class="val">${(daysLogged&&anyFiber)?avgFiber+'<span class="sub">/'+DATA.targets.fiber+' g</span>':'-'}</span></div>
+    <div class="report-row"><span>日均钠</span><span class="val">${(daysLogged&&anySodium)?avgSodium+'<span class="sub">/'+DATA.targets.sodium+' mg</span>':'-'}</span></div>
     ${note}`;
 }
 function isSameWeek(ds, ref) {
@@ -1370,7 +1439,7 @@ const SNACK_LIBRARY = [
    per:{cal:101, p:16.3, c:0, f:2.5}, serving:48, scores:{nutrition:4.3, value:3.5}},
   {id:"fitness-buckwheat", name:"荞麦脆脆面(火鸡味)", brand:"健身主义", spec:"20g/袋", price:0,
    img:"assets/snacks/fitness-buckwheat.jpg", imgPos:"center 45%", pdd:"健身主义荞麦脆脆面",
-   per:{cal:333, p:16.4, c:61.6, f:0}, serving:20, scores:{nutrition:4.0, value:3.0}},
+   per:{cal:333, p:16.4, c:61.6, f:0, fiber:8.3, sodium:1390}, serving:20, scores:{nutrition:4.0, value:3.0}},
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
@@ -1474,7 +1543,7 @@ function showSnackDetail(id){
         <span style="font-size:13px;font-weight:700;color:#333;">每 100g 营养</span>
       </div>
       <div style="font-size:13px;color:#555;line-height:1.7;padding:0 2px;">
-        热量 ${p.cal} kcal · 蛋白 ${p.p}g · 碳水 ${p.c}g · 脂肪 ${p.f}g
+        热量 ${p.cal} kcal · 蛋白 ${p.p}g · 碳水 ${p.c}g · 脂肪 ${p.f}g${p.fiber!=null?' · 纤维 '+p.fiber+'g':''}${p.sodium!=null?' · 钠 '+p.sodium+'mg':''}
       </div>
     </div>
     <div style="margin-bottom:14px;">
@@ -1808,10 +1877,10 @@ function renderSportDay() {
 // ===== 数据导出 =====
 function exportData(format) {
   if(format === 'csv') {
-    let csv = "日期,餐次,食物,重量(g),热量(kcal),蛋白质(g),碳水(g),脂肪(g)\n";
+    let csv = "日期,餐次,食物,重量(g),热量(kcal),蛋白质(g),碳水(g),脂肪(g),纤维(g),钠(mg)\n";
     Object.keys(DATA.days).sort().forEach(date => {
       DATA.days[date].records.forEach(r => {
-        csv += `${date},${r.meal},${r.foodName},${r.weight},${r.cal},${r.p},${r.c},${r.f}\n`;
+        csv += `${date},${r.meal},${r.foodName},${r.weight},${r.cal},${r.p},${r.c},${r.f},${r.fiber!=null?r.fiber:0},${r.sodium!=null?r.sodium:0}\n`;
       });
     });
     csv += "\n体重记录\n日期,体重(kg),BMI,体脂率(%),肌肉率(%),基础代谢,内脏脂肪,蛋白质率(%)\n";
