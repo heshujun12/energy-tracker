@@ -2017,7 +2017,11 @@
      "fiber": 0,
      "sodium": 42
     }
-   ]
+   ],
+   "steps": 3224,
+   "exercise": 221,
+   "workoutMin": 4,
+   "activityCount": 6
   }
  },
  "weightHistory": [
