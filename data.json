@@ -1850,6 +1850,54 @@
    "exercise": 305,
    "workoutMin": 2,
    "activityCount": 12
+  },
+  "2026-10-07": {
+   "totals": {
+    "cal": 381.0,
+    "p": 21.4,
+    "c": 38.3,
+    "f": 14.2,
+    "fiber": 4.9,
+    "sodium": 210.0
+   },
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "盒马本味原味酸奶(100g)",
+     "weight": 0,
+     "cal": 85,
+     "p": 3,
+     "c": 10.5,
+     "f": 3.4,
+     "fiber": 0,
+     "sodium": 70
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆燕麦片(40g·零食库)",
+     "weight": 0,
+     "cal": 152,
+     "p": 5.8,
+     "c": 26.6,
+     "f": 1.2,
+     "fiber": 4.9,
+     "sodium": 0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 0,
+     "cal": 144,
+     "p": 12.6,
+     "c": 1.2,
+     "f": 9.6,
+     "fiber": 0,
+     "sodium": 140
+    }
+   ]
   }
  },
  "weightHistory": [
