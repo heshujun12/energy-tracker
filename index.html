@@ -1440,6 +1440,14 @@ const SNACK_LIBRARY = [
   {id:"fitness-buckwheat", name:"荞麦脆脆面(火鸡味)", brand:"健身主义", spec:"20g/袋", price:0,
    img:"assets/snacks/fitness-buckwheat.jpg", imgPos:"center 45%", pdd:"健身主义荞麦脆脆面",
    per:{cal:333, p:16.4, c:61.6, f:0, fiber:8.3, sodium:1390}, serving:20, scores:{nutrition:4.0, value:3.0}},
+
+  ,{id:"chuanwazi-chili", name:"苹果鲜椒酱", brand:"川娃子", spec:"230g", price:10,
+   img:"assets/snacks/chuanwazi-apple-chili.jpg", imgPos:"center 60%", pdd:"川娃子苹果鲜椒酱",
+   per:{cal:56, p:2.5, c:11.2, f:0, fiber:0, sodium:2058}, serving:15, scores:{nutrition:3.0, value:4.0}},
+  {id:"dayang-tuna", name:"矿泉水浸金枪鱼", brand:"大洋世家", spec:"100g/罐", price:6,
+   img:"assets/snacks/dayang-tuna.jpg", imgPos:"center 50%", pdd:"大洋世家矿泉水浸金枪鱼",
+   per:{cal:110, p:25, c:0, f:0.5, fiber:0, sodium:300}, serving:50, scores:{nutrition:4.7, value:4.0}}
+
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
