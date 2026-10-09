@@ -2158,6 +2158,90 @@
    "exercise": 271,
    "workoutMin": 0,
    "activityCount": 8
+  },
+  "2026-10-09": {
+   "records": [
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "酸菜炒毛豆米(毛豆米75g·盒马日日鲜)",
+     "weight": 75,
+     "cal": 94,
+     "p": 8.6,
+     "c": 7.4,
+     "f": 3.8,
+     "fiber": 3.8,
+     "sodium": 2
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "盒马炒酸菜(客家风味·25g)",
+     "weight": 25,
+     "cal": 8,
+     "p": 0.4,
+     "c": 1.3,
+     "f": 0.1,
+     "fiber": 0.5,
+     "sodium": 400
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "微波烤鸡小胸(150g·盒马日日鲜)",
+     "weight": 150,
+     "cal": 187,
+     "p": 36,
+     "c": 0,
+     "f": 3.5,
+     "fiber": 0,
+     "sodium": 65
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "川娃子苹果鲜椒酱(15g·零食库)",
+     "weight": 15,
+     "cal": 9,
+     "p": 0.3,
+     "c": 1.8,
+     "f": 0,
+     "fiber": 0,
+     "sodium": 309
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "白面馒头(80g)",
+     "weight": 80,
+     "cal": 179,
+     "p": 5.6,
+     "c": 37.6,
+     "f": 0.8,
+     "fiber": 0.4,
+     "sodium": 120
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "生菜(40g)",
+     "weight": 40,
+     "cal": 6,
+     "p": 0.4,
+     "c": 1.1,
+     "f": 0.1,
+     "fiber": 0.5,
+     "sodium": 11
+    }
+   ],
+   "totals": {
+    "cal": 483,
+    "p": 51.3,
+    "c": 49.2,
+    "f": 8.3,
+    "fiber": 5.2,
+    "sodium": 907
+   }
   }
  },
  "weightHistory": [
