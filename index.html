@@ -784,7 +784,7 @@ const SNACKS = [
   {name:"手撕素肉", cal:180, p:15, c:10, f:9, fiber:2, sodium:1000, unit:"g", portion:30},
   {name:"0蔗糖酸奶", cal:60, p:4, c:5, f:2.5, fiber:0, sodium:60, unit:"g", portion:150},
   {name:"全麦脆", cal:379, p:14.6, c:66.5, f:2.9, fiber:12.2, sodium:0, unit:"g", portion:30},
-  {name:"去皮鸭腿", cal:186, p:26.1, c:8.6, f:5.1, fiber:0, sodium:779, unit:"g", portion:66},
+  {name:"去皮鸭腿", cal:186, p:26.1, c:8.6, f:5.1, fiber:0, sodium:779, unit:"g", portion:80},
   {name:"荞麦脆脆面", cal:333, p:16.4, c:61.6, f:0, fiber:8.3, sodium:1390, unit:"g", portion:20},
 ];
 
@@ -1441,9 +1441,9 @@ const SNACK_LIBRARY = [
   {id:"fitness-buckwheat", name:"荞麦脆脆面(火鸡味)", brand:"健身主义", spec:"20g/袋", price:0,
    img:"assets/snacks/fitness-buckwheat.jpg", imgPos:"center 45%", pdd:"健身主义荞麦脆脆面",
    per:{cal:333, p:16.4, c:61.6, f:0, fiber:8.3, sodium:1390}, serving:20, scores:{nutrition:4.0, value:3.0}},
-  {id:"shark-duck", name:"去皮鸭腿(酱香味)", brand:"鲨鱼菲特", spec:"110g/袋·净肉约66g", price:4,
+  {id:"shark-duck", name:"去皮鸭腿(酱香味)", brand:"鲨鱼菲特", spec:"110g/袋·可食约80g", price:4,
    img:"assets/snacks/shark-duck.jpg", imgPos:"center 45%", pdd:"鲨鱼菲特去皮鸭腿110g",
-   per:{cal:186, p:26.1, c:8.6, f:5.1, fiber:0, sodium:779}, serving:66, scores:{nutrition:4.3, value:4.0}},
+   per:{cal:186, p:26.1, c:8.6, f:5.1, fiber:0, sodium:779}, serving:80, scores:{nutrition:4.3, value:4.0}},
 ];
 function getTasteScore(id){
   try{ return JSON.parse(localStorage.getItem('snackTaste')||'{}')[id] || 0; }catch(e){ return 0; }
