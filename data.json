@@ -2402,6 +2402,54 @@
    "exercise": 239,
    "workoutMin": 0,
    "activityCount": 9
+  },
+  "2026-10-10": {
+   "records": [
+    {
+     "time": "08:00",
+     "meal": "早餐",
+     "foodName": "光明原味活菌酸奶(100g)",
+     "weight": 100,
+     "cal": 88,
+     "p": 3.0,
+     "c": 11.0,
+     "f": 3.5,
+     "fiber": 0,
+     "sodium": 60
+    },
+    {
+     "time": "08:00",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(40g·零食库)",
+     "weight": 40,
+     "cal": 152,
+     "p": 5.8,
+     "c": 26.6,
+     "f": 1.2,
+     "fiber": 4.9,
+     "sodium": 0
+    },
+    {
+     "time": "08:00",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 110,
+     "cal": 144,
+     "p": 12.6,
+     "c": 1.2,
+     "f": 9.6,
+     "fiber": 0,
+     "sodium": 140
+    }
+   ],
+   "totals": {
+    "cal": 384,
+    "p": 21.4,
+    "c": 38.8,
+    "f": 14.3,
+    "fiber": 4.9,
+    "sodium": 200
+   }
   }
  },
  "weightHistory": [
