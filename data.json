@@ -2658,6 +2658,66 @@
    "exercise": 304,
    "workoutMin": 2,
    "activityCount": 9
+  },
+  "2026-10-11": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "光明原味活菌酸奶(150g)",
+     "weight": 150,
+     "cal": 132,
+     "p": 4.5,
+     "c": 16.5,
+     "f": 5.3,
+     "fiber": 0,
+     "sodium": 90
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 110,
+     "cal": 144,
+     "p": 12.6,
+     "c": 1.2,
+     "f": 9.6,
+     "fiber": 0,
+     "sodium": 140
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(40g·零食库)",
+     "weight": 40,
+     "cal": 152,
+     "p": 5.8,
+     "c": 26.6,
+     "f": 1.2,
+     "fiber": 4.9,
+     "sodium": 0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "西域美农纯蒸即食鹰嘴豆(20g·临时库)",
+     "weight": 20,
+     "cal": 35,
+     "p": 1.9,
+     "c": 4.4,
+     "f": 0.7,
+     "fiber": 1.9,
+     "sodium": 2
+    }
+   ],
+   "totals": {
+    "cal": 463,
+    "p": 24.8,
+    "c": 48.7,
+    "f": 16.8,
+    "fiber": 6.8,
+    "sodium": 232
+   }
   }
  },
  "weightHistory": [
