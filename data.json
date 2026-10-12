@@ -2866,6 +2866,42 @@
    "exercise": 286,
    "workoutMin": 1,
    "activityCount": 8
+  },
+  "2026-10-12": {
+   "records": [
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "泡椒鸡杂(盒马快手菜·1/3包90g)",
+     "weight": 90,
+     "cal": 68,
+     "p": 7.6,
+     "c": 5.5,
+     "f": 1.6,
+     "fiber": 0,
+     "sodium": 1305
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "上汤娃娃菜(1/3锅·娃娃菜+麻酱蛋2+内酯豆腐)",
+     "weight": 0,
+     "cal": 162,
+     "p": 13.4,
+     "c": 9.2,
+     "f": 4.2,
+     "fiber": 2.7,
+     "sodium": 333
+    }
+   ],
+   "totals": {
+    "cal": 230,
+    "p": 21.0,
+    "c": 14.7,
+    "f": 5.8,
+    "fiber": 2.7,
+    "sodium": 1638
+   }
   }
  },
  "weightHistory": [
