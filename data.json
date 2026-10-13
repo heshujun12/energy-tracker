@@ -3021,7 +3021,11 @@
     "f": 60.6,
     "fiber": 8.7,
     "sodium": 2931
-   }
+   },
+   "steps": 1664,
+   "exercise": 194,
+   "workoutMin": 0,
+   "activityCount": 8
   }
  },
  "weightHistory": [
@@ -3262,6 +3266,23 @@
    "bodyScore": 84,
    "fatMass": 15.6,
    "leanMass": 64.36
+  },
+  {
+   "date": "2026-10-13",
+   "weight": 79.49,
+   "bmi": 25.3,
+   "bodyFat": 19.2,
+   "muscle": 41.9,
+   "water": 57.0,
+   "bone": 3.02,
+   "subFat": 18.9,
+   "bmr": 1701,
+   "visceral": 8,
+   "protein": 14.2,
+   "bodyAge": 30,
+   "bodyScore": 85,
+   "fatMass": 15.26,
+   "leanMass": 64.22
   }
  ],
  "chatHistory": [
