@@ -3800,14 +3800,51 @@
    "activityCount": 3
   },
   "2026-10-18": {
-   "records": [],
+   "records": [
+    {
+     "time": "08:10",
+     "meal": "早餐",
+     "foodName": "卡士餐后一小时原味(250ml)",
+     "weight": 250,
+     "cal": 252,
+     "p": 7.5,
+     "c": 32.5,
+     "f": 9.3,
+     "fiber": 4.0,
+     "sodium": 150
+    },
+    {
+     "time": "08:10",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 110,
+     "cal": 144,
+     "p": 12.6,
+     "c": 1.2,
+     "f": 9.6,
+     "fiber": 0,
+     "sodium": 140
+    },
+    {
+     "time": "08:10",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆燕麦片(2块·40g)",
+     "weight": 40,
+     "cal": 152,
+     "p": 5.8,
+     "c": 26.6,
+     "f": 1.2,
+     "fiber": 4.9,
+     "sodium": 0
+    }
+   ],
    "totals": {
-    "cal": 0,
-    "p": 0,
-    "c": 0,
-    "f": 0,
-    "fiber": 0,
-    "sodium": 0
+    "cal": 548,
+    "p": 25.9,
+    "c": 60.3,
+    "f": 20.1,
+    "fiber": 8.9,
+    "sodium": 290
    },
    "steps": 0,
    "exercise": 0,
