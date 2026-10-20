@@ -4126,10 +4126,10 @@
     "fiber": 13.1,
     "sodium": 1952
    },
-   "steps": 0,
-   "exercise": 0,
-   "workoutMin": 0,
-   "activityCount": 0
+   "steps": 8585,
+   "exercise": 422,
+   "workoutMin": 11,
+   "activityCount": 9
   },
   "2026-10-20": {
    "records": [
@@ -4322,10 +4322,10 @@
     "fiber": 12.3,
     "sodium": 3045
    },
-   "steps": 0,
-   "exercise": 0,
-   "workoutMin": 0,
-   "activityCount": 0
+   "steps": 10479,
+   "exercise": 461,
+   "workoutMin": 7,
+   "activityCount": 9
   }
  },
  "weightHistory": [
