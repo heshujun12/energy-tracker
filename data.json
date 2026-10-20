@@ -4192,15 +4192,39 @@
      "f": 0.1,
      "fiber": 0.5,
      "sodium": 2
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "牛奶(50g)",
+     "weight": 50,
+     "cal": 32,
+     "p": 1.7,
+     "c": 2.4,
+     "f": 1.8,
+     "fiber": 0,
+     "sodium": 25
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "燕麦(10g)",
+     "weight": 10,
+     "cal": 38,
+     "p": 1.3,
+     "c": 6.2,
+     "f": 0.7,
+     "fiber": 1.1,
+     "sodium": 0
     }
    ],
    "totals": {
-    "cal": 285,
-    "p": 15.9,
-    "c": 32.5,
-    "f": 10.3,
-    "fiber": 3.7,
-    "sodium": 328
+    "cal": 355,
+    "p": 18.9,
+    "c": 41.1,
+    "f": 12.8,
+    "fiber": 4.8,
+    "sodium": 353
    },
    "steps": 0,
    "exercise": 0,
