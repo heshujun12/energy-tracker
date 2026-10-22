@@ -4566,10 +4566,10 @@
     "fiber": 14.8,
     "sodium": 2391
    },
-   "steps": 0,
-   "exercise": 0,
-   "workoutMin": 0,
-   "activityCount": 0
+   "steps": 10955,
+   "exercise": 534,
+   "workoutMin": 5,
+   "activityCount": 11
   }
  },
  "weightHistory": [
