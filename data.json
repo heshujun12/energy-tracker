@@ -4814,6 +4814,90 @@
    "exercise": 305,
    "workoutMin": 8,
    "activityCount": 8
+  },
+  "2026-10-23": {
+   "records": [
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "苦瓜炒蛋(50g)",
+     "weight": 50,
+     "cal": 60,
+     "p": 2.5,
+     "c": 3.0,
+     "f": 4.0,
+     "fiber": 1.0,
+     "sodium": 150
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "笋片炒牛肉(80g)",
+     "weight": 80,
+     "cal": 104,
+     "p": 9.0,
+     "c": 3.0,
+     "f": 6.0,
+     "fiber": 1.0,
+     "sodium": 200
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "西兰花虾仁(120g)",
+     "weight": 120,
+     "cal": 108,
+     "p": 11.0,
+     "c": 5.0,
+     "f": 4.0,
+     "fiber": 2.0,
+     "sodium": 280
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "菠菜拌金针菇(40g)",
+     "weight": 40,
+     "cal": 32,
+     "p": 1.5,
+     "c": 3.0,
+     "f": 2.0,
+     "fiber": 1.5,
+     "sodium": 120
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "口水鸡(80g)",
+     "weight": 80,
+     "cal": 148,
+     "p": 13.0,
+     "c": 3.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 350
+    },
+    {
+     "time": "12:30",
+     "meal": "午餐",
+     "foodName": "米饭(150g)",
+     "weight": 150,
+     "cal": 174,
+     "p": 3.2,
+     "c": 38.7,
+     "f": 0.4,
+     "fiber": 0.5,
+     "sodium": 5
+    }
+   ],
+   "totals": {
+    "cal": 626,
+    "p": 40.2,
+    "c": 55.7,
+    "f": 26.4,
+    "fiber": 6.0,
+    "sodium": 1105
+   }
   }
  },
  "weightHistory": [
