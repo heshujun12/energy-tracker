@@ -5010,6 +5010,78 @@
    "exercise": 343,
    "workoutMin": 19,
    "activityCount": 9
+  },
+  "2026-10-24": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "卡士007酸奶(100g)",
+     "weight": 100,
+     "cal": 103,
+     "p": 3.4,
+     "c": 12.0,
+     "f": 4.6,
+     "fiber": 0,
+     "sodium": 45
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "欧扎克燕麦脆(2块40g)",
+     "weight": 40,
+     "cal": 152,
+     "p": 5.8,
+     "c": 26.6,
+     "f": 1.2,
+     "fiber": 4.9,
+     "sodium": 0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "香蕉(1/3根43g)",
+     "weight": 43,
+     "cal": 38,
+     "p": 0.5,
+     "c": 10.0,
+     "f": 0.1,
+     "fiber": 0.9,
+     "sodium": 1
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "阳光玫瑰(1颗18g)",
+     "weight": 18,
+     "cal": 14,
+     "p": 0.2,
+     "c": 3.5,
+     "f": 0.0,
+     "fiber": 0.1,
+     "sodium": 0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 110,
+     "cal": 144,
+     "p": 12.6,
+     "c": 1.2,
+     "f": 9.6,
+     "fiber": 0,
+     "sodium": 140
+    }
+   ],
+   "totals": {
+    "cal": 451,
+    "p": 22.5,
+    "c": 53.3,
+    "f": 15.5,
+    "fiber": 5.9,
+    "sodium": 186
+   }
   }
  },
  "weightHistory": [
