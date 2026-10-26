@@ -5438,6 +5438,46 @@
    "exercise": 437,
    "workoutMin": 0,
    "activityCount": 7
+  },
+  "2026-10-26": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 100,
+     "cal": 140,
+     "p": 12.0,
+     "c": 1.0,
+     "f": 10.0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "吃甘蔗的水牛奶(200ml)",
+     "weight": 200,
+     "cal": 167,
+     "p": 8.4,
+     "c": 11.0,
+     "f": 10.0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(2块20g)",
+     "weight": 20,
+     "cal": 76,
+     "p": 2.9,
+     "c": 13.3,
+     "f": 0.6
+    }
+   ],
+   "water": 0,
+   "exercise": 0,
+   "steps": 0,
+   "workoutMin": 0,
+   "activityCount": 0,
+   "weight": null
   }
  },
  "weightHistory": [
