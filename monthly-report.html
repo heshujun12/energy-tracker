@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>轻卡日记 · 一个月使用总结</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%232e7d5b'/%3E%3Cpath d='M50 22c16 0 28 12 28 28 0 10-6 18-15 21l-2-9c5-1 9-6 9-12 0-9-8-15-20-15-12 0-20 6-20 15 0 6 4 11 9 12l-2 9C28 68 22 60 22 50c0-16 12-28 28-28z' fill='%23f6f7f2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#f4f5ef;
+  --card:#ffffff;
+  --ink:#24312a;
+  --sub:#6b756c;
+  --green:#2e7d5b;
+  --green-deep:#1f4a38;
+  --orange:#e07a3f;
+  --red:#c05252;
+  --line:#e3e7dc;
+  --soft:#eef2e8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans SC',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 60px}
+
+/* ===== Hero ===== */
+.hero{
+  background:linear-gradient(160deg,var(--green-deep) 0%,var(--green) 78%,#3e9a70 100%);
+  color:#fff;border-radius:0 0 28px 28px;padding:40px 20px 30px;margin:0 0 28px;
+}
+.hero .inner{max-width:788px;margin:0 auto}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:#d8ecdd;border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:28px;font-weight:900;line-height:1.3;margin-bottom:6px}
+.hero .range{font-size:13px;color:#cfe6d6;margin-bottom:26px}
+.hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hcard{background:rgba(255,255,255,.12);border-radius:16px;padding:12px 10px;text-align:center;backdrop-filter:blur(2px)}
+.hcard .num{font-size:22px;font-weight:900;line-height:1.2}
+.hcard .num small{font-size:13px;font-weight:700}
+.hcard .lbl{font-size:11px;color:#cfe6d6;margin-top:2px}
+.hcard.down .num{color:#ffe3c4}
+
+/* ===== Section ===== */
+.sec{margin-top:30px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.sec-head h2{font-size:19px;font-weight:900;position:relative;padding-left:14px}
+.sec-head h2::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:5px;border-radius:3px;background:var(--orange)}
+.sec-head .note{font-size:12px;color:var(--sub)}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 1px 3px rgba(31,74,56,.06)}
+
+/* ===== 身体变化 ===== */
+.body-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.bitem{background:var(--soft);border-radius:14px;padding:14px;text-align:center}
+.bitem .k{font-size:12px;color:var(--sub);margin-bottom:6px}
+.bitem .v{font-size:20px;font-weight:900}
+.bitem .d{font-size:12px;font-weight:700;margin-top:2px}
+.bitem .d.good{color:var(--green)}
+.bitem .d.warn{color:var(--red)}
+.bitem .d.flat{color:var(--sub)}
+.chart{width:100%;height:230px}
+.mini-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.mini{text-align:center;padding:10px 4px;border:1px solid var(--line);border-radius:12px}
+.mini .k{font-size:11px;color:var(--sub)}
+.mini .v{font-size:15px;font-weight:900;margin-top:2px}
+.mini .from{font-size:11px;color:var(--sub)}
+
+/* ===== 营养 ===== */
+.macro{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mcell{border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center}
+.mcell .k{font-size:11px;color:var(--sub)}
+.mcell .v{font-size:17px;font-weight:900;margin-top:2px}
+.mcell .pct{font-size:11px;font-weight:700;margin-top:1px}
+.mcell .pct.ok{color:var(--green)}
+.mcell .pct.over{color:var(--orange)}
+.mcell .pct.low{color:var(--red)}
+.chart-bar{width:100%;height:220px}
+.insight{background:var(--soft);border-radius:14px;padding:14px;font-size:13px;margin-top:14px}
+.insight b{color:var(--green-deep)}
+.insight .num{color:var(--orange);font-weight:900}
+
+/* ===== 排行 ===== */
+.rank-list{display:flex;flex-direction:column;gap:12px}
+.rank-item{display:flex;align-items:center;gap:12px}
+.rank-item .photo{width:74px;height:74px;border-radius:14px;object-fit:cover;flex-shrink:0;background:var(--soft)}
+.rank-item .info{flex:1;min-width:0}
+.rank-item .nm{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.rank-item .nm .medal{width:20px;height:20px;border-radius:6px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;background:var(--green-deep)}
+.medal.m1{background:#d9a53a}.medal.m2{background:#9aa5b1}.medal.m3{background:#c0804a}
+.rank-item .meta{font-size:12px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-item .dens{font-size:11px;font-weight:700;color:var(--green);margin-top:3px}
+.dbar{height:4px;background:var(--line);border-radius:2px;margin-top:5px;overflow:hidden}
+.dbar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#6cbf96);border-radius:2px}
+.rank-note{font-size:12px;color:var(--sub);margin-top:12px;line-height:1.7}
+.plain-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.plain-row:last-child{border-bottom:none}
+.plain-row .pos{width:22px;font-size:13px;font-weight:900;text-align:center;flex-shrink:0}
+.plain-row .pos.p1{color:#d9a53a}.plain-row .pos.p2{color:#9aa5b1}.plain-row .pos.p3{color:#c0804a}
+.plain-row .nm{flex:1;font-size:14px;font-weight:700}
+.plain-row .nm .dt{display:block;font-size:11px;color:var(--sub);font-weight:400}
+.plain-row .px{font-size:13px;font-weight:900;color:var(--green)}
+.plain-row .px small{font-size:11px;font-weight:400;color:var(--sub)}
+.plain-row .pdet{font-size:11px;color:var(--sub);text-align:right}
+
+/* ===== 运动 ===== */
+.ex-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.excell{background:var(--soft);border-radius:14px;padding:12px;text-align:center}
+.excell .v{font-size:18px;font-weight:900}
+.excell .k{font-size:11px;color:var(--sub)}
+.chart-steps{width:100%;height:200px}
+
+/* ===== 亮点/建议 ===== */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{border-radius:16px;padding:16px}
+.panel.good{background:#eaf3ec;border:1px solid #cfe4d4}
+.panel.warn{background:#fbeef0;border:1px solid #f0d4d8}
+.panel h3{font-size:14px;font-weight:900;margin-bottom:10px}
+.panel.good h3{color:var(--green-deep)}
+.panel.warn h3{color:#a33}
+.panel ul{list-style:none}
+.panel li{font-size:13px;line-height:1.7;padding-left:18px;position:relative;margin-bottom:6px}
+.panel li::before{content:'';position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%}
+.panel.good li::before{background:var(--green)}
+.panel.warn li::before{background:#c05252}
+
+/* ===== 目标 ===== */
+.goals{display:flex;flex-direction:column;gap:10px}
+.goal{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:14px;padding:14px;box-shadow:0 1px 3px rgba(31,74,56,.06)}
+.goal .gno{width:26px;height:26px;border-radius:8px;background:var(--green);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.goal .gt{font-size:14px;font-weight:700;margin-bottom:2px}
+.goal .gd{font-size:13px;color:var(--sub)}
+
+/* ===== 口径 ===== */
+.method{background:var(--card);border-radius:18px;padding:16px;margin-top:30px;font-size:12px;color:var(--sub);line-height:1.8}
+.method b{color:var(--green-deep)}
+
+footer{margin-top:26px;text-align:center;font-size:11px;color:var(--sub)}
+
+@media(max-width:600px){
+  .hero-grid{grid-template-columns:repeat(3,1fr)}
+  .body-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .macro{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="inner">
+    <span class="tag">MONTHLY REVIEW · 01</span>
+    <h1>轻卡日记<br>一个月使用总结</h1>
+    <div class="range">2026.09.25 — 2026.10.26 · 32 天 · 439 条饮食记录</div>
+    <div class="hero-grid">
+      <div class="hcard down"><div class="num">-2.6<small>kg</small></div><div class="lbl">体重</div></div>
+      <div class="hcard down"><div class="num">-1.5<small>pp</small></div><div class="lbl">体脂率</div></div>
+      <div class="hcard"><div class="num">9→8</div><div class="lbl">内脏脂肪</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ===== 1 身体变化 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>身体变化</h2><span class="note">9/20 基线 → 10/26</span></div>
+    <div class="card">
+      <div class="body-grid">
+        <div class="bitem"><div class="k">体重</div><div class="v">81.5 → 78.9 kg</div><div class="d good">↓ 2.62 kg</div></div>
+        <div class="bitem"><div class="k">体脂率</div><div class="v">20.4 → 18.9 %</div><div class="d good">↓ 1.5 pp</div></div>
+        <div class="bitem"><div class="k">肌肉率</div><div class="v">41.2 → 42.1 %</div><div class="d good">↑ 0.9 pp</div></div>
+        <div class="bitem"><div class="k">蛋白质率</div><div class="v">13.6 → 14.4 %</div><div class="d good">↑ 0.8 pp</div></div>
+      </div>
+      <div class="chart" id="weightChart"></div>
+      <div class="mini-row">
+        <div class="mini"><div class="k">BMI</div><div class="v">26.0 → 25.1</div><div class="from">接近正常上线</div></div>
+        <div class="mini"><div class="k">基础代谢</div><div class="v">1712 → 1697</div><div class="from">随体重下降</div></div>
+        <div class="mini"><div class="k">内脏脂肪</div><div class="v">9 → 8</div><div class="from">危险等级降档</div></div>
+        <div class="mini"><div class="k">体脂率</div><div class="v">20.4 → 18.9%</div><div class="from">减脂有效</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2 营养摄入 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>营养摄入总览</h2><span class="note">日均 vs 目标</span></div>
+    <div class="card">
+      <div class="macro">
+        <div class="mcell"><div class="k">热量</div><div class="v">1590</div><div class="pct over">94% · 目标1700</div></div>
+        <div class="mcell"><div class="k">蛋白质</div><div class="v">93.5g</div><div class="pct low">67% · 目标140g</div></div>
+        <div class="mcell"><div class="k">碳水</div><div class="v">155.7g</div><div class="pct over">104% · 目标150g</div></div>
+        <div class="mcell"><div class="k">脂肪</div><div class="v">61.7g</div><div class="pct over">112% · 目标55g</div></div>
+      </div>
+      <div class="chart-bar" id="macroChart"></div>
+      <div class="insight">
+        <b>热量控制很稳：</b>32 天里 <span class="num">26 天</span> 落在 1300–1750kcal 区间，日均净摄入约 1298kcal（扣除运动消耗 292kcal）。<br>
+        <b>蛋白是最大缺口：</b>日均蛋白 93.5g，距 140g 目标差 46g，32 天中仅 <span class="num">1 天</span> 达标——这是下月最该补的功课。<br>
+        <b>脂肪略超标：</b>日均脂肪 61.7g（目标 55g），主要来自外卖油炸、肥肉与火锅油脂。
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 3 饮食习惯洞察 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>饮食习惯画像</h2><span class="note">从 439 条记录提炼</span></div>
+    <div class="card">
+      <div class="chart" id="mealChart" style="height:190px"></div>
+      <div class="insight">
+        <b>早餐模式固定：</b>水煮蛋 27 次 + 欧扎克全麦脆 15 次 + 酸奶 20 次，几乎是每日标配，蛋白稳定在 12–14g——建议再加量。<br>
+        <b>蛋白零食立功：</b>风干鸡胸肉、去皮鸭腿、水煮牛腱等蛋白零食共出现 20+ 次，是正餐之外补蛋白的主力。<br>
+        <b>蔬菜偏少：</b>除白灼娃娃菜、西葫芦等固定菜外，日均蔬菜约 150–200g，距 300g+ 推荐量有差距。
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4 食谱优秀排行榜 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>食谱优秀排行榜</h2><span class="note">高蛋白 · 低脂导向</span></div>
+    <div class="card">
+      <div class="rank-list">
+        <div class="rank-item">
+          <img class="photo" src="assets/mushroom-chicken.jpg" alt="杏鲍菇焖鸡胸" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m1">1</span>杏鲍菇焖鸡胸</div>
+            <div class="meta">125kcal/份 · 蛋白18.4g · 脂肪2.8g · 15分钟</div>
+            <div class="dens">蛋白密度 14.7g/百千卡</div>
+            <div class="dbar"><i style="width:98%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="https://aka.doubaocdn.com/s/In9mjcJaqC" alt="水浸金枪鱼沙拉" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m2">2</span>水浸金枪鱼沙拉</div>
+            <div class="meta">162kcal/份 · 蛋白22.6g · 脂肪5.1g · 蛋白质冠军</div>
+            <div class="dens">蛋白密度 14.0g/百千卡</div>
+            <div class="dbar"><i style="width:93%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="https://aka.doubaocdn.com/s/VH0fta3BdB" alt="豆芽焖牛肉" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m3">3</span>豆芽焖牛肉</div>
+            <div class="meta">120kcal/份 · 蛋白15g · 脂肪5g · 汤汁拌饭</div>
+            <div class="dens">蛋白密度 12.5g/百千卡</div>
+            <div class="dbar"><i style="width:83%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/tomato-basa.jpg" alt="番茄巴沙鱼" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">4</span>番茄巴沙鱼</div>
+            <div class="meta">195kcal/份 · 蛋白22g · 脂肪4.5g · 无刺友好</div>
+            <div class="dens">蛋白密度 11.3g/百千卡</div>
+            <div class="dbar"><i style="width:75%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/tomato-fish-tofu.jpg" alt="番茄鲈鱼豆腐汤" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">5</span>番茄鲈鱼豆腐汤</div>
+            <div class="meta">192kcal/份 · 蛋白22g · 脂肪10g · 汤鲜肉嫩</div>
+            <div class="dens">蛋白密度 11.5g/百千卡</div>
+            <div class="dbar"><i style="width:77%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="https://aka.doubaocdn.com/s/g3dUrUBl8V" alt="鸡腿肉炒白蘑" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">6</span>鸡腿肉炒白蘑</div>
+            <div class="meta">282kcal/份 · 蛋白29.8g · 脂肪6.1g · 高蛋白快手</div>
+            <div class="dens">蛋白密度 10.6g/百千卡</div>
+            <div class="dbar"><i style="width:71%"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="rank-note">排序口径：每 100 千卡蛋白质含量（蛋白密度）× 1 − 脂肪供能占比 × 0.25。上榜菜品均为自家食谱仓收录，适合长期轮换。</div>
+    </div>
+  </div>
+
+  <!-- ===== 5 零食排行榜 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>零食排行榜</h2><span class="note">回购参考 · 12 款在库</span></div>
+    <div class="card">
+      <div class="rank-list">
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/kangaroo-beef.jpg" alt="水煮牛腱肉" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m1">1</span>水煮牛腱肉<span style="font-size:11px;color:var(--sub);font-weight:400"> · 袋鼠先生</span></div>
+            <div class="meta">每100g蛋白29.7g · 营养4.8 · 性价比2.8</div>
+            <div class="dens">蛋白密度 19.4g/百千卡</div>
+            <div class="dbar"><i style="width:97%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/uxing-balls.jpg" alt="即食鸡胸肉" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m2">2</span>即食鸡胸肉(奥尔良)<span style="font-size:11px;color:var(--sub);font-weight:400"> · 优形</span></div>
+            <div class="meta">每100g蛋白23g · 零脂肪 · 营养4.3</div>
+            <div class="dens">蛋白密度 18.1g/百千卡</div>
+            <div class="dbar"><i style="width:90%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/growth-chicken.jpg" alt="风干鸡胸肉干条" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal m3">3</span>风干鸡胸肉干条<span style="font-size:11px;color:var(--sub);font-weight:400"> · 光合力量</span></div>
+            <div class="meta">每100g蛋白52.8g · 脂肪1.1g · 性价比4.3</div>
+            <div class="dens">蛋白密度 16.9g/百千卡</div>
+            <div class="dbar"><i style="width:85%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/uxing-balls.jpg" alt="鸡胸肉弹弹丸" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">4</span>鸡胸肉弹弹丸<span style="font-size:11px;color:var(--sub);font-weight:400"> · 优形</span></div>
+            <div class="meta">每100g蛋白16.3g · 脂肪2.5g · 便携</div>
+            <div class="dens">蛋白密度 16.1g/百千卡</div>
+            <div class="dbar"><i style="width:80%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/shark-duck.jpg" alt="去皮鸭腿" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">5</span>去皮鸭腿(酱香)<span style="font-size:11px;color:var(--sub);font-weight:400"> · 鲨鱼菲特</span></div>
+            <div class="meta">每100g蛋白26.1g · 脂肪5.1g · 本月回购5袋</div>
+            <div class="dens">蛋白密度 14.0g/百千卡</div>
+            <div class="dbar"><i style="width:70%"></i></div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <img class="photo" src="assets/snacks/shen-egg.jpg" alt="低脂鸡蛋干" loading="lazy">
+          <div class="info">
+            <div class="nm"><span class="medal">6</span>低脂鸡蛋干<span style="font-size:11px;color:var(--sub);font-weight:400"> · 沈师傅</span></div>
+            <div class="meta">每100g蛋白16g · 脂肪6g · 蛋白扎实</div>
+            <div class="dens">蛋白密度 11.4g/百千卡</div>
+            <div class="dbar"><i style="width:57%"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="rank-note">排序口径：蛋白密度 + 营养评分加权；得分综合「蛋白高、脂肪低」两大维度，兼顾零食库 5 分制营养分。</div>
+    </div>
+  </div>
+
+  <!-- ===== 6 外卖排行榜 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>外卖排行榜</h2><span class="note">本月 7 次 · 按蛋白密度</span></div>
+    <div class="card" id="waimaiRank"></div>
+  </div>
+
+  <!-- ===== 7 外食排行榜 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>外食排行榜</h2><span class="note">餐厅/馆子 · 按蛋白密度</span></div>
+    <div class="card" id="waishiRank"></div>
+  </div>
+
+  <!-- ===== 8 运动月报 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>运动月报</h2><span class="note">手表记录汇总</span></div>
+    <div class="card">
+      <div class="ex-stats">
+        <div class="excell"><div class="v">292</div><div class="k">日均运动消耗 kcal</div></div>
+        <div class="excell"><div class="v">9,335</div><div class="k">月总消耗 kcal</div></div>
+        <div class="excell"><div class="v">4,136</div><div class="k">日均步数</div></div>
+      </div>
+      <div class="chart-steps" id="stepsChart"></div>
+      <div class="insight">步数两头高、中间低：国庆假后（10/20–10/24）连续 4 天超 1 万步；10/16、10/26 接近 0，休息日缺口明显。运动消耗稳定在 200–460kcal/日，配合饮食形成了 1298kcal 的日均净摄入缺口。</div>
+    </div>
+  </div>
+
+  <!-- ===== 9 亮点与待改进 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>亮点与待改进</h2></div>
+    <div class="two-col">
+      <div class="panel good">
+        <h3>本月亮点</h3>
+        <ul>
+          <li>体重 -2.6kg、体脂 -1.5pp、内脏脂肪 9→8，减脂主线扎实</li>
+          <li>肌肉率不降反升 +0.9pp，没有掉肌肉</li>
+          <li>热量纪律好，26/32 天落在目标区间</li>
+          <li>蛋白零食习惯跑通，零碎蛋白补给有抓手</li>
+          <li>食谱仓 30+ 道菜，家庭餐高蛋白化初见规模</li>
+        </ul>
+      </div>
+      <div class="panel warn">
+        <h3>待改进</h3>
+        <ul>
+          <li>蛋白缺口大：日均 93.5g，目标 140g，差 46g</li>
+          <li>脂肪超标：外卖油炸 + 火锅 + 肥肉贡献明显</li>
+          <li>晚餐碳水偏高：米饭/粉面频繁，建议晚餐减半换蛋白</li>
+          <li>休息日运动归零，步数波动大</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 10 下月目标 ===== -->
+  <div class="sec">
+    <div class="sec-head"><h2>下月行动建议</h2></div>
+    <div class="goals">
+      <div class="goal"><div class="gno">1</div><div><div class="gt">蛋白质拉到 110g 以上（先向 140 靠拢）</div><div class="gd">午餐/晚餐各加 30–40g 肉蛋鱼（约 1 个手掌大），把外卖日替换为食谱仓高蛋白菜：杏鲍菇焖鸡胸、番茄巴沙鱼、水浸金枪鱼沙拉轮换。</div></div></div>
+      <div class="goal"><div class="gno">2</div><div><div class="gt">脂肪压回 55g 内</div><div class="gd">火锅/烤串/把子肉类减半频次；外卖优先和府捞面、KFC 帕尼尼这类蛋白密度高的；晚餐肥肉换成瘦肉/白肉。</div></div></div>
+      <div class="goal"><div class="gno">3</div><div><div class="gt">碳水置换：晚餐半碗饭 → 双倍蔬菜</div><div class="gd">晚间碳水压到 50g 内（约 1 小碗饭），用白灼娃娃菜、西葫芦焖虾仁这类低脂菜填空，让日均碳水回落到 150g 内。</div></div></div>
+      <div class="goal"><div class="gno">4</div><div><div class="gt">休息日也动一动：步数保底 5,000</div><div class="gd">把 B 站跟练（肩颈/瘦脸/HIIT）固定为每周 3 次，休息日至少完成一次 20 分钟跟练，补上运动空白日。</div></div></div>
+    </div>
+  </div>
+
+  <!-- ===== 口径说明 ===== -->
+  <div class="method">
+    <b>数据口径说明：</b>本报告基于 energy-tracker 本地 data.json 生成（2026.09.20 起体重秤数据、2026.09.25 起饮食记录）。体重/体脂/肌肉率为小米体重秤与手动录入值；饮食热量为食谱营养计算与包装成分表估算值，外食按菜品分项预估。排行榜按「高蛋白、低脂」导向计算，具体公式见各板块备注。食物来源（外卖/外食）按记录食物特征推断，可能存在个别误判。
+  </div>
+
+  <footer>轻卡日记 · 月报 01 · 生成于 2026.10.26</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script>
+/* ===== 数据 ===== */
+const WEIGHTS = [
+ ['9/20',81.5],['9/27',80.2],['9/28',81.0],['9/29',80.1],['10/1',80.6],['10/2',81.0],['10/3',80.2],['10/5',80.1],['10/7',80.2],['10/8',80.6],['10/9',80.1],['10/10',80.0],['10/11',80.2],['10/12',80.0],['10/13',79.5],['10/14',79.9],['10/15',79.9],['10/16',79.8],['10/17',79.4],['10/18',79.2],['10/19',79.5],['10/23',79.8],['10/24',79.2],['10/25',79.1],['10/26',78.9]
+];
+
+const STEPS = [
+ ['9/28',3085],['9/29',3470],['9/30',3768],['10/1',6028],['10/2',4517],['10/3',5833],['10/4',3902],['10/5',12510],['10/6',3700],['10/7',3224],['10/8',2802],['10/9',1924],['10/10',3735],['10/11',2745],['10/12',1664],['10/13',2186],['10/14',3367],['10/15',3291],['10/16',0],['10/17',1280],['10/18',5326],['10/19',8585],['10/20',10479],['10/21',10955],['10/22',5212],['10/23',5193],['10/24',11959],['10/25',1608],['10/26',0]
+];
+
+const WAIMAI = [
+ {name:'和府捞面·番茄软骨面',dt:'10/07 午餐',p:26,cal:436,d:6.0,detail:'P26g / 436kcal'},
+ {name:'KFC 芝士猪柳蛋帕尼尼套餐',dt:'10/04·10/05 早餐',p:29,cal:525,d:5.5,detail:'P29g / 525kcal ×2'},
+ {name:'KFC 板烧鸡腿堡(去酱)',dt:'10/05 晚餐',p:25.5,cal:525,d:4.9,detail:'P25.5g / 525kcal'},
+ {name:'康师傅私房红烧牛肉拉面',dt:'10/22 午餐',p:27.5,cal:630,d:4.4,detail:'P27.5g / 630kcal'},
+ {name:'站点·垃圾桶披萨+薯',dt:'10/17 午餐',p:17,cal:520,d:3.3,detail:'P17g / 520kcal'}
+];
+
+const WAISHI = [
+ {name:'菲力牛排餐',dt:'10/03 午餐',p:14.5,cal:130,d:11.2,detail:'P14.5g / 130kcal'},
+ {name:'牛油火锅(牛肉虾滑局)',dt:'10/05 午餐',p:76,cal:722,d:10.5,detail:'P76g / 722kcal · 蛋白王'},
+ {name:'牛肉罩饼(石家庄)',dt:'10/02 午餐',p:47,cal:597,d:7.9,detail:'P47g / 597kcal · 卤牛肉125g'},
+ {name:'工作餐·卤牛肉面档',dt:'10/23 晚餐',p:45,cal:595,d:7.6,detail:'P45g / 595kcal'},
+ {name:'鱼头泡饼',dt:'10/22 晚餐',p:24,cal:305,d:7.9,detail:'P24g / 305kcal · 高蛋白低脂'},
+ {name:'工作餐·口水鸡盒饭',dt:'10/21 晚餐',p:41,cal:531,d:7.7,detail:'P41g / 531kcal'},
+ {name:'很久以前烤串',dt:'10/10 午餐',p:58,cal:840,d:6.9,detail:'P58g / 840kcal'},
+ {name:'韩式石锅拌饭',dt:'09/30 午餐',p:28,cal:452,d:6.2,detail:'P28g / 452kcal · 低脂'}
+];
+
+/* ===== 外卖/外食排行 ===== */
+function plainRows(arr){
+  return arr.map((it,i)=>{
+    const pos = ['p1','p2','p3'][i]||'';
+    return `<div class="plain-row">
+      <div class="pos ${pos}">${i+1}</div>
+      <div class="nm">${it.name}<span class="dt">${it.dt}</span></div>
+      <div class="px">${it.d.toFixed(1)}<small> g/百千卡</small></div>
+      <div class="pdet">${it.detail}</div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('waimaiRank').innerHTML = plainRows(WAIMAI);
+document.getElementById('waishiRank').innerHTML = plainRows(WAISHI);
+
+/* ===== ECharts ===== */
+const baseOpt = {
+  textStyle:{fontFamily:'Noto Sans SC,sans-serif',color:'#24312a'},
+  grid:{left:8,right:12,top:30,bottom:8,containLabel:true},
+  tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e3e7dc',textStyle:{color:'#24312a',fontSize:12}},
+};
+
+/* 体重 */
+const wc = echarts.init(document.getElementById('weightChart'));
+wc.setOption({
+  ...baseOpt,
+  title:{text:'体重变化趋势 (kg)',textStyle:{fontSize:13,fontWeight:700},left:0,top:0},
+  xAxis:{type:'category',data:WEIGHTS.map(w=>w[0]),axisLine:{lineStyle:{color:'#d5dcc9'}},axisLabel:{fontSize:10,interval:1}},
+  yAxis:{type:'value',min:78,max:82,splitLine:{lineStyle:{color:'#eef2e8'}},axisLabel:{fontSize:10}},
+  series:[{type:'line',data:WEIGHTS.map(w=>w[1]),smooth:true,symbolSize:6,
+    lineStyle:{width:3,color:'#2e7d5b'},itemStyle:{color:'#2e7d5b'},
+    areaStyle:{color:'rgba(46,125,91,.12)'},
+    markLine:{silent:true,symbol:'none',lineStyle:{color:'#e07a3f',type:'dashed'},
+      data:[{yAxis:72,name:'目标72kg',label:{formatter:'目标 72kg',fontSize:10,color:'#e07a3f',position:'insideEndTop'}}]}
+  }]
+});
+
+/* 营养素达标率 */
+const mc = echarts.init(document.getElementById('macroChart'));
+mc.setOption({
+  ...baseOpt,
+  grid:{left:8,right:12,top:8,bottom:8,containLabel:true},
+  tooltip:{trigger:'item',formatter:p=>`${p.name}<br>日均 ${p.value}${p.data.unit} · ${p.data.pct}%`},
+  xAxis:{type:'value',max:120,splitLine:{lineStyle:{color:'#eef2e8'}},axisLabel:{formatter:'{value}%',fontSize:10}},
+  yAxis:{type:'category',data:['脂肪','碳水','蛋白质','热量'],axisLine:{show:false},axisTick:{show:false},axisLabel:{fontSize:12}},
+  series:[{type:'bar',data:[
+    {value:112,name:'脂肪',unit:'g',pct:112,itemStyle:{color:'#e07a3f'}},
+    {value:104,name:'碳水',unit:'g',pct:104,itemStyle:{color:'#d9a53a'}},
+    {value:67,name:'蛋白质',unit:'g',pct:67,itemStyle:{color:'#c05252'}},
+    {value:94,name:'热量',unit:'kcal',pct:94,itemStyle:{color:'#2e7d5b'}}
+  ],barWidth:18,label:{show:true,position:'right',formatter:p=>p.value+'%',fontSize:11,fontWeight:700,color:'#24312a'},
+    markLine:{silent:true,symbol:'none',lineStyle:{color:'#24312a',type:'dashed'},data:[{xAxis:100,label:{formatter:'目标100%',position:'insideEndTop',fontSize:10,color:'#6b756c'}}]}
+  }]
+});
+
+/* 餐次分布 */
+const mealC = echarts.init(document.getElementById('mealChart'));
+mealC.setOption({
+  ...baseOpt,
+  tooltip:{trigger:'item',formatter:p=>`${p.name}<br>${p.value}%`},
+  series:[{type:'pie',radius:['42%','68%'],center:['32%','50%'],
+    data:[
+      {value:33.2,name:'午餐',itemStyle:{color:'#2e7d5b'}},
+      {value:32.9,name:'晚餐',itemStyle:{color:'#6cbf96'}},
+      {value:25.1,name:'早餐',itemStyle:{color:'#d9a53a'}},
+      {value:8.9,name:'加餐',itemStyle:{color:'#e07a3f'}}
+    ],
+    label:{show:false},labelLine:{show:false},
+    itemStyle:{borderColor:'#fff',borderWidth:2}
+  }],
+  legend:{orient:'vertical',left:'55%',top:'center',itemWidth:12,itemHeight:12,textStyle:{fontSize:12},
+    formatter:n=>{
+      const map={午餐:'33.2%',晚餐:'32.9%',早餐:'25.1%',加餐:'8.9%'};
+      return n+'  '+map[n];
+    }}
+});
+
+/* 步数 */
+const sc = echarts.init(document.getElementById('stepsChart'));
+sc.setOption({
+  ...baseOpt,
+  title:{text:'每日步数',textStyle:{fontSize:13,fontWeight:700},left:0,top:0},
+  xAxis:{type:'category',data:STEPS.map(s=>s[0]),axisLine:{lineStyle:{color:'#d5dcc9'}},axisLabel:{fontSize:9,interval:2}},
+  yAxis:{type:'value',splitLine:{lineStyle:{color:'#eef2e8'}},axisLabel:{fontSize:10}},
+  series:[{type:'bar',data:STEPS.map(s=>s[1]),barWidth:'55%',itemStyle:{color:'#2e7d5b',borderRadius:[4,4,0,0]},
+    markLine:{silent:true,symbol:'none',lineStyle:{color:'#e07a3f',type:'dashed'},data:[{yAxis:8000,label:{formatter:'8000步',fontSize:10,color:'#e07a3f',position:'insideEndTop'}}]}
+  }]
+});
+
+window.addEventListener('resize',()=>{wc.resize();mc.resize();mealC.resize();sc.resize();});
+</script>
+</body>
+</html>
