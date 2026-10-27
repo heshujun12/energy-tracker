@@ -5617,10 +5617,10 @@
     }
    ],
    "water": 0,
-   "exercise": 0,
-   "steps": 0,
-   "workoutMin": 0,
-   "activityCount": 0,
+   "exercise": 423,
+   "steps": 2853,
+   "workoutMin": 2,
+   "activityCount": 10,
    "weight": null,
    "totals": {
     "cal": 1721,
@@ -6057,6 +6057,23 @@
    "bodyScore": 85,
    "fatMass": 14.91,
    "leanMass": 63.99
+  },
+  {
+   "date": "2026-10-27",
+   "weight": 78.66,
+   "bmi": 25.1,
+   "bodyFat": 18.8,
+   "muscle": 42.2,
+   "water": 57.4,
+   "bone": 3.02,
+   "subFat": 18.5,
+   "bmr": 1696,
+   "visceral": 8,
+   "protein": 14.4,
+   "bodyAge": 29,
+   "bodyScore": 85,
+   "fatMass": 14.79,
+   "leanMass": 63.87
   }
  ],
  "chatHistory": [
