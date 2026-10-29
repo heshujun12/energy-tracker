@@ -5910,6 +5910,78 @@
    "exercise": 518,
    "workoutMin": 33,
    "activityCount": 11
+  },
+  "2026-10-29": {
+   "records": [
+    {
+     "time": "08:40",
+     "meal": "早餐",
+     "foodName": "水煮蛋(2个)",
+     "weight": 100,
+     "cal": 140,
+     "p": 12.0,
+     "c": 1.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 140
+    },
+    {
+     "time": "08:40",
+     "meal": "早餐",
+     "foodName": "吃甘蔗的水牛奶(200ml)",
+     "weight": 200,
+     "cal": 167,
+     "p": 8.4,
+     "c": 11.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 80
+    },
+    {
+     "time": "08:40",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(2块20g)",
+     "weight": 20,
+     "cal": 76,
+     "p": 2.9,
+     "c": 13.3,
+     "f": 0.6,
+     "fiber": 2.5,
+     "sodium": 0
+    },
+    {
+     "time": "12:40",
+     "meal": "午餐",
+     "foodName": "前腿肉番茄荞麦面(整碗)",
+     "weight": 450,
+     "cal": 420,
+     "p": 22.0,
+     "c": 60.0,
+     "f": 10.0,
+     "fiber": 4.0,
+     "sodium": 700
+    },
+    {
+     "time": "12:40",
+     "meal": "午餐",
+     "foodName": "炸虾(赠送1只)",
+     "weight": 25,
+     "cal": 45,
+     "p": 3.0,
+     "c": 2.5,
+     "f": 2.5,
+     "fiber": 0,
+     "sodium": 150
+    }
+   ],
+   "totals": {
+    "cal": 848,
+    "p": 48.3,
+    "c": 87.8,
+    "f": 33.1,
+    "fiber": 6.5,
+    "sodium": 1070
+   }
   }
  },
  "weightHistory": [
