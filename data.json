@@ -6034,6 +6034,54 @@
    "exercise": 619,
    "workoutMin": 7,
    "activityCount": 8
+  },
+  "2026-10-30": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "芝士猪柳蛋帕尼尼(半个去酱)",
+     "weight": 80,
+     "cal": 155,
+     "p": 9.0,
+     "c": 12.0,
+     "f": 7.0,
+     "fiber": 1.0,
+     "sodium": 350
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "热豆浆(1杯300ml)",
+     "weight": 300,
+     "cal": 110,
+     "p": 5.0,
+     "c": 9.0,
+     "f": 4.0,
+     "fiber": 1.0,
+     "sodium": 60
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(1个)",
+     "weight": 50,
+     "cal": 70,
+     "p": 6.0,
+     "c": 0.5,
+     "f": 5.0,
+     "fiber": 0,
+     "sodium": 70
+    }
+   ],
+   "totals": {
+    "cal": 335,
+    "p": 20.0,
+    "c": 21.5,
+    "f": 16.0,
+    "fiber": 2.0,
+    "sodium": 480
+   }
   }
  },
  "weightHistory": [
