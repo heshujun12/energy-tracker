@@ -6285,6 +6285,154 @@
     "f": 56.1,
     "fiber": 10.9,
     "sodium": 2524
+   },
+   "steps": 3632,
+   "exercise": 192,
+   "workoutMin": 0,
+   "activityCount": 0
+  },
+  "2026-11-01": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "芝士猪柳蛋帕尼尼(半个)",
+     "weight": 80,
+     "cal": 185,
+     "p": 10.5,
+     "c": 15.0,
+     "f": 9.5,
+     "fiber": 1.0,
+     "sodium": 400
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(1个)",
+     "weight": 50,
+     "cal": 70,
+     "p": 6.0,
+     "c": 0.5,
+     "f": 5.0,
+     "fiber": 0,
+     "sodium": 70
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "美式红薯条(1/3份)",
+     "weight": 100,
+     "cal": 150,
+     "p": 1.7,
+     "c": 17.0,
+     "f": 9.3,
+     "fiber": 2.0,
+     "sodium": 133
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "炭烤谷饲丹佛牛排(1/3份)",
+     "weight": 67,
+     "cal": 150,
+     "p": 13.3,
+     "c": 1.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 167
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "风渡嘉荷特色沙拉(1/10份)",
+     "weight": 30,
+     "cal": 25,
+     "p": 0.5,
+     "c": 1.5,
+     "f": 1.5,
+     "fiber": 1.0,
+     "sodium": 40
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "香浓奶油蘑菇汤(半碗)",
+     "weight": 100,
+     "cal": 90,
+     "p": 2.0,
+     "c": 4.0,
+     "f": 7.5,
+     "fiber": 0.5,
+     "sodium": 250
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "意式肉酱意大利面(1/3份)",
+     "weight": 100,
+     "cal": 200,
+     "p": 7.3,
+     "c": 26.7,
+     "f": 6.0,
+     "fiber": 1.5,
+     "sodium": 267
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "巴斯克芝士蛋糕(1/3份)",
+     "weight": 40,
+     "cal": 117,
+     "p": 1.7,
+     "c": 11.7,
+     "f": 7.3,
+     "fiber": 0.5,
+     "sodium": 83
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "金针菇焖牛肉(1/3份)",
+     "weight": 80,
+     "cal": 120,
+     "p": 15.0,
+     "c": 4.0,
+     "f": 6.0,
+     "fiber": 1.5,
+     "sodium": 250
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "米饭(120g)",
+     "weight": 120,
+     "cal": 139,
+     "p": 3.1,
+     "c": 31.0,
+     "f": 0.36,
+     "fiber": 0.25,
+     "sodium": 4
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "白萝卜炖口蘑(120g)",
+     "weight": 120,
+     "cal": 50,
+     "p": 2.0,
+     "c": 8.0,
+     "f": 1.0,
+     "fiber": 2.0,
+     "sodium": 250
+    }
+   ],
+   "totals": {
+    "cal": 1296,
+    "p": 63.1,
+    "c": 120.4,
+    "f": 63.5,
+    "fiber": 10.2,
+    "sodium": 1914
    }
   }
  },
@@ -6764,6 +6912,23 @@
    "bodyScore": 85,
    "fatMass": 14.81,
    "leanMass": 63.98
+  },
+  {
+   "date": "2026-11-01",
+   "weight": 78.43,
+   "bmi": 25.0,
+   "bodyFat": 18.6,
+   "muscle": 42.2,
+   "water": 57.5,
+   "bone": 3.01,
+   "subFat": 18.3,
+   "bmr": 1692,
+   "visceral": 8,
+   "protein": 14.5,
+   "bodyAge": 29,
+   "bodyScore": 86,
+   "fatMass": 14.59,
+   "leanMass": 63.85
   }
  ],
  "chatHistory": [
