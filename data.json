@@ -6926,6 +6926,174 @@
     "fiber": 9.5,
     "sodium": 889
    }
+  },
+  "2026-11-05": {
+   "records": [
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "吃甘蔗的水牛奶(200ml)",
+     "weight": 200,
+     "cal": 167,
+     "p": 8.4,
+     "c": 11.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 80
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(2块20g)",
+     "weight": 20,
+     "cal": 76,
+     "p": 2.9,
+     "c": 13.3,
+     "f": 0.6,
+     "fiber": 2.5,
+     "sodium": 0
+    },
+    {
+     "time": "08:30",
+     "meal": "早餐",
+     "foodName": "水煮蛋(1个)",
+     "weight": 50,
+     "cal": 70,
+     "p": 6.0,
+     "c": 0.5,
+     "f": 5.0,
+     "fiber": 0,
+     "sodium": 70
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "牛肉粉(一碗约650g·估算)",
+     "weight": 650,
+     "cal": 480,
+     "p": 26.0,
+     "c": 62.0,
+     "f": 13.0,
+     "fiber": 2.0,
+     "sodium": 1200
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "小咸菜(30g)",
+     "weight": 30,
+     "cal": 15,
+     "p": 0.6,
+     "c": 3.0,
+     "f": 0.3,
+     "fiber": 0.5,
+     "sodium": 450
+    },
+    {
+     "time": "12:50",
+     "meal": "午餐",
+     "foodName": "炸蛋(半个约27g)",
+     "weight": 27,
+     "cal": 66,
+     "p": 3.5,
+     "c": 0.3,
+     "f": 5.6,
+     "fiber": 0,
+     "sodium": 70
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "米饭(120g)",
+     "weight": 120,
+     "cal": 139,
+     "p": 3.1,
+     "c": 31.0,
+     "f": 0.36,
+     "fiber": 0.25,
+     "sodium": 4
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "牛腩炖萝卜-牛腩(80g)",
+     "weight": 80,
+     "cal": 133,
+     "p": 14.7,
+     "c": 0.7,
+     "f": 8.0,
+     "fiber": 0,
+     "sodium": 100
+    },
+    {
+     "time": "19:10",
+     "meal": "晚餐",
+     "foodName": "牛腩炖萝卜-萝卜(80g)",
+     "weight": 80,
+     "cal": 11,
+     "p": 0.5,
+     "c": 2.6,
+     "f": 0.2,
+     "fiber": 1.0,
+     "sodium": 5
+    },
+    {
+     "time": "21:30",
+     "meal": "加餐",
+     "foodName": "腰果(1颗)",
+     "weight": 1.2,
+     "cal": 7,
+     "p": 0.2,
+     "c": 0.4,
+     "f": 0.5,
+     "fiber": 0,
+     "sodium": 0
+    },
+    {
+     "time": "21:30",
+     "meal": "加餐",
+     "foodName": "杏仁(1颗)",
+     "weight": 1.1,
+     "cal": 7,
+     "p": 0.2,
+     "c": 0.2,
+     "f": 0.6,
+     "fiber": 0.1,
+     "sodium": 0
+    },
+    {
+     "time": "21:30",
+     "meal": "加餐",
+     "foodName": "砂糖橘(3颗约75g)",
+     "weight": 75,
+     "cal": 45,
+     "p": 0.6,
+     "c": 12.0,
+     "f": 0.3,
+     "fiber": 1.5,
+     "sodium": 0
+    },
+    {
+     "time": "21:30",
+     "meal": "加餐",
+     "foodName": "干脆面(1小包20g·估算)",
+     "weight": 20,
+     "cal": 100,
+     "p": 1.8,
+     "c": 12.0,
+     "f": 4.2,
+     "fiber": 0.3,
+     "sodium": 200
+    }
+   ],
+   "totals": {
+    "cal": 1316,
+    "p": 68.5,
+    "c": 149.0,
+    "f": 48.7,
+    "fiber": 8.2,
+    "sodium": 2179
+   }
   }
  },
  "weightHistory": [
@@ -7438,6 +7606,23 @@
    "bodyScore": 86,
    "fatMass": 14.58,
    "leanMass": 63.82
+  },
+  {
+   "date": "2026-11-05",
+   "weight": 78.18,
+   "bmi": 24.9,
+   "bodyFat": 18.5,
+   "muscle": 42.3,
+   "water": 57.7,
+   "bone": 3.01,
+   "subFat": 18.2,
+   "bmr": 1691,
+   "visceral": 8,
+   "protein": 14.6,
+   "bodyAge": 29,
+   "bodyScore": 86,
+   "fatMass": 14.46,
+   "leanMass": 63.72
   }
  ],
  "chatHistory": [
