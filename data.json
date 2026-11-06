@@ -7106,6 +7106,54 @@
     "fiber": 8.2,
     "sodium": 2773
    }
+  },
+  "2026-11-06": {
+   "records": [
+    {
+     "time": "08:20",
+     "meal": "早餐",
+     "foodName": "吃甘蔗的水牛奶(200ml)",
+     "weight": 200,
+     "cal": 167,
+     "p": 8.4,
+     "c": 11.0,
+     "f": 10.0,
+     "fiber": 0,
+     "sodium": 80
+    },
+    {
+     "time": "08:20",
+     "meal": "早餐",
+     "foodName": "欧扎克全麦脆(2块20g)",
+     "weight": 20,
+     "cal": 76,
+     "p": 2.9,
+     "c": 13.3,
+     "f": 0.6,
+     "fiber": 2.5,
+     "sodium": 0
+    },
+    {
+     "time": "08:20",
+     "meal": "早餐",
+     "foodName": "水煮蛋(1个)",
+     "weight": 50,
+     "cal": 70,
+     "p": 6.0,
+     "c": 0.5,
+     "f": 5.0,
+     "fiber": 0,
+     "sodium": 70
+    }
+   ],
+   "totals": {
+    "cal": 313,
+    "p": 17.3,
+    "c": 24.8,
+    "f": 15.6,
+    "fiber": 2.5,
+    "sodium": 150
+   }
   }
  },
  "weightHistory": [
@@ -7635,6 +7683,23 @@
    "bodyScore": 86,
    "fatMass": 14.46,
    "leanMass": 63.72
+  },
+  {
+   "date": "2026-11-06",
+   "weight": 78.15,
+   "bmi": 24.9,
+   "bodyFat": 18.5,
+   "muscle": 42.3,
+   "water": 57.7,
+   "bone": 3.01,
+   "subFat": 18.2,
+   "bmr": 1691,
+   "visceral": 8,
+   "protein": 14.6,
+   "bodyAge": 29,
+   "bodyScore": 86,
+   "fatMass": 14.46,
+   "leanMass": 63.69
   }
  ],
  "chatHistory": [
