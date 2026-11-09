@@ -7976,6 +7976,23 @@
    "bodyScore": 86,
    "fatMass": 14.46,
    "leanMass": 63.69
+  },
+  {
+   "date": "2026-11-09",
+   "weight": 78.04,
+   "bmi": 24.9,
+   "bodyFat": 18.4,
+   "muscle": 42.4,
+   "water": 57.7,
+   "bone": 3.01,
+   "subFat": 18.1,
+   "bmr": 1692,
+   "visceral": 8,
+   "protein": 14.6,
+   "bodyAge": 29,
+   "bodyScore": 86,
+   "fatMass": 14.36,
+   "leanMass": 63.68
   }
  ],
  "chatHistory": [
